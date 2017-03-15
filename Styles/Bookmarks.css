@@ -1,0 +1,8 @@
+.fk-noGuidelines {
+	width: 830px !important;
+	float: none !important;
+}
+
+.fk-guidelinesTitle {
+	cursor: pointer;
+}
