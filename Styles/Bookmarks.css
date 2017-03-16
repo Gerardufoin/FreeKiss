@@ -6,3 +6,29 @@
 .fk-guidelinesTitle {
 	cursor: pointer;
 }
+
+.fk-bookmarkRow {
+	display: inline-block;
+	min-height: 215px;
+	height: auto !important;
+	width: 150px !important;
+	text-align: center;
+
+	margin: 0px 5px 15px 5px;
+}
+
+.fk-bookmarkTitle {
+	display: block;
+	overflow: hidden;
+}
+.fk-bookmarkChapter {
+	display: block;
+}
+.fk-bookmarkStatus {
+	display: inline-block;
+}
+
+.fk-bookmarkImage {
+	width: 130px;
+	height: 150px;
+}

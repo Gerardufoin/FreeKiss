@@ -25,17 +25,20 @@
     {
       "matches": ["*://kissmanga.com/*"],
       "css": ["Styles/FreeKiss.css"],
-      "js": ["Tools/jquery-3.1.1.min.js"]
+      "js": ["Tools/jquery-3.1.1.min.js"],
+      "run_at": "document_start"
     },  
     {
       "matches": ["*://kissmanga.com/BookmarkList"],
       "css": ["Styles/Bookmarks.css"],
-      "js": ["Scripts/Bookmarks.js"]
+      "js": ["Scripts/Bookmarks.js"],
+      "run_at": "document_start"
     },
     {
       "matches": ["*://kissmanga.com/Manga/*/*"],
       "css": ["Styles/Chapter.css"],
-      "js": ["Scripts/Chapter.js"]
+      "js": ["Scripts/Chapter.js"],
+      "run_at": "document_end"
     }
   ],
 
