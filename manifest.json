@@ -3,7 +3,7 @@
 
   "name": "FreeKiss",
   "description": "Enhance your KissManga experience",
-  "version": "0.11",
+  "version": "0.15",
 
   "icons": {
     "16": "Images/Icons/icon16.png",
@@ -25,7 +25,7 @@
     {
       "matches": ["*://kissmanga.com/*"],
       "css": ["Styles/FreeKiss.css"],
-      "js": ["Tools/jquery-3.1.1.min.js"],
+      "js": ["Tools/jquery-3.1.1.min.js", "Scripts/FreeKiss.js"],
       "run_at": "document_start"
     },  
     {

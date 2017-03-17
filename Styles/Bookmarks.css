@@ -7,23 +7,53 @@
 	cursor: pointer;
 }
 
+.fk-bookmarkHeader {
+	display: block;
+	margin-bottom: 17px;
+}
+
+.fk-bookmarkHeader th {
+	width: 100% !important;
+	display: block;
+	font-size: 20px !important;
+	line-height: 25px;
+}
+
 .fk-bookmarkRow {
 	display: inline-block;
 	min-height: 215px;
-	height: auto !important;
+	height: 224px !important;
 	width: 150px !important;
 	text-align: center;
 
 	margin: 0px 5px 15px 5px;
+	background-color: #292929 !important;
+}
+
+.fk-bookmarkRow:hover td {
+	background-color: initial !important;
+}
+
+.fk-bookmarkRow:hover {
+	background-color: #494949 !important;
 }
 
 .fk-bookmarkTitle {
 	display: block;
 	overflow: hidden;
+	height: 168px;
+	margin-top: 8px;
 }
+
+.fk-bookmarkTitle-imgLink {
+	display: block;
+	margin-bottom: 2px;
+}
+
 .fk-bookmarkChapter {
 	display: block;
 }
+
 .fk-bookmarkStatus {
 	display: inline-block;
 }
