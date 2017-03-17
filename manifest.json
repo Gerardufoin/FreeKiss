@@ -1,0 +1,48 @@
+{
+  "manifest_version": 2,
+
+  "name": "FreeKiss",
+  "description": "Enhance your KissManga experience",
+  "version": "0.15",
+
+  "icons": {
+    "16": "Images/Icons/icon16.png",
+    "48": "Images/Icons/icon48.png",
+    "128": "Images/Icons/icon128.png"
+  },
+
+  "browser_action": {
+    "default_icon": {
+      "16": "Images/Icons/icon16.png",
+      "48": "Images/Icons/icon48.png",
+      "128": "Images/Icons/icon128.png"
+    },
+    "default_popup": "Views/FreeKissPopup.html",
+    "default_title": "FreeKiss"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://kissmanga.com/*"],
+      "css": ["Styles/FreeKiss.css"],
+      "js": ["Tools/jquery-3.1.1.min.js", "Scripts/FreeKiss.js"],
+      "run_at": "document_start"
+    },  
+    {
+      "matches": ["*://kissmanga.com/BookmarkList"],
+      "css": ["Styles/Bookmarks.css"],
+      "js": ["Scripts/Bookmarks.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://kissmanga.com/Manga/*/*"],
+      "css": ["Styles/Chapter.css"],
+      "js": ["Scripts/Chapter.js"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "permissions": [
+    "storage"
+  ]
+}
