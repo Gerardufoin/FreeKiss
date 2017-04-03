@@ -1,0 +1,12 @@
+.fk-scrollableItem {
+	position: relative;
+}
+
+.fk-scrollableBookmarkNotification {
+	position: absolute;
+	left: 2px;
+	top: 1px;
+	height: 32px;
+	width: 32px;
+	border: none !important;
+}

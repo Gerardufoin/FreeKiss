@@ -52,6 +52,8 @@
 
 .fk-bookmarkChapter {
 	display: block;
+	overflow: hidden;
+	height: 19px;
 }
 
 .fk-bookmarkStatus {

@@ -27,7 +27,13 @@
       "css": ["Styles/FreeKiss.css"],
       "js": ["Tools/jquery-3.1.1.min.js", "Scripts/FreeKiss.js"],
       "run_at": "document_start"
-    },  
+    },
+    {
+      "matches": ["*://kissmanga.com/"],
+      "css": ["Styles/FrontPage.css"],
+      "js": ["Scripts/FrontPage.js"],
+      "run_at": "document_start"
+    },
     {
       "matches": ["*://kissmanga.com/BookmarkList"],
       "css": ["Styles/Bookmarks.css"],
@@ -40,6 +46,11 @@
       "js": ["Scripts/Chapter.js"],
       "run_at": "document_end"
     }
+  ],
+
+  "web_accessible_resources": [
+    "Images/Notifications/Unread.png",
+    "Images/Notifications/Bookmarked.png"
   ],
 
   "permissions": [
