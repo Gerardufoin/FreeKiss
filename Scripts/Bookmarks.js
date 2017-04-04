@@ -58,10 +58,15 @@ $(document).ready(function () {
 			}			
 		}
 
-		/*var m = {
-			name: $(this).find("td:eq(0) a").text()
+		// Kissmanga, why do you use bookmark ID instead of the manga ID to manage bookmark ? :'(
+		var m = {
+			// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
+			href: $(this).find("td:eq(0) a.aManga").attr("href").substring(1),
+			bid: $(this).find("td:eq(2) a").attr("bdid")
 		};
 		mangas[$(this).find("td:eq(3) a").attr("mid")] = m;
-		console.log($(this).find("td:eq(0)"));*/
 	});
+
+	// Storage of the bookmarks in memory. Used to add bookmark management directly on the mangas' chapters
+	chrome.storage.local.set({"fk-bookmarks": mangas});
 });
