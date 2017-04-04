@@ -1,12 +1,20 @@
-.fk-scrollableItem {
+.fk-makeRelative {
 	position: relative;
 }
 
-.fk-scrollableBookmarkNotification {
+.fk-notification {
 	position: absolute;
-	left: 2px;
-	top: 1px;
 	height: 32px;
 	width: 32px;
 	border: none !important;
+}
+
+.fk-scrollableBookmarkNotification {
+	left: 2px;
+	top: 1px;
+}
+
+.fk-submenuBookmarkNotification {
+	left: -105px;
+	top: -4px;
 }
