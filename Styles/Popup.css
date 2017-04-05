@@ -1,12 +1,51 @@
 body {
   font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
   font-size: 100%;
+  background-color: #353535;
 }
 
-#status {
-  /* avoid an excessively wide status text */
-  white-space: pre;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 400px;
+#container {
+	width: 350px;
+	height: 250px;
+}
+
+#title {
+	padding-left: 5px;
+}
+
+#options {
+	background-color: #E8E8E8;
+	border-radius: 1px;	
+
+	margin-left: -3px;
+	height: 200px;
+	width: 356px;
+}
+
+table {
+	width: 100%;
+}
+
+table td {
+	padding: 2px;
+}
+
+td a {
+	display: block;
+	width: 162px;
+	border-radius: 2px;
+	padding: 4px;
+
+	text-decoration: none;
+	color: black;
+	background-color: #F5F5F5;
+	font-size: 12px;
+}
+
+td a:not(.active):hover {
+	background-color: #DEDEDE;
+}
+
+.active {
+	background-color: #A1A1A1;
 }
