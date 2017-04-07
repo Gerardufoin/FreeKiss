@@ -24,9 +24,18 @@ $(document).ready(function() {
 		$(".slider[name=minDoublePageWidth]").val(options.minDoublePageWidth).next().text(options.minDoublePageWidth);
 		
 		$(".slider").on("input", function() {
-			$(this).next().text($(this).val());
-			options[$(this).attr("name")] = $(this).val();
+			var name = $(this).attr("name");
+			var value = $(this).val();
+			$(this).next().text(value);
+			options[name] = value;
 			chrome.storage.local.set({"fk-options": options});
+			chrome.tabs.query({url: "*://kissmanga.com/Manga/*/*"}, function(tabs) {
+				for (var i = 0; i < tabs.length; ++i) {
+					chrome.tabs.executeScript(tabs[i].id, {
+						code: 'if (typeof FK_PageResize === "function") FK_PageResize("' + name + '", ' + value + ');'
+					});
+				}
+			});
 		});
 
 		$("#disable").click(function() {
@@ -37,6 +46,11 @@ $(document).ready(function() {
 				$(this).text("Disable FreeKiss");
 			}
 			chrome.storage.local.set({"fk-options": options});
+			chrome.tabs.query({url: "*://kissmanga.com/*"}, function(tabs) {
+				for (var i = 0; i < tabs.length; ++i) {
+					chrome.tabs.reload(tabs[i].id);
+				}
+			});
 		});
 	});
 
