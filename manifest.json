@@ -44,7 +44,7 @@
       "matches": ["*://kissmanga.com/Manga/*/*"],
       "css": ["Styles/Chapter.css"],
       "js": ["Scripts/Chapter.js"],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
 

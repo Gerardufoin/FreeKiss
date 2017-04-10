@@ -1,14 +1,5 @@
 "use strict";
 
-// Check if the disable option is activated
-chrome.storage.local.get("fk-options", function(options) {
-		options = options['fk-options'];
-		if (options == null || !options.hasOwnProperty("disable") || !options.disable) {
-			Bookmarks();
-		}
-	}
-);
-
 function Bookmarks() {
 
 	// The data of the images is processed by JQuery Tooltip and removed. So we need to get them before it happens using mutations.
@@ -82,3 +73,5 @@ function Bookmarks() {
 		chrome.storage.local.set({"fk-bookmarks": mangas});
 	});
 }
+
+Options.init(Bookmarks);

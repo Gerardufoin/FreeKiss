@@ -1,14 +1,5 @@
 "use strict";
 
-// Check if the disable option is activated
-chrome.storage.local.get("fk-options", function(options) {
-		options = options['fk-options'];
-		if (options == null || !options.hasOwnProperty("disable") || !options.disable) {
-			FrontPage();
-		}
-	}
-);
-
 function FrontPage() {
 	// Bookmarks management
 	chrome.storage.local.get("fk-bookmarks", function(bookmarks) {
@@ -71,3 +62,5 @@ function FrontPage() {
 		);
 	});	
 }
+
+Options.init(FrontPage);
