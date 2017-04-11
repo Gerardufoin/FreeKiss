@@ -43,41 +43,71 @@ function FK_ApplyResizeOptions(img) {
 	fk_test_image.src = img.attr("src");
 
 	if (!FK_IsDoublePage(fk_test_image)) {
-		if (Options.isSet("maxPageWidth")) {
-			img.css("max-width", parseInt(Options.getValue("maxPageWidth")));
+		if (Options.isSet("maxPageWidth") && Options.get("maxDisable") === false) {
+			img.css("max-width", parseInt(Options.get("maxPageWidth")));
 		}
-		if (Options.isSet("minPageWidth")) {
-			img.css("min-width", parseInt(Options.getValue("minPageWidth")));
+		if (Options.isSet("minPageWidth") && Options.get("minDisable") === false) {
+			img.css("min-width", parseInt(Options.get("minPageWidth")));
 		}
 	} else {
-		if (Options.isSet("maxDoublePageWidth")) {
-			img.css("max-width", parseInt(Options.getValue("maxDoublePageWidth")));
+		if (Options.isSet("maxDoublePageWidth") && Options.get("maxDisable") === false) {
+			img.css("max-width", parseInt(Options.get("maxDoublePageWidth")));
 		}
-		if (Options.isSet("minDoublePageWidth")) {
-			img.css("min-width", parseInt(Options.getValue("minDoublePageWidth")));
+		if (Options.isSet("minDoublePageWidth") && Options.get("minDisable") === false) {
+			img.css("min-width", parseInt(Options.get("minDoublePageWidth")));
 		}
 	}
 }
 
 // This function is called by Popup.js when the options are changed
-function FK_PageResize(attribute, value) {
+function FK_PageResize(attribute, value, maxDisable, minDisable) {
 
 	$("#divImage p > img").each(function() {
 		fk_test_image.src = $(this).attr("src");
 
 		switch(attribute) {
 			case "maxPageWidth":
-				if (!FK_IsDoublePage(fk_test_image)) $(this).css("max-width", value);
+				if (!FK_IsDoublePage(fk_test_image) && !maxDisable) $(this).css("max-width", value);
 				break;
 			case "maxDoublePageWidth":
-				if (FK_IsDoublePage(fk_test_image)) $(this).css("max-width", value);
+				if (FK_IsDoublePage(fk_test_image) && !maxDisable) $(this).css("max-width", value);
 				break;
 			case "minPageWidth":
-				if (!FK_IsDoublePage(fk_test_image)) $(this).css("min-width", value);
+				if (!FK_IsDoublePage(fk_test_image) && !minDisable) $(this).css("min-width", value);
 				break;
 			case "minDoublePageWidth":
-				if (FK_IsDoublePage(fk_test_image)) $(this).css("min-width", value);
+				if (FK_IsDoublePage(fk_test_image) && !minDisable) $(this).css("min-width", value);
 				break;
+		}
+	});
+}
+
+// Toggle the max page resize on or off depending on value
+function FK_ToggleMaxWidth(disable) {
+	$("#divImage p > img").each(function() {
+		if (disable) {
+			$(this).css("max-width", "");
+		} else {
+			var img = $(this);
+			// Need to reload the options
+			Options.init(function() {
+				FK_ApplyResizeOptions(img);
+			});
+		}
+	});
+}
+
+// Toggle the min page resize on or off depending on value
+function FK_ToggleMinWidth(disable) {
+	$("#divImage p > img").each(function() {
+		if (disable) {
+			$(this).css("min-width", "");
+		} else {
+			var img = $(this);
+			// Need to reload the options
+			Options.init(function() {
+				FK_ApplyResizeOptions(img);
+			});
 		}
 	});
 }

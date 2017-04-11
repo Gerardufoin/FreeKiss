@@ -6,10 +6,11 @@ body {
 
 #container {
 	width: 350px;
-	height: 226px;
+	height: 228px;
 }
 
 #title {
+	margin-top: -5px;
 	padding-left: 5px;
 }
 

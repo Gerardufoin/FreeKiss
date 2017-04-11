@@ -9,7 +9,7 @@
     <div id="container">
 
     	<div id="title">
-    		<img src="../Images/Icons/icon128.png" width="50px" />
+    		<img src="../Images/Icons/FreeKissTitle.png" width="280px" />
     	</div>
 
     	<div id="options">
@@ -33,7 +33,7 @@
 			    				<input type="range" name="maxDoublePageWidth" step="100" class="slider" min="100" max="2000">
 			    				<span class="slider-output">-</span>
 		    				</div>
-		    				<a href="#">Disable max page resize</a>
+		    				<a id="maxDisable" href="#">Disable max page resize</a>
 		    			</td>
 		    			<td>
 		    				<div class="slider-container">
@@ -46,7 +46,7 @@
 			    				<input type="range" name="minDoublePageWidth" step="100" class="slider" min="100" max="2000">
 			    				<span class="slider-output">-</span>
 			    			</div>
-		    				<a href="#">Disable min page resize</a>
+		    				<a id="minDisable" href="#">Disable min page resize</a>
 		    			</td>
 		    		</tr>
 		    	</table>
@@ -64,6 +64,7 @@
     </div>
 
     <script src="../Tools/jquery-3.1.1.min.js"></script>
+    <script src="../Scripts/Class/Options.js"></script>
     <script src="../Scripts/Popup.js"></script>
   </body>
 </html>
