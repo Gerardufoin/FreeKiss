@@ -6,7 +6,65 @@
   </head>
   <body>
     
-    <div>Nothing yet.</div>
+    <div id="container">
 
+    	<div id="title">
+    		<img src="../Images/Icons/FreeKissTitle.png" width="280px" />
+    	</div>
+
+    	<div id="options">
+    		<div class="option-block">
+		    	<table>
+		    		<tr>
+		    			<th colspan="2">
+		    				Quick Pages Resize
+		    			</th>
+		    		</tr>
+		    		
+		    		<tr>
+		    			<td>
+		    				<div class="slider-container">
+		    					<div class="slider-title">Max page width</div>
+			    				<input type="range" name="maxPageWidth" step="100" class="slider" min="100" max="2000">
+			    				<span class="slider-output">-</span>
+			    			</div>
+			    			<div class="slider-container">
+		    					<div class="slider-title">Max double-page width</div>
+			    				<input type="range" name="maxDoublePageWidth" step="100" class="slider" min="100" max="2000">
+			    				<span class="slider-output">-</span>
+		    				</div>
+		    				<a id="maxDisable" href="#">Disable max page resize</a>
+		    			</td>
+		    			<td>
+		    				<div class="slider-container">
+		    					<div class="slider-title">Min page width</div>
+			    				<input type="range" name="minPageWidth" step="100" class="slider" min="100" max="2000">
+			    				<span class="slider-output">-</span>
+		    				</div>
+		    				<div class="slider-container">
+		    					<div class="slider-title">Min double-page width</div>
+			    				<input type="range" name="minDoublePageWidth" step="100" class="slider" min="100" max="2000">
+			    				<span class="slider-output">-</span>
+			    			</div>
+		    				<a id="minDisable" href="#">Disable min page resize</a>
+		    			</td>
+		    		</tr>
+		    	</table>
+	    	</div>
+	    	<table>
+	    		<tr>
+	    			<td>
+	    				<a id="disable" href="#">Disable FreeKiss</a>
+	    			</td>
+	    			<td></td>
+	    		</tr>
+	    	</table>
+	    </div>
+
+    </div>
+
+    <script src="../Tools/jquery-3.1.1.min.js"></script>
+    <script src="../Scripts/Class/Options.js"></script>
+    <script src="../Scripts/Popup.js"></script>
   </body>
 </html>

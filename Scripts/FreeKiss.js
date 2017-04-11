@@ -1,8 +1,14 @@
 "use strict";
 
-$(document).ready(function () {
+function FreeKiss() {
 
-	// Make username directly lead to bookmarks
-	$("#aDropDown").attr("href", "http://kissmanga.com/BookmarkList");
+	$(document).ready(function () {
 
-});
+		// Make username directly lead to bookmarks
+		$("#aDropDown").attr("href", "http://kissmanga.com/BookmarkList");
+
+	});	
+
+}
+
+Options.init(FreeKiss);
