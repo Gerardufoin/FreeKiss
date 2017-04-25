@@ -26,9 +26,39 @@ function FrontPage() {
 			  		if (node.childNodes.length == 10) {
 			  			$(node).find("a").each(function() {
 			  				$(this).find("img:first-child").width(130); // Scrollable added by ajax request have a 120px width instead of 130px...
+							$(this).wrap('<div class="fk-scrollingWrapper"></div>');
+							$(this).addClass("fk-makeRelative");
 							if ($.inArray($(this).attr("href"), hrefs) !== -1) {
-								$(this).addClass("fk-makeRelative");
+								$(this).before('\
+									<div class="fk-management">\
+										<span class="fk-bookmarkManagement">\
+											<a class="fk-bRead">\
+												<img src="/Content/Images/include.png">\
+											</a>\
+											<a class="fk-bUnRead fk-hide">\
+												<img src="/Content/Images/notread.png">\
+											</a>\
+										</span>\
+										<span class="fk-mangaManagement">\
+											<a>\
+												<img src="/Content/Images/exclude.png">\
+											</a>\
+										</span>\
+										<img class="fk-imgLoader fk-hide" src="../../Content/images/loader.gif">\
+									</div>\
+								');
 								$(this).append('<img src="' + bookmark_img_path + '" class="fk-notification fk-scrollableBookmarkNotification">');
+							} else {
+								$(this).before('\
+									<div class="fk-management">\
+										<span class="fk-mangaManagement">\
+											<a>\
+												<img src="/Content/Images/plus.png">\
+											</a>\
+										</span>\
+										<img class="fk-imgLoader fk-hide" src="../../Content/images/loader.gif">\
+									</div>\
+								');
 							}
 			  			});
 			  		}
