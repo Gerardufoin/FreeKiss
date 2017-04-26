@@ -1,6 +1,6 @@
 "use strict";
 
-function Bookmarks() {
+function BookmarksPage() {
 
 	// The data of the images is processed by JQuery Tooltip and removed. So we need to get them before it happens using mutations.
 	var observer = new MutationObserver(function(mutations) {
@@ -74,4 +74,4 @@ function Bookmarks() {
 	});
 }
 
-Options.init(Bookmarks);
+Options.init(BookmarksPage);

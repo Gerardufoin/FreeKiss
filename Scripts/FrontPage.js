@@ -1,6 +1,31 @@
 "use strict";
 
 function FrontPage() {
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "http://kissmanga.com/BookmarkList", true);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+		    // JSON.parse does not evaluate the attacker's scripts.
+		    console.log("OK");
+
+			// Bookmarks infos
+			var mangas = {};
+			$(xhr.responseText).find(".listing tr:not(:first-child)").each(function() {
+					var m = {
+						// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
+						href: $(this).find("td:eq(0) a.aManga").attr("href").substring(1),
+						bid: $(this).find("td:eq(2) a").attr("bdid")
+					};
+					mangas[$(this).find("td:eq(3) a").attr("mid")] = m;
+				});
+
+			// Storage of the bookmarks in memory. Used to add bookmark management directly on the mangas' chapters
+			chrome.storage.local.set({"fk-bookmarks": mangas});
+		}
+	}
+	xhr.send();
+
 	// Bookmarks management
 	chrome.storage.local.get("fk-bookmarks", function(bookmarks) {
 		bookmarks = bookmarks['fk-bookmarks'];
@@ -29,38 +54,27 @@ function FrontPage() {
 							$(this).wrap('<div class="fk-scrollingWrapper"></div>');
 							$(this).addClass("fk-makeRelative");
 							if ($.inArray($(this).attr("href"), hrefs) !== -1) {
-								$(this).before('\
-									<div class="fk-management">\
-										<span class="fk-bookmarkManagement">\
-											<a class="fk-bRead">\
-												<img src="/Content/Images/include.png">\
-											</a>\
-											<a class="fk-bUnRead fk-hide">\
-												<img src="/Content/Images/notread.png">\
-											</a>\
-										</span>\
-										<span class="fk-mangaManagement">\
-											<a>\
-												<img src="/Content/Images/exclude.png">\
-											</a>\
-										</span>\
-										<img class="fk-imgLoader fk-hide" src="../../Content/images/loader.gif">\
-									</div>\
-								');
 								$(this).append('<img src="' + bookmark_img_path + '" class="fk-notification fk-scrollableBookmarkNotification">');
-							} else {
-								$(this).before('\
-									<div class="fk-management">\
-										<span class="fk-mangaManagement">\
-											<a>\
-												<img src="/Content/Images/plus.png">\
-											</a>\
-										</span>\
-										<img class="fk-imgLoader fk-hide" src="../../Content/images/loader.gif">\
-									</div>\
-								');
 							}
-			  			});
+							$(this).before('\
+								<div class="fk-management">\
+									<span class="fk-bookmarkManagement fk-hide">\
+										<a class="fk-bRead">\
+											<img src="/Content/Images/include.png">\
+										</a>\
+										<a class="fk-bUnRead fk-hide">\
+											<img src="/Content/Images/notread.png">\
+										</a>\
+									</span>\
+									<span class="fk-mangaManagement fk-hide">\
+										<a>\
+											<img src="/Content/Images/exclude.png">\
+										</a>\
+									</span>\
+									<img class="fk-imgLoader" src="../../Content/images/loader.gif">\
+								</div>\
+							');
+						});
 			  		}
 			  	});
 		  	}
