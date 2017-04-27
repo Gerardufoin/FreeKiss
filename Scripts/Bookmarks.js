@@ -64,7 +64,8 @@ function BookmarksPage() {
 			var m = {
 				// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
 				href: $(this).find("td:eq(0) a.aManga").attr("href").substring(1),
-				bid: $(this).find("td:eq(2) a").attr("bdid")
+				bid: $(this).find("td:eq(2) a").attr("bdid"),
+				read: $(this).find("td:eq(2) .aRead").is(":visible")
 			};
 			mangas[$(this).find("td:eq(3) a").attr("mid")] = m;
 		});
