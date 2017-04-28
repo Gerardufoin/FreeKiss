@@ -46,9 +46,6 @@ function BookmarksPage() {
 			$(this).html($(this).find("img"));
 		});
 
-		// Bookmarks infos
-		var mangas = {};
-
 		// Loop through all bookmarks
 		$(".fk-bookmarkRow").each(function() {
 
@@ -60,18 +57,7 @@ function BookmarksPage() {
 				}			
 			}
 
-			// Kissmanga, why do you use bookmark ID instead of the manga ID to manage bookmark ? :'(
-			var m = {
-				// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
-				href: $(this).find("td:eq(0) a.aManga").attr("href").substring(1),
-				bid: $(this).find("td:eq(2) a").attr("bdid"),
-				read: $(this).find("td:eq(2) .aRead").is(":visible")
-			};
-			mangas[$(this).find("td:eq(3) a").attr("mid")] = m;
 		});
-
-		// Storage of the bookmarks in memory. Used to add bookmark management directly on the mangas' chapters
-		chrome.storage.local.set({"fk-bookmarks": mangas});
 	});
 }
 
