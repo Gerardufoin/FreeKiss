@@ -1,5 +1,6 @@
 "use strict";
 
+// Variable used to get images height/width. Created here to avoid spamming "new"
 var fk_test_image = new Image();
 
 function Chapter() {

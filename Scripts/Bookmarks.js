@@ -1,6 +1,6 @@
 "use strict";
 
-function Bookmarks() {
+function BookmarksPage() {
 
 	// The data of the images is processed by JQuery Tooltip and removed. So we need to get them before it happens using mutations.
 	var observer = new MutationObserver(function(mutations) {
@@ -19,7 +19,8 @@ function Bookmarks() {
 			characterData: false,
 			subtree: true,
 			attributeFilter: [ "title" ]
-		});
+		}
+	);
 
 	$(document).ready(function () {
 
@@ -46,9 +47,6 @@ function Bookmarks() {
 			$(this).html($(this).find("img"));
 		});
 
-		// Bookmarks infos
-		var mangas = {};
-
 		// Loop through all bookmarks
 		$(".fk-bookmarkRow").each(function() {
 
@@ -60,18 +58,8 @@ function Bookmarks() {
 				}			
 			}
 
-			// Kissmanga, why do you use bookmark ID instead of the manga ID to manage bookmark ? :'(
-			var m = {
-				// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
-				href: $(this).find("td:eq(0) a.aManga").attr("href").substring(1),
-				bid: $(this).find("td:eq(2) a").attr("bdid")
-			};
-			mangas[$(this).find("td:eq(3) a").attr("mid")] = m;
 		});
-
-		// Storage of the bookmarks in memory. Used to add bookmark management directly on the mangas' chapters
-		chrome.storage.local.set({"fk-bookmarks": mangas});
 	});
 }
 
-Options.init(Bookmarks);
+Options.init(BookmarksPage);

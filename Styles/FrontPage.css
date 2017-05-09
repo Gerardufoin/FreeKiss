@@ -1,5 +1,6 @@
 .fk-makeRelative {
 	position: relative;
+	float: none !important;
 }
 
 .fk-notification {
@@ -17,4 +18,45 @@
 .fk-submenuBookmarkNotification {
 	left: -105px;
 	top: -4px;
+}
+
+.scrollable {
+	margin-top: -12px;
+	height: 210px !important;
+}
+
+.fk-management {
+	width: 135px !important;
+	height: 20px;
+	text-align: center;
+	float: none !important;
+}
+
+.fk-submenuManagement {
+	background-color: inherit !important;
+	position: absolute;
+	left: 105px;
+	bottom: 0px;
+	text-align: left;
+}
+
+.fk-management a {
+	width: 20px !important;
+	height: 20px !important;
+}
+
+.fk-management img {
+	border: none !important;
+}
+
+.fk-bookmarkManagement {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+}
+
+.fk-mangaManagement {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
 }

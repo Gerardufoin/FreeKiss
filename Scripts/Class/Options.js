@@ -1,6 +1,7 @@
 // Option class. Allow to manipulate FreeKiss options
 // Every script should put its main function in init to check if FreeKiss is disabled
 var Options = {
+	// Default options
 	options: {
 		maxPageWidth: 800,
 		maxDoublePageWidth: 1800,
