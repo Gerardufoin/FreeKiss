@@ -19,7 +19,8 @@ function BookmarksPage() {
 			characterData: false,
 			subtree: true,
 			attributeFilter: [ "title" ]
-		});
+		}
+	);
 
 	$(document).ready(function () {
 

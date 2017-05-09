@@ -7,8 +7,6 @@ function FrontPage() {
 		});
 	});
 
-	var bookmark_img_path = chrome.extension.getURL("Images/Notifications/Bookmarked.png");
-
 	// Using mutations allow the data to change at page load AND to update new datas when kissmanga adds mangas in the scrollbar
 	var observer = new MutationObserver(function(mutations) {
 	  mutations.forEach(function(mutation) {
@@ -23,61 +21,25 @@ function FrontPage() {
 		  				$(this).find("img:first-child").width(130); // Scrollable added by ajax request have a 120px width instead of 130px...
 						$(this).wrap('<div class="fk-scrollingWrapper"></div>');
 						$(this).addClass("fk-makeRelative");
-						/*if (Bookmarks.getByUrl($(this).attr("href")) !== null) {
-							$(this).append('<img src="' + bookmark_img_path + '" class="fk-notification fk-scrollableBookmarkNotification">');
-						}*/
-						// Add the managers
-						$(this).before('\
-							<div class="fk-management">\
-								<span class="fk-bookmarkManagement fk-hide">\
-									<a class="fk-bRead fk-hide">\
-										<img src="/Content/Images/include.png">\
-									</a>\
-									<a class="fk-bUnRead fk-hide">\
-										<img src="/Content/Images/notread.png">\
-									</a>\
-								</span>\
-								<span class="fk-mangaManagement fk-hide">\
-									<a class="fk-mRemove">\
-										<img src="/Content/Images/exclude.png">\
-									</a>\
-								</span>\
-								<img class="fk-imgLoader" src="../../Content/images/loader.gif">\
-							</div>\
-						');
 
-						// Add management clicking interactions
-						var management = $(this).prev();
-						$(management).find(".fk-bRead").click(function() {
-							MarkAsUnread($(this));
-						});
-						$(management).find(".fk-bUnRead").click(function() {
-							MarkAsRead($(this));
-						});
-						$(management).find(".fk-mRemove").click(function() {
-							RemoveManga($(this));
-						});
-						// If the bookmarks are sync, we update the managers' infos immediately
-						if (!Bookmarks.syncing) {
-							UpdateBookmarkManagement(management);
-						}
+						// Add the manager
+						$(this).before(CreateBookmarkManagementNode($(this).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(this).attr("href")));
 					});
 		  		}
 		  	});
 	  	}
 
-	  	// Add bookmark notifications in the submenus (most-popular/new-manga)
-	  	/*if (mutation.target.id == "tab-newest" || mutation.target.id == "tab-mostview") {
+	  	// Add bookmark management in the submenus (most-popular/new-manga)
+	  	if (mutation.target.id == "tab-newest" || mutation.target.id == "tab-mostview") {
 	  		mutation.addedNodes.forEach(function(node) {
 	  			if (node.childNodes.length == 5) {
-	  				var mainlink = $(node).find("a:first-child");
-	  				if (Bookmarks.getByUrl(mainlink.attr("href")) !== null) {
-		  				mainlink.addClass("fk-makeRelative");
-		  				mainlink.append('<img src="' + bookmark_img_path + '" class="fk-notification fk-submenuBookmarkNotification">');	  					
-	  				}
+	  				// Add the manager
+	  				var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
+	  				manager.addClass("fk-submenuManagement");
+	  				$(node).append(manager);
 	  			}
 	  		});
-	  	}*/
+	  	}
 
 	  });
 	});
@@ -93,11 +55,54 @@ function FrontPage() {
 	);
 }
 
+// Create the bookmark management node to be append into the DOM, store the name and url in the node for future use
+function CreateBookmarkManagementNode(name, url) {
+	var management = $('\
+		<div class="fk-management">\
+			<span class="fk-bookmarkManagement fk-hide">\
+				<a class="fk-bRead fk-hide">\
+					<img src="/Content/Images/include.png">\
+				</a>\
+				<a class="fk-bUnRead fk-hide">\
+					<img src="/Content/Images/notread.png">\
+				</a>\
+			</span>\
+			<span class="fk-mangaManagement fk-hide">\
+				<a class="fk-mRemove">\
+					<img src="/Content/Images/exclude.png">\
+				</a>\
+			</span>\
+			<img class="fk-imgLoader" src="../../Content/images/loader.gif">\
+		</div>\
+	');
+
+	// Add the name and url to the manager for genericity
+	$(management).attr("data-name", name);
+	$(management).attr("data-url", url);
+
+	// Linking of the manager actions
+	$(management).find(".fk-bRead").click(function() {
+		MarkAsUnread($(this));
+	});
+	$(management).find(".fk-bUnRead").click(function() {
+		MarkAsRead($(this));
+	});
+	$(management).find(".fk-mRemove").click(function() {
+		RemoveManga($(this));
+	});
+	// If the bookmarks are sync, we update the managers' infos immediately
+	if (!Bookmarks.syncing) {
+		UpdateBookmarkManagement(management);
+	}
+
+	return management;
+}
+
 // Add the management information on the manager (bid, mid) or nothing if the manga is not bookmarked
 function UpdateBookmarkManagement(node) {
 	$(node).find(".fk-imgLoader").addClass("fk-hide");
 	// Test if the url is found in the bookmarks
-	var bkmark = Bookmarks.getByUrl($(node).next().attr("href"));
+	var bkmark = Bookmarks.getByUrl($(node).attr("data-url"));
 	if (bkmark != null) {
 		// Unhide the managers
 		$(node).find(".fk-bookmarkManagement").removeClass("fk-hide");
@@ -140,7 +145,7 @@ function HideLoading(management, show = false) {
 // Remove the manga whose id is the mid of the passed node
 function RemoveManga(node) {
 	var management = $(node).parents(".fk-management");
-    var isSure = confirm("Do you want to remove \"" + $(management).next().contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text() + "\" from your bookmark list?");
+    var isSure = confirm("Do you want to remove \"" + $(management).attr("data-name") + "\" from your bookmark list?");
     if (isSure) {
     	ShowLoading(management);
 

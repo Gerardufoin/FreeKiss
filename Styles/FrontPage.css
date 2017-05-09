@@ -26,10 +26,18 @@
 }
 
 .fk-management {
-	width: 135px;
+	width: 135px !important;
 	height: 20px;
 	text-align: center;
 	float: none !important;
+}
+
+.fk-submenuManagement {
+	background-color: inherit !important;
+	position: absolute;
+	left: 105px;
+	bottom: 0px;
+	text-align: left;
 }
 
 .fk-management a {

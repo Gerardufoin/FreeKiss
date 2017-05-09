@@ -1,5 +1,5 @@
 // Bookmarks class (do not confuse with Bookmarks pages script). Allow to get user's bookmarks using the sync function
-// During the sync, function can be registered to be called at the end of the synchronization
+// During the sync, functions can be registered to be called at the end of the synchronization
 var Bookmarks = {
 	mangas: {},
 	syncCallbacks: [],
@@ -51,6 +51,7 @@ var Bookmarks = {
 		}
 		this.syncCallbacks = [];
 	},
+	// Get a bookmark using its url (when no mID is available (looking at you, frontpage è.é))
 	getByUrl: function(url) {
 		for (var key in this.mangas) {
 		 	if (this.mangas.hasOwnProperty(key) && this.mangas[key].href == url) {
