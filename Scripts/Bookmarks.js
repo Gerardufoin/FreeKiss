@@ -1,6 +1,8 @@
 "use strict";
 
 function BookmarksPage() {
+	// If the custom display is disabled, we do nothing
+	if (Options.get("enhancedDisplay") == false) return;
 
 	// The data of the images is processed by JQuery Tooltip and removed. So we need to get them before it happens using mutations.
 	var observer = new MutationObserver(function(mutations) {

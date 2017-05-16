@@ -1,6 +1,9 @@
 "use strict";
 
 function FrontPage() {
+	// If the frontpage managers are disabled, we do nothing
+	if (Options.get("frontpageManager") == false) return;
+
 	Bookmarks.sync(function() {
 		$(".fk-management").each(function() {
 			UpdateBookmarkManagement(this);
@@ -10,6 +13,11 @@ function FrontPage() {
 	// Using mutations allow the data to change at page load AND to update new datas when kissmanga adds mangas in the scrollbar
 	var observer = new MutationObserver(function(mutations) {
 	  mutations.forEach(function(mutation) {
+
+	  	// We add the fk-scrollable class on the scrollbar (not the prettiest way of doing it)
+	  	if (mutation.target.className == "scrollable") {
+	  		$(mutation.target).addClass("fk-scrollable");
+	  	}
 
 	  	// Add bookmark notifications in the scrollbar
 	  	if (mutation.target.className == "items") {

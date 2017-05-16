@@ -3,6 +3,8 @@
 var Options = {
 	// Default options
 	options: {
+		frontpageManager: true,
+		enhancedDisplay: true,
 		maxPageWidth: 800,
 		maxDoublePageWidth: 1800,
 		minPageWidth: 600,
