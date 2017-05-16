@@ -71,7 +71,7 @@ html, body {
 
 #content {
 	width: 660px;
-	background-color: #F2F2F2;
+	background-color: white;
 	margin: 75px auto 0px auto;
 	border: 1px solid #DBDBDB;
 	border-radius: 1px;
@@ -82,6 +82,12 @@ html, body {
 
 #content h1 {
 	margin-bottom: 5px;
+}
+
+#options
+{
+	margin: 15px 0px 15px 20px;
+	font-size: 14px;
 }
 
 .patch {
