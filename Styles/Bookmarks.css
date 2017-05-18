@@ -1,3 +1,44 @@
+#fk-bookmarks table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.fk-notEnhanced tr {
+	height: 25px;
+}
+
+.fk-notEnhanced th {
+	border-bottom: 1px solid #DDD2A4;
+	font-size: 120%;
+}
+
+.fk-notEnhanced tbody tr:nth-child(odd) {
+	background-color: #161616;
+}
+
+#fk-bookmarksNavigation {
+	margin-bottom: 15px;
+}
+
+#fk-bookmarksNavigation div {
+	display: inline-block;
+	width: 120px;
+	height: 30px;
+	margin-right: 4px;
+	line-height: 30px;
+	font-size: 14px;
+	text-align: center;
+	border: 1px solid #424242;
+	border-radius: 5px;
+	background-color: #242424;
+	cursor: pointer;
+}
+
+#fk-bookmarksNavigation .fk-selected {
+	font-style: italic;
+	cursor: default;
+}
+
 .fk-noGuidelines {
 	width: 830px !important;
 	float: none !important;
