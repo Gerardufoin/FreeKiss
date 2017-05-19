@@ -5,6 +5,7 @@ var Options = {
 	options: {
 		frontpageManager: true,
 		enhancedDisplay: true,
+		bookmarksSorting: true,
 		maxPageWidth: 800,
 		maxDoublePageWidth: 1800,
 		minPageWidth: 600,
