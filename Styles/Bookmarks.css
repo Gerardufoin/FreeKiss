@@ -18,25 +18,44 @@
 
 #fk-bookmarksNavigation {
 	margin-bottom: 15px;
+	height: 31px;
+	padding-left: 5px;
+	border-bottom: 1px solid #696969;
 }
 
 #fk-bookmarksNavigation div {
+	user-select: none;
 	display: inline-block;
-	width: 120px;
+	width: 130px;
 	height: 30px;
 	margin-right: 4px;
 	line-height: 30px;
 	font-size: 14px;
 	text-align: center;
 	border: 1px solid #424242;
-	border-radius: 5px;
+	border-bottom: none;
+	border-radius: 5px 5px 0 0;
 	background-color: #242424;
 	cursor: pointer;
 }
 
 #fk-bookmarksNavigation .fk-selected {
-	font-style: italic;
+	font-weight: bold;
 	cursor: default;
+	border-color: #696969;
+	border-bottom: 1px solid #161616;
+	background: linear-gradient(#242424, #151515);
+}
+
+#fk-nbMangasDisplay {
+	float: right;
+	margin-right: 15px;
+	height: 30px;
+	line-height: 30px;
+}
+
+#fk-nbMangas {
+	font-weight: bold;
 }
 
 .fk-noGuidelines {
