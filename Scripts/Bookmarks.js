@@ -17,6 +17,7 @@ function BookmarksPage() {
 					<div id="fk-menuCompleted">\
 						Completed\
 					</div>\
+					<span id="fk-nbMangasDisplay" class="fk-hide"><span id="fk-nbMangas"></span> Mangas</span>\
 				</div>\
 				<table id="fk-unread">\
 					<tbody>\
@@ -70,6 +71,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-unread").removeClass("fk-hide");
+				$("#fk-nbMangas").text($("#fk-unread tr").length);
 			}
 		});
 		$(table).find("#fk-menuReading").click(function() {
@@ -79,6 +81,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-reading").removeClass("fk-hide");
+				$("#fk-nbMangas").text($("#fk-reading tr").length);
 			}
 		});
 		$(table).find("#fk-menuOnHold").click(function() {
@@ -88,6 +91,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-onHold").removeClass("fk-hide");
+				$("#fk-nbMangas").text($("#fk-onHold tr").length);
 			}
 		});
 		$(table).find("#fk-menuCompleted").click(function() {
@@ -97,6 +101,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-completed").removeClass("fk-hide");
+				$("#fk-nbMangas").text($("#fk-completed tr").length);
 			}
 		});
 	}
@@ -181,6 +186,10 @@ function BookmarksPage() {
 
 				});
 			}
+		}
+		if (Options.get("bookmarksSorting") == true) {
+			$("#fk-nbMangasDisplay").removeClass("fk-hide");
+			$("#fk-nbMangas").text($("#fk-unread tr").length);
 		}
 	});
 }
