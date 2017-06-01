@@ -71,7 +71,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-unread").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-unread tr").length);
+				$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
 			}
 		});
 		$(table).find("#fk-menuReading").click(function() {
@@ -81,7 +81,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-reading").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-reading tr").length);
+				$("#fk-nbMangas").text($("#fk-reading tbody tr").length);
 			}
 		});
 		$(table).find("#fk-menuOnHold").click(function() {
@@ -91,7 +91,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-onHold").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-onHold tr").length);
+				$("#fk-nbMangas").text($("#fk-onHold tbody tr").length);
 			}
 		});
 		$(table).find("#fk-menuCompleted").click(function() {
@@ -101,7 +101,7 @@ function BookmarksPage() {
 				$(this).addClass("fk-selected");
 				$("#fk-bookmarks table").addClass("fk-hide");
 				$("#fk-completed").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-completed tr").length);
+				$("#fk-nbMangas").text($("#fk-completed tbody tr").length);
 			}
 		});
 	}
@@ -112,7 +112,7 @@ function BookmarksPage() {
 				if (!injected && mutation.target.className == "listing") {
 					injected = true;
 					$(mutation.target).before(table);
-					$(mutation.target).remove();
+					$(mutation.target).addClass("fk-hide");
 				}
 				if (mutation.target.tagName == "TR" && $(mutation.target).parent().parent().hasClass("listing") && mutation.target.className != "head") {
 					if ($(mutation.target).find(".aRead").css('display') == 'none') {
@@ -189,7 +189,7 @@ function BookmarksPage() {
 		}
 		if (Options.get("bookmarksSorting") == true) {
 			$("#fk-nbMangasDisplay").removeClass("fk-hide");
-			$("#fk-nbMangas").text($("#fk-unread tr").length);
+			$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
 		}
 	});
 }
