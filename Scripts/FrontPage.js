@@ -30,6 +30,11 @@ function FrontPage() {
 						$(this).wrap('<div class="fk-scrollingWrapper"></div>');
 						$(this).addClass("fk-makeRelative");
 
+						// Add the OnHold display (hidden by default)
+						if (Options.get("bookmarksSorting") == true) {
+							$(this).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
+						}
+
 						// Add the manager
 						$(this).before(CreateBookmarkManagementNode($(this).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(this).attr("href")));
 					});
@@ -41,7 +46,11 @@ function FrontPage() {
 	  	if (mutation.target.id == "tab-newest" || mutation.target.id == "tab-mostview") {
 	  		mutation.addedNodes.forEach(function(node) {
 	  			if (node.childNodes.length == 5) {
-	  				// Add the manager
+					// Add the OnHold display (hidden by default)
+					if (Options.get("bookmarksSorting") == true) {
+						$(node).append('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
+					}
+							  				// Add the manager
 	  				var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
 	  				manager.addClass("fk-submenuManagement");
 	  				$(node).append(manager);
