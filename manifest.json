@@ -49,8 +49,8 @@
   ],
 
   "web_accessible_resources": [
-    "Images/Notifications/Unread.png",
-    "Images/Notifications/Bookmarked.png"
+    "Images/Notifications/OnHold.png",
+    "Images/Notifications/NotOnHold.png"
   ],
 
   "permissions": [
