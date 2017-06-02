@@ -106,6 +106,8 @@ function BookmarksPage() {
 		});
 	}
 
+	var onHold_img_path = chrome.extension.getURL("Images/Notifications/OnHold.png");
+	var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
 	var bookmarksObserver = new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
 			if (Options.get("bookmarksSorting") == true) {
@@ -141,6 +143,22 @@ function BookmarksPage() {
 						$(mutation.target).find(".fk-bookmarkStatus a").each(function() {
 							$(this).html($(this).find("img"));
 						});
+						if (Options.get("bookmarksSorting") == true) {
+							$(mutation.target).find("td:nth-child(3)").after('\
+								<td class="fk-bookmarkStatus">\
+									<a mid="' + $(mutation.target).find("td:nth-child(4) a").attr("mid") + '" class="fk-notOnHold" href="#" onClick="return false;" title="Click to change to OnHold">\
+										<img border="0" style="width:16px" src="' + notOnHold_img_path + '">\
+									</a>\
+									<a mid="' + $(mutation.target).find("td:nth-child(4) a").attr("mid") + '" class="fk-onHold fk-hide" href="#" onClick="return false;" title="Click to remove OnHold status">\
+										<img border="0" style="width:16px" src="' + onHold_img_path + '">\
+									</a>\
+								</td>\
+							');
+							$(mutation.target).find("td:nth-child(4) a").click(function() {
+								$(this).toggleClass("fk-hide");
+								$(this).siblings().toggleClass("fk-hide");
+							});
+						}
 					} else if (Options.get("bookmarksSorting") == false) {
 						$(mutation.target).before('<tr class="head fk-bookmarkHeader"><th colspan="4">New Chapters</th></tr>');
 						$(mutation.target).remove();
