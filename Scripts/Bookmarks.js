@@ -1,7 +1,7 @@
 "use strict";
 
 function BookmarksPage() {
-	if (Options.get("bookmarksSorting") == true) {
+	if (FreeKiss.Options.get("bookmarksSorting") == true) {
 		var table = $('\
 			<div id="fk-bookmarks">\
 				<div id="fk-bookmarksNavigation">\
@@ -43,7 +43,7 @@ function BookmarksPage() {
 		var tCompleted = $(table).find("#fk-completed tbody");
 		var injected = false;
 
-		if (Options.get("enhancedDisplay") == false) {
+		if (FreeKiss.Options.get("enhancedDisplay") == false) {
 			$(table).addClass("fk-notEnhanced");
 			$(table).find("table").prepend('\
 				<thead>\
@@ -110,7 +110,7 @@ function BookmarksPage() {
 	var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
 	var bookmarksObserver = new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
-			if (Options.get("bookmarksSorting") == true) {
+			if (FreeKiss.Options.get("bookmarksSorting") == true) {
 				if (!injected && mutation.target.className == "listing") {
 					injected = true;
 					$(mutation.target).before(table);
@@ -129,7 +129,7 @@ function BookmarksPage() {
 					$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
 				}				
 			}
-			if (Options.get("enhancedDisplay") == true) {
+			if (FreeKiss.Options.get("enhancedDisplay") == true) {
 				if (mutation.target.tagName == "TR" && !mutation.target.className.includes("fk-bookmarkRow")) {
 					if (mutation.target.className != "head") {
 						var infos = $(mutation.target).find("td[title]");
@@ -143,7 +143,7 @@ function BookmarksPage() {
 						$(mutation.target).find(".fk-bookmarkStatus a").each(function() {
 							$(this).html($(this).find("img"));
 						});
-						if (Options.get("bookmarksSorting") == true) {
+						if (FreeKiss.Options.get("bookmarksSorting") == true) {
 							$(mutation.target).find("td:nth-child(3)").after('\
 								<td class="fk-bookmarkStatus">\
 									<a mid="' + $(mutation.target).find("td:nth-child(4) a").attr("mid") + '" class="fk-notOnHold" href="#" onClick="return false;" title="Click to change to OnHold">\
@@ -159,7 +159,7 @@ function BookmarksPage() {
 								$(this).siblings().toggleClass("fk-hide");
 							});
 						}
-					} else if (Options.get("bookmarksSorting") == false) {
+					} else if (FreeKiss.Options.get("bookmarksSorting") == false) {
 						$(mutation.target).before('<tr class="head fk-bookmarkHeader"><th colspan="4">New Chapters</th></tr>');
 						$(mutation.target).remove();
 					}
@@ -179,7 +179,7 @@ function BookmarksPage() {
 
 	$(document).ready(function () {
 
-		if (Options.get("enhancedDisplay") == true) {
+		if (FreeKiss.Options.get("enhancedDisplay") == true) {
 			// Guidelines Changes
 			$("#rightside").insertBefore($("#leftside"));
 			$("#leftside, #rightside, .rightBox").addClass("fk-noGuidelines");
@@ -190,7 +190,7 @@ function BookmarksPage() {
 				$("#rightside .barContent").toggleClass("fk-hide");
 			});
 
-			if (Options.get("bookmarksSorting") == false) {
+			if (FreeKiss.Options.get("bookmarksSorting") == false) {
 				// "Read" header is added here, because it breaks the CSS when added during the mutations.
 				$(".fk-bookmarkRow").each(function() {
 
@@ -205,11 +205,11 @@ function BookmarksPage() {
 				});
 			}
 		}
-		if (Options.get("bookmarksSorting") == true) {
+		if (FreeKiss.Options.get("bookmarksSorting") == true) {
 			$("#fk-nbMangasDisplay").removeClass("fk-hide");
 			$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
 		}
 	});
 }
 
-Options.init(BookmarksPage);
+FreeKiss.init(BookmarksPage);

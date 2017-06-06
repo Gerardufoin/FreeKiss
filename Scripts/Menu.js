@@ -1,6 +1,6 @@
 "use strict";
 
-function FreeKiss() {
+function Menu() {
 
 	$(document).ready(function () {
 
@@ -11,4 +11,4 @@ function FreeKiss() {
 
 }
 
-Options.init(FreeKiss);
+FreeKiss.init(Menu);

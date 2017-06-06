@@ -2,7 +2,7 @@
 
 function FrontPage() {
 	// If the frontpage managers are disabled, we do nothing
-	if (Options.get("frontpageManager") == false) return;
+	if (FreeKiss.Options.get("frontpageManager") == false) return;
 
 	Bookmarks.sync(function() {
 		$(".fk-management").each(function() {
@@ -31,7 +31,7 @@ function FrontPage() {
 						$(this).addClass("fk-makeRelative");
 
 						// Add the OnHold display (hidden by default)
-						if (Options.get("bookmarksSorting") == true) {
+						if (FreeKiss.Options.get("bookmarksSorting") == true) {
 							$(this).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
 						}
 
@@ -47,7 +47,7 @@ function FrontPage() {
 	  		mutation.addedNodes.forEach(function(node) {
 	  			if (node.childNodes.length == 5) {
 					// Add the OnHold display (hidden by default)
-					if (Options.get("bookmarksSorting") == true) {
+					if (FreeKiss.Options.get("bookmarksSorting") == true) {
 						$(node).append('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
 					}
 							  				// Add the manager
@@ -232,4 +232,4 @@ function MarkAsUnread(node) {
 	xhr.send("bdid=" + node.attr("bid") + "&strAlreadyRead=0");
 }
 
-Options.init(FrontPage);
+FreeKiss.init(FrontPage);

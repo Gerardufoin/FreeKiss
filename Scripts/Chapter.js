@@ -37,25 +37,25 @@ function Mutations() {
 	);
 }
 
-Options.init(Chapter);
+FreeKiss.init(Chapter);
 
 // Resize of the image depending on the options and if it's a double-page or not
 function FK_ApplyResizeOptions(img) {
 	fk_test_image.src = img.attr("src");
 
 	if (!FK_IsDoublePage(fk_test_image)) {
-		if (Options.isSet("maxPageWidth") && Options.get("maxDisable") === false) {
-			img.css("max-width", parseInt(Options.get("maxPageWidth")));
+		if (FreeKiss.Options.isSet("maxPageWidth") && FreeKiss.Options.get("maxDisable") === false) {
+			img.css("max-width", parseInt(FreeKiss.Options.get("maxPageWidth")));
 		}
-		if (Options.isSet("minPageWidth") && Options.get("minDisable") === false) {
-			img.css("min-width", parseInt(Options.get("minPageWidth")));
+		if (FreeKiss.Options.isSet("minPageWidth") && FreeKiss.Options.get("minDisable") === false) {
+			img.css("min-width", parseInt(FreeKiss.Options.get("minPageWidth")));
 		}
 	} else {
-		if (Options.isSet("maxDoublePageWidth") && Options.get("maxDisable") === false) {
-			img.css("max-width", parseInt(Options.get("maxDoublePageWidth")));
+		if (FreeKiss.Options.isSet("maxDoublePageWidth") && FreeKiss.Options.get("maxDisable") === false) {
+			img.css("max-width", parseInt(FreeKiss.Options.get("maxDoublePageWidth")));
 		}
-		if (Options.isSet("minDoublePageWidth") && Options.get("minDisable") === false) {
-			img.css("min-width", parseInt(Options.get("minDoublePageWidth")));
+		if (FreeKiss.Options.isSet("minDoublePageWidth") && FreeKiss.Options.get("minDisable") === false) {
+			img.css("min-width", parseInt(FreeKiss.Options.get("minDoublePageWidth")));
 		}
 	}
 }
@@ -91,7 +91,7 @@ function FK_ToggleMaxWidth(disable) {
 		} else {
 			var img = $(this);
 			// Need to reload the options
-			Options.init(function() {
+			FreeKiss.init(function() {
 				FK_ApplyResizeOptions(img);
 			});
 		}
@@ -106,7 +106,7 @@ function FK_ToggleMinWidth(disable) {
 		} else {
 			var img = $(this);
 			// Need to reload the options
-			Options.init(function() {
+			FreeKiss.init(function() {
 				FK_ApplyResizeOptions(img);
 			});
 		}
