@@ -1,7 +1,7 @@
 // FreeKiss class. Manage the relation between FreeKiss and the localstorage (options, bookmarks status, etc.)
 // Every script should put its main function in init to check if FreeKiss is disabled
 var FreeKiss = {
-	// Option class. Allow to manipulate FreeKiss options
+	// Option subclass. Allow to manipulate FreeKiss options
 	Options: {
 		// Default options
 		options: {
@@ -49,7 +49,50 @@ var FreeKiss = {
 			chrome.storage.local.remove("fk-options");
 		}
 	},
+	// Manga Status subclass. Allow to manipulate mangas status
+	Status: {
+		mangas: {},
+		// Use init to load the status.
+		init: function(fk) {
+			var obj = this;
+			chrome.storage.local.get("fk-status", function(opt) {
+					if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
+						obj.mangas = opt['fk-status'];
+					}
+					fk.statusLoaded = true;
+					fk.loaded();
+				}
+			);
+		},
+		// Check if the manga has a status
+		isSet: function(mid) {
+			return (this.mangas != null && this.mangas.hasOwnProperty(mid));
+		},
+		// Return the status value or 0 if the manga does not have a status
+		get: function(mid) {
+			return (this.isSet(mid) ? this.mangas[mid] : 0);
+		},
+		// Set the manga status with the appropriate value
+		set: function(mid, value) {
+			this.mangas[mid] = value;
+		},
+		// Remove the specified manga status
+		unset: function(mid) {
+			if (this.isSet(mid)) {
+				delete this.mangas[mid];
+			}
+		},
+		// Save the status in localstorage
+		save: function() {
+			chrome.storage.local.set({"fk-status": this.mangas});
+		},
+		// Clear the status in localstorage
+		clear: function() {
+			chrome.storage.local.remove("fk-status");
+		}
+	},
 	optionsLoaded: false,
+	statusLoaded: false,
 	loadCallbacks: [],
 	blockCallbacks: [],
 	// Used to initialize the data in localstorage. Any method can be used in the callback (as the everything will be loaded)
@@ -60,10 +103,11 @@ var FreeKiss = {
 			this.loadCallbacks.push(callback);			
 		}
 		this.Options.init(this);
+		this.Status.init(this);
 	},
 	loaded: function() {
 		// Once all the data is loaded, we execute the callback if FreeKiss is enabled or needEnable is false
-		if (this.optionsLoaded) {
+		if (this.optionsLoaded && this.statusLoaded) {
 			for (var i = 0; i < this.loadCallbacks.length; i++) {
 				this.loadCallbacks[i]();
 			}
