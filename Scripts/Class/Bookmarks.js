@@ -39,7 +39,7 @@ var Bookmarks = {
 	// Queue a function for when the bookmarks are loaded
 	queueCallback: function(callback) {
 		if (this.syncing) {
-			this.syncCallbacks.push(callback);			
+			this.syncCallbacks.push(callback);
 		} else {
 			callback();
 		}

@@ -100,7 +100,7 @@ var FreeKiss = {
 		if (block) {
 			this.blockCallbacks.push(callback);
 		} else {
-			this.loadCallbacks.push(callback);			
+			this.loadCallbacks.push(callback);
 		}
 		this.Options.init(this);
 		this.Status.init(this);
@@ -115,7 +115,7 @@ var FreeKiss = {
 			if (!this.needEnable || this.Options.get("disable") === false) {
 				for (var i = 0; i < this.blockCallbacks.length; i++) {
 					this.blockCallbacks[i]();
-				}				
+				}
 			}
 			this.blockCallbacks = [];
 		}

@@ -145,7 +145,7 @@ function BookmarksPage() {
 				// Update the Tooltip script present in the page. The include is important to avoid infinite looping
 				if (mutation.target.tagName == "SCRIPT" && $(mutation.target).html().includes(".listing td[title]")) {
 					$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
-				}				
+				}
 			}
 
 			// EnhancedDisplay option
