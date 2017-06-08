@@ -50,7 +50,7 @@ function FrontPage() {
 					if (FreeKiss.Options.get("bookmarksSorting") == true) {
 						$(node).append('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
 					}
-							  				// Add the manager
+					// Add the manager
 	  				var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
 	  				manager.addClass("fk-submenuManagement");
 	  				$(node).append(manager);
@@ -72,20 +72,32 @@ function FrontPage() {
 	);
 }
 
+// Recuperation of FreeKiss images path
+var onHold_img_path = chrome.extension.getURL("Images/Notifications/OnHold.png");
+var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
+
 // Create the bookmark management node to be append into the DOM, store the name and url in the node for future use
 function CreateBookmarkManagementNode(name, url) {
 	var management = $('\
 		<div class="fk-management">\
 			<span class="fk-bookmarkManagement fk-hide">\
-				<a class="fk-bRead fk-hide">\
+				<a class="fk-bRead fk-hide" title="Click to change status to \'Unread\'">\
 					<img src="/Content/Images/include.png">\
 				</a>\
-				<a class="fk-bUnRead fk-hide">\
+				<a class="fk-bUnRead fk-hide" title="Click to change status to \'Read\'">\
 					<img src="/Content/Images/notread.png">\
 				</a>\
 			</span>\
+			<span class="fk-statusManagement fk-hide">\
+				<a class="fk-notOnHold fk-hide" title="Click to change to OnHold">\
+					<img style="width:16px" src="' + notOnHold_img_path + '">\
+				</a>\
+				<a class="fk-onHold fk-hide" title="Click to remove OnHold status">\
+					<img style="width:16px" src="' + onHold_img_path + '">\
+				</a>\
+			</span>\
 			<span class="fk-mangaManagement fk-hide">\
-				<a class="fk-mRemove">\
+				<a class="fk-mRemove" title="Remove from bookmark list">\
 					<img src="/Content/Images/exclude.png">\
 				</a>\
 			</span>\
@@ -107,6 +119,23 @@ function CreateBookmarkManagementNode(name, url) {
 	$(management).find(".fk-mRemove").click(function() {
 		RemoveManga($(this));
 	});
+	// If the BookmarksSorting option is enabled, we add the status manager
+	if (FreeKiss.Options.get("bookmarksSorting") == true) {
+		$(management).find(".fk-onHold, .fk-notOnHold").click(function() {
+			if ($(this).hasClass("fk-notOnHold")) {
+				FreeKiss.Status.set($(this).attr("mid"), 1);
+			} else {
+				FreeKiss.Status.unset($(this).attr("mid"));
+			}
+			FreeKiss.Status.save();
+			$(this).toggleClass("fk-hide");
+			$(this).siblings().toggleClass("fk-hide");
+			// Show/Hide the OnHold screen
+			$(management).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").toggleClass("fk-hide");
+		});
+	} else {
+		$(management).find(".fk-statusManagement").remove();
+	}
 	// If the bookmarks are sync, we update the managers' infos immediately
 	if (!Bookmarks.syncing) {
 		UpdateBookmarkManagement(management);
@@ -123,6 +152,7 @@ function UpdateBookmarkManagement(node) {
 	if (bkmark != null) {
 		// Unhide the managers
 		$(node).find(".fk-bookmarkManagement").removeClass("fk-hide");
+		$(node).find(".fk-statusManagement").removeClass("fk-hide");
 		$(node).find(".fk-mangaManagement").removeClass("fk-hide");
 
 		var r = $(node).find(".fk-bRead");
@@ -140,12 +170,27 @@ function UpdateBookmarkManagement(node) {
 			r.addClass("fk-hide");
 			ur.removeClass("fk-hide");
 		}
+
+		// If the BookmarksSorting option is enabled, we check the status
+		if (FreeKiss.Options.get("bookmarksSorting") == true) {
+			var oh = $(node).find(".fk-onHold");
+			var noh = $(node).find(".fk-notOnHold");
+			$(oh).attr("mid", bkmark.mid);
+			$(noh).attr("mid", bkmark.mid);
+			if (FreeKiss.Status.get(bkmark.mid) == 1) {
+				$(oh).removeClass("fk-hide");
+				$('a[href="' + bkmark.href + '"] .fk-onHoldDisplay, a[href="' + bkmark.href + '"] .fk-onHoldSubdisplay').removeClass("fk-hide");
+			} else {
+				$(noh).removeClass("fk-hide");
+			}
+		}
 	}	
 }
 
 // Show the loading bar and hide the managers
 function ShowLoading(management) {
 	$(management).find(".fk-bookmarkManagement").addClass("fk-hide");
+	$(management).find(".fk-statusManagement").addClass("fk-hide");
 	$(management).find(".fk-mangaManagement").addClass("fk-hide");
 	$(management).find(".fk-imgLoader").removeClass("fk-hide");
 }
@@ -154,7 +199,8 @@ function ShowLoading(management) {
 function HideLoading(management, show = false) {
 	if (show) {
 		$(management).find(".fk-bookmarkManagement").removeClass("fk-hide");
-		$(management).find(".fk-mangaManagement").removeClass("fk-hide");		
+		$(management).find(".fk-statusManagement").removeClass("fk-hide");
+		$(management).find(".fk-mangaManagement").removeClass("fk-hide");
 	}
 	$(management).find(".fk-imgLoader").addClass("fk-hide");
 }

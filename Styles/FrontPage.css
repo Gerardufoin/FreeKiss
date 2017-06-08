@@ -49,13 +49,7 @@
 	border: none !important;
 }
 
-.fk-bookmarkManagement {
-	width: 20px;
-	height: 20px;
-	display: inline-block;
-}
-
-.fk-mangaManagement {
+.fk-bookmarkManagement, .fk-statusManagement, .fk-mangaManagement {
 	width: 20px;
 	height: 20px;
 	display: inline-block;
