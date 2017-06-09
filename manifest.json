@@ -2,8 +2,9 @@
   "manifest_version": 2,
 
   "name": "FreeKiss",
+  "short_name": "FreeKiss",
   "description": "Enhance your KissManga experience",
-  "version": "0.40",
+  "version": "0.50",
 
   "icons": {
     "16": "Images/Icons/icon16.png",
