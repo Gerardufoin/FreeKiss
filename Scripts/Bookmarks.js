@@ -55,11 +55,13 @@ function BookmarksPage() {
 						<th width="40%">\
 							Manga Name\
 						</th>\
-						<th width="34%">\
+						<th width="33%">\
 							Latest Chapter\
 						</th>\
-						<th width="13%">\
+						<th width="10%">\
 							Status\
+						</th>\
+						<th width="4%">\
 						</th>\
 						<th width="13%">\
 						</th>\
@@ -114,10 +116,6 @@ function BookmarksPage() {
 		});
 	}
 
-	// Recuperation of FreeKiss images path
-	var onHold_img_path = chrome.extension.getURL("Images/Notifications/OnHold.png");
-	var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
-
 	// Mutations. Will take the bookmarks as they are added to the page to change and order them
 	var bookmarksObserver = new MutationObserver(function(mutations) {
 		// Scroll the mutations
@@ -132,7 +130,7 @@ function BookmarksPage() {
 				}
 				// Sort the bookmarks
 				if (mutation.target.tagName == "TR" && $(mutation.target).parent().parent().hasClass("listing") && mutation.target.className != "head") {
-					if (FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid")) == 1) {
+					if (FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid")) == Mangas.Status.ONHOLD) {
 						$(mutation.target).appendTo($(tOnHold));
 					} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
 						$(mutation.target).appendTo($(tUnreadChapter));
@@ -140,6 +138,10 @@ function BookmarksPage() {
 						$(mutation.target).appendTo($(tCompleted));
 					} else {
 						$(mutation.target).appendTo($(tReading));
+					}
+					// If enhancedDisplay is disabled, we add the OnHold status here
+					if (FreeKiss.Options.get("enhancedDisplay") == false) {
+						AddOnHoldStatus($(mutation.target), false);
 					}
 				}
 				// Update the Tooltip script present in the page. The include is important to avoid infinite looping
@@ -170,29 +172,7 @@ function BookmarksPage() {
 
 						// If BookmarkSorting is also enabled, we add the OnHold menu
 						if (FreeKiss.Options.get("bookmarksSorting") == true) {
-							var mid = $(mutation.target).find("td:nth-child(4) a").attr("mid");
-							var status = FreeKiss.Status.get(mid);
-							$(mutation.target).find("td:nth-child(3)").after('\
-								<td class="fk-bookmarkStatus">\
-									<a mid="' + mid + '" class="fk-notOnHold' + (status == 1 ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to change to OnHold">\
-										<img border="0" style="width:16px" src="' + notOnHold_img_path + '">\
-									</a>\
-									<a mid="' + mid + '" class="fk-onHold' + (status != 1 ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to remove OnHold status">\
-										<img border="0" style="width:16px" src="' + onHold_img_path + '">\
-									</a>\
-								</td>\
-							');
-							// OnHold click interaction
-							$(mutation.target).find("td:nth-child(4) a").click(function() {
-								if ($(this).hasClass("fk-notOnHold")) {
-									FreeKiss.Status.set($(this).attr("mid"), 1);
-								} else {
-									FreeKiss.Status.unset($(this).attr("mid"));
-								}
-								FreeKiss.Status.save();
-								$(this).toggleClass("fk-hide");
-								$(this).siblings().toggleClass("fk-hide");
-							});
+							AddOnHoldStatus($(mutation.target));
 						}
 					// If it's the header and BookmarkSorting is disabled, we remove it and add our own
 					} else if (FreeKiss.Options.get("bookmarksSorting") == false) {
@@ -246,6 +226,42 @@ function BookmarksPage() {
 			$("#fk-nbMangasDisplay").removeClass("fk-hide");
 			$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
 		}
+	});
+}
+
+// Recuperation of FreeKiss images path
+var onHold_img_path = chrome.extension.getURL("Images/Notifications/OnHold.png");
+var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
+
+// Create the OnHold status button after the read/unread button
+// node is the bookmark DOM element
+// withClass determines if "fk-bookmarkStatus" should be added to the element
+function AddOnHoldStatus(node, withClass = true) {
+	var mid = $(node).find("td:nth-child(4) a").attr("mid");
+	var status = FreeKiss.Status.get(mid);
+	$(node).find("td:nth-child(3)").after('\
+		<td>\
+			<a mid="' + mid + '" class="fk-notOnHold' + (status == Mangas.Status.ONHOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to change to OnHold">\
+				<img border="0" style="width:16px" src="' + notOnHold_img_path + '">\
+			</a>\
+			<a mid="' + mid + '" class="fk-onHold' + (status != Mangas.Status.ONHOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to remove OnHold status">\
+				<img border="0" style="width:16px" src="' + onHold_img_path + '">\
+			</a>\
+		</td>\
+	');
+	if (withClass) {
+		$(node).find("td:nth-child(4)").addClass("fk-bookmarkStatus");
+	}
+	// OnHold click interaction
+	$(node).find("td:nth-child(4) a").click(function() {
+		if ($(this).hasClass("fk-notOnHold")) {
+			FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ONHOLD);
+		} else {
+			FreeKiss.Status.unset($(this).attr("mid"));
+		}
+		FreeKiss.Status.save();
+		$(this).toggleClass("fk-hide");
+		$(this).siblings().toggleClass("fk-hide");
 	});
 }
 

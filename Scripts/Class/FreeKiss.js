@@ -1,3 +1,10 @@
+var Mangas = {
+	Status: {
+		NONE: 0,
+		ONHOLD: 1
+	}
+};
+
 // FreeKiss class. Manage the relation between FreeKiss and the localstorage (options, bookmarks status, etc.)
 // Every script should put its main function in init to check if FreeKiss is disabled
 var FreeKiss = {

@@ -123,7 +123,7 @@ function CreateBookmarkManagementNode(name, url) {
 	if (FreeKiss.Options.get("bookmarksSorting") == true) {
 		$(management).find(".fk-onHold, .fk-notOnHold").click(function() {
 			if ($(this).hasClass("fk-notOnHold")) {
-				FreeKiss.Status.set($(this).attr("mid"), 1);
+				FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ONHOLD);
 			} else {
 				FreeKiss.Status.unset($(this).attr("mid"));
 			}
@@ -177,7 +177,7 @@ function UpdateBookmarkManagement(node) {
 			var noh = $(node).find(".fk-notOnHold");
 			$(oh).attr("mid", bkmark.mid);
 			$(noh).attr("mid", bkmark.mid);
-			if (FreeKiss.Status.get(bkmark.mid) == 1) {
+			if (FreeKiss.Status.get(bkmark.mid) == Mangas.Status.ONHOLD) {
 				$(oh).removeClass("fk-hide");
 				$('a[href="' + bkmark.href + '"] .fk-onHoldDisplay, a[href="' + bkmark.href + '"] .fk-onHoldSubdisplay').removeClass("fk-hide");
 			} else {
