@@ -23,23 +23,24 @@ function FrontPage() {
 	  	if (mutation.target.className == "items") {
 	  		// Search through all the nodes of the mutation with the class "items" (divs inside the scrollbar)
 		  	mutation.addedNodes.forEach(function(node) {
+		  		// We mark the node in case links are added afterwards
+		  		$(node).addClass("fk-scrollBundle");
 		  		// One last check to avoid unneeded mutations
-		  		if (node.childNodes.length == 10) {
+		  		if (node.childNodes.length > 0) {
 		  			$(node).find("a").each(function() {
-		  				$(this).find("img:first-child").width(130); // Scrollable added by ajax request have a 120px width instead of 130px...
-						$(this).wrap('<div class="fk-scrollingWrapper"></div>');
-						$(this).addClass("fk-makeRelative");
-
-						// Add the OnHold display (hidden by default)
-						if (FreeKiss.Options.get("bookmarksSorting") == true) {
-							$(this).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
-						}
-
-						// Add the manager
-						$(this).before(CreateBookmarkManagementNode($(this).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(this).attr("href")));
+		  				WrapManager($(this));
 					});
 		  		}
 		  	});
+	  	}
+
+	  	// Sometimes some manga nodes are added afterwards. This is here to get them and add the manager.
+	  	if (mutation.target.className == "fk-scrollBundle") {
+	  		mutation.addedNodes.forEach(function(node) {
+	  			if (!$(node).hasClass("fk-makeRelative") && $(node).is("a")) {
+	  				WrapManager($(node));
+	  			}
+	  		});
 	  	}
 
 	  	// Add bookmark management in the submenus (most-popular/new-manga)
@@ -142,6 +143,21 @@ function CreateBookmarkManagementNode(name, url) {
 	}
 
 	return management;
+}
+
+// Wrap the manager around a manga node
+function WrapManager(node) {
+	$(node).find("img:first-child").width(130); // Scrollable added by ajax request have a 120px width instead of 130px...
+	$(node).wrap('<div class="fk-scrollingWrapper"></div>');
+	$(node).addClass("fk-makeRelative");
+
+	// Add the OnHold display (hidden by default)
+	if (FreeKiss.Options.get("bookmarksSorting") == true) {
+		$(node).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
+	}
+
+	// Add the manager
+	$(node).before(CreateBookmarkManagementNode($(node).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(node).attr("href")));
 }
 
 // Add the management information on the manager (bid, mid) or nothing if the manga is not bookmarked
