@@ -1,0 +1,15 @@
+0.6
+Managers on Manga pages
+Bookmark Manga from frontpage
+
+0.7
+Plan to Read section
+
+0.8
+Export Bookmarks
+
+0.9
+Blacklist
+
+1.0
+Test + Clean
