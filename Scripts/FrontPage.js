@@ -244,19 +244,20 @@ function RemoveManga(node) {
 		ShowLoading(management);
 
 		// Call the the KissManga's page
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "/Bookmark/" + node.attr("mid") + "/remove", true);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4) {
-				if (xhr.responseText != "") {
-					HideLoading(management);
-				} else {
-					// TODO ERROR ?
-					HideLoading(management, true);
+		$.ajax(
+			{
+				type: "POST",
+				url: "/Bookmark/" + node.attr("mid") + "/remove",
+				success: function (message) {
+					if (message != "") {
+						HideLoading(management);
+					} else {
+						// TODO ERROR ?
+						HideLoading(management, true);
+					}
 				}
 			}
-		}
-		xhr.send();
+		);
 	}
 }
 
@@ -269,13 +270,14 @@ function AddManga(node) {
 		$.ajax(
 			{
 				type: "GET",
-				url: $(management).next().attr("href"),
+				url: $(management).attr("data-url"),
 				success: function (html) {
 					var reg = html.match(/mangaID=(\d+)/);
 					if (reg != null) {
 						$(node).attr("mid", reg[1]);
 						AddMangaQuery(node, management);
 					} else {
+						// TODO ERROR ?
 						HideLoading(management);
 					}
 				}
@@ -294,8 +296,10 @@ function AddMangaQuery(node, management) {
 			url: "/Bookmark/" + node.attr("mid") + "/add",
 			success: function (message) {
 				if (message != "") {
-					HideLoading(management, true);
-					// TODO: Refresh bookmarks and update bid/mid of the manager
+					Bookmarks.sync(function() {
+						UpdateBookmarkManagement(management);
+						HideLoading(management, true);
+					});
 				} else {
 					// TODO ERROR ?
 					HideLoading(management);
@@ -311,21 +315,25 @@ function MarkAsRead(node) {
 	ShowLoading(management);
 
 	// Call the the KissManga's page
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "/Bookmark/MarkBookmarkDetail", true);
-	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4) {
-			if (xhr.responseText != "") {
-				node.addClass("fk-hide");
-				node.siblings(".fk-bRead").removeClass("fk-hide");
-			} else {
-				// TODO ERROR ?
+	$.ajax(
+		{
+			type: "POST",
+			url: "/Bookmark/MarkBookmarkDetail",
+			data: {
+				"bdid": node.attr('bid'),
+				"strAlreadyRead": 1
+			},
+			success: function (message) {
+				if (message != "") {
+					node.addClass("fk-hide");
+					node.siblings(".fk-bRead").removeClass("fk-hide");
+				} else {
+					// TODO ERROR ?
+				}
+				HideLoading(management, true);
 			}
-			HideLoading(management, true);
 		}
-	}
-	xhr.send("bdid=" + node.attr('bid') + "&strAlreadyRead=1");
+	);
 }
 
 // Mark as unread the manga whose id is the bid of the passed node
@@ -334,21 +342,25 @@ function MarkAsUnread(node) {
     ShowLoading(management);
 
     // Call the the KissManga's page
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "/Bookmark/MarkBookmarkDetail", true);
-	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4) {
-			if (xhr.responseText != "") {
-				node.addClass("fk-hide");
-				node.siblings(".fk-bUnRead").removeClass("fk-hide");
-			} else {
-				// TODO ERROR ?
+	$.ajax(
+		{
+			type: "POST",
+			url: "/Bookmark/MarkBookmarkDetail",
+			data: {
+				"bdid": node.attr('bid'),
+				"strAlreadyRead": 0
+			},
+			success: function (message) {
+				if (message != "") {
+					node.addClass("fk-hide");
+					node.siblings(".fk-bUnRead").removeClass("fk-hide");
+				} else {
+					// TODO ERROR ?
+				}
+				HideLoading(management, true);
 			}
-			HideLoading(management, true);
 		}
-	}
-	xhr.send("bdid=" + node.attr("bid") + "&strAlreadyRead=0");
+	);
 }
 
 FreeKiss.init(FrontPage);
