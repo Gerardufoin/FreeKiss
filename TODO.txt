@@ -1,10 +1,12 @@
 0.6
 Managers on Manga pages
+Option to enable/disable managers on Manga pages
 Bookmark Manga from frontpage - DONE
 Add option to show/hide manga bookmarking from managers
 
 0.7
 "Plan to Read" section
+Account management (connected or not, compresion and google synchro)
 
 0.8
 Export Bookmarks

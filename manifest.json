@@ -32,13 +32,19 @@
     {
       "matches": ["*://kissmanga.com/"],
       "css": ["Styles/FrontPage.css"],
-      "js": ["Scripts/FrontPage.js"],
+      "js": ["Scripts/Class/Manager.js", "Scripts/FrontPage.js"],
       "run_at": "document_start"
     },
     {
       "matches": ["*://kissmanga.com/BookmarkList"],
       "css": ["Styles/Bookmarks.css"],
       "js": ["Scripts/Bookmarks.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://kissmanga.com/Manga/*"],
+      "css": ["Styles/Manga.css"],
+      "js": ["Scripts/Class/Manager.js", "Scripts/Manga.js"],
       "run_at": "document_start"
     },
     {
