@@ -21,6 +21,19 @@ function Manga() {
 		  		}
 		  	});
 	  	}
+		
+		// Add the OnHold display (hidden by default)
+		if (FreeKiss.Options.get("bookmarksSorting") == true) {
+		  	if (mutation.target.id == "rightside") {
+			  	mutation.addedNodes.forEach(function(node) {
+			  		let image = $(node).find("img:only-child");
+			  		if (image != undefined) {
+			  			$(image).parent('div').addClass("fk-makeRelative");
+			  			$(image).after('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
+			  		}
+			  	});	  		
+		  	}
+		}
 	  });
 	});
 
