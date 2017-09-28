@@ -1,6 +1,9 @@
 "use strict";
 
 function Manga() {
+	// If the manga manager is disabled, we do nothing
+	if (FreeKiss.Options.get("mangaManager") == false) return;
+
 	Bookmarks.sync(function() {
 		$(".fk-management").each(function() {
 			UpdateBookmarkManagement(this);
@@ -22,6 +25,16 @@ function Manga() {
 		  	});
 	  	}
 		
+	  	// We get the manga id from the page script
+	  	if ($(mutation.target).prop("tagName") == "SCRIPT") {
+	  		mutation.addedNodes.forEach(function(node) {
+	  			let mid = $(node).text().match(/mangaID=(\d+)/);
+	  			if (mid != null) {
+	  				$(".fk-mAdd").attr("mid", mid[1]);
+	  			}
+		  	});
+	  	}
+
 		// Add the OnHold display (hidden by default)
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
 		  	if (mutation.target.id == "rightside") {

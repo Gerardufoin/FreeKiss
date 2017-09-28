@@ -49,7 +49,7 @@ function FrontPage() {
 	  			if (node.childNodes.length == 5) {
 					// Add the OnHold display (hidden by default)
 					if (FreeKiss.Options.get("bookmarksSorting") == true) {
-						$(node).append('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
+						$(node).find('a > img').after('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
 					}
 					// Add the manager
 	  				var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));

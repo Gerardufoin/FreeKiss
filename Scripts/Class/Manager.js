@@ -66,8 +66,12 @@ function CreateBookmarkManagementNode(name, url) {
 			FreeKiss.Status.save();
 			$(this).toggleClass("fk-hide");
 			$(this).siblings().toggleClass("fk-hide");
-			// Show/Hide the OnHold screen
-			$(management).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").toggleClass("fk-hide");
+			// Show/Hide the OnHold screen. If there is only one instance of fk-onHoldDisplay, we are on the Manga page
+			if ($(".fk-onHoldDisplay").length == 1) {
+				$(".fk-onHoldDisplay").toggleClass("fk-hide");
+			} else {
+				$(management).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").toggleClass("fk-hide");
+			}
 		});
 	} else {
 		$(management).find(".fk-statusManagement").remove();
@@ -117,7 +121,12 @@ function UpdateBookmarkManagement(node) {
 			$(noh).attr("mid", bkmark.mid);
 			if (FreeKiss.Status.get(bkmark.mid) == Mangas.Status.ONHOLD) {
 				$(oh).removeClass("fk-hide");
-				$('a[href="' + bkmark.href + '"] .fk-onHoldDisplay, a[href="' + bkmark.href + '"] .fk-onHoldSubdisplay').removeClass("fk-hide");
+				// If there is only one instance of fk-onHoldDisplay, we are on the Manga page
+				if ($(".fk-onHoldDisplay").length == 1) {
+					$(".fk-onHoldDisplay").toggleClass("fk-hide");
+				} else {
+					$('a[href="' + bkmark.href + '"] .fk-onHoldDisplay, a[href="' + bkmark.href + '"] .fk-onHoldSubdisplay').removeClass("fk-hide");
+				}
 			} else {
 				$(noh).removeClass("fk-hide");
 			}
