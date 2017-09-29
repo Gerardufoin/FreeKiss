@@ -29,9 +29,9 @@ var Bookmarks = {
 		xhr.open("GET", "http://kissmanga.com/BookmarkList", true);
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4) {
-			    obj.setBookmarks($(xhr.responseText).find(".listing tr:not(:first-child)"));
-			    obj.executeCallbacks();
-			    obj.syncing = false;
+				obj.setBookmarks($(xhr.responseText).find(".listing tr:not(:first-child)"));
+				obj.executeCallbacks();
+				obj.syncing = false;
 			}
 		}
 		xhr.send();
@@ -54,7 +54,7 @@ var Bookmarks = {
 	// Get a bookmark using its url (when no mID is available (looking at you, frontpage è.é))
 	getByUrl: function(url) {
 		for (var key in this.mangas) {
-		 	if (this.mangas.hasOwnProperty(key) && this.mangas[key].href == url) {
+			if (this.mangas.hasOwnProperty(key) && this.mangas[key].href == url) {
 				var ret = this.mangas[key];
 				ret.mid = key;
 				return ret;

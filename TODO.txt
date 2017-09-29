@@ -1,6 +1,6 @@
 0.6
 Managers on Manga pages
-Option to enable/disable managers on Manga pages
+Option to enable/disable managers on Manga pages - DONE
 Bookmark Manga from frontpage - DONE
 
 0.7
