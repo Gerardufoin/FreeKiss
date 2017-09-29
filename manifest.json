@@ -43,6 +43,9 @@
     },
     {
       "matches": ["*://kissmanga.com/Manga/*"],
+      "exclude_matches": [
+        "*://kissmanga.com/Manga/*/*"
+      ],
       "css": ["Styles/Manga.css"],
       "js": ["Scripts/Class/Manager.js", "Scripts/Manga.js"],
       "run_at": "document_start"
@@ -50,7 +53,7 @@
     {
       "matches": ["*://kissmanga.com/Manga/*/*"],
       "css": ["Styles/Chapter.css"],
-      "js": ["Scripts/Chapter.js"],
+      "js": ["Scripts/Class/Manager.js", "Scripts/Chapter.js"],
       "run_at": "document_start"
     }
   ],

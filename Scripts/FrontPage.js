@@ -14,50 +14,50 @@ function FrontPage() {
 	var observer = new MutationObserver(function(mutations) {
 	  mutations.forEach(function(mutation) {
 
-	  	// We add the fk-scrollable class on the scrollbar (not the prettiest way of doing it)
-	  	if (mutation.target.className == "scrollable") {
-	  		$(mutation.target).addClass("fk-scrollable");
-	  	}
+		// We add the fk-scrollable class on the scrollbar (not the prettiest way of doing it)
+		if (mutation.target.className == "scrollable") {
+			$(mutation.target).addClass("fk-scrollable");
+		}
 
-	  	// Add bookmark notifications in the scrollbar
-	  	if (mutation.target.className == "items") {
-	  		// Search through all the nodes of the mutation with the class "items" (divs inside the scrollbar)
-		  	mutation.addedNodes.forEach(function(node) {
-		  		// We mark the node in case links are added afterwards
-		  		$(node).addClass("fk-scrollBundle");
-		  		// One last check to avoid unneeded mutations
-		  		if (node.childNodes.length > 0) {
-		  			$(node).find("a").each(function() {
-		  				WrapManager($(this));
+		// Add bookmark notifications in the scrollbar
+		if (mutation.target.className == "items") {
+			// Search through all the nodes of the mutation with the class "items" (divs inside the scrollbar)
+			mutation.addedNodes.forEach(function(node) {
+				// We mark the node in case links are added afterwards
+				$(node).addClass("fk-scrollBundle");
+				// One last check to avoid unneeded mutations
+				if (node.childNodes.length > 0) {
+					$(node).find("a").each(function() {
+						WrapManager($(this));
 					});
-		  		}
-		  	});
-	  	}
+				}
+			});
+		}
 
-	  	// Sometimes some manga nodes are added afterwards. This is here to get them and add the manager.
-	  	if (mutation.target.className == "fk-scrollBundle") {
-	  		mutation.addedNodes.forEach(function(node) {
-	  			if (!$(node).hasClass("fk-makeRelative") && $(node).is("a")) {
-	  				WrapManager($(node));
-	  			}
-	  		});
-	  	}
+		// Sometimes some manga nodes are added afterwards. This is here to get them and add the manager.
+		if (mutation.target.className == "fk-scrollBundle") {
+			mutation.addedNodes.forEach(function(node) {
+				if (!$(node).hasClass("fk-makeRelative") && $(node).is("a")) {
+					WrapManager($(node));
+				}
+			});
+		}
 
-	  	// Add bookmark management in the submenus (most-popular/new-manga)
-	  	if (mutation.target.id == "tab-newest" || mutation.target.id == "tab-mostview") {
-	  		mutation.addedNodes.forEach(function(node) {
-	  			if (node.childNodes.length == 5) {
+		// Add bookmark management in the submenus (most-popular/new-manga)
+		if (mutation.target.id == "tab-newest" || mutation.target.id == "tab-mostview") {
+			mutation.addedNodes.forEach(function(node) {
+				if (node.childNodes.length == 5) {
 					// Add the OnHold display (hidden by default)
 					if (FreeKiss.Options.get("bookmarksSorting") == true) {
 						$(node).find('a > img').after('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
 					}
 					// Add the manager
-	  				var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
-	  				manager.addClass("fk-submenuManagement");
-	  				$(node).append(manager);
-	  			}
-	  		});
-	  	}
+					var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
+					manager.addClass("fk-submenuManagement");
+					$(node).append(manager);
+				}
+			});
+		}
 
 	  });
 	});
