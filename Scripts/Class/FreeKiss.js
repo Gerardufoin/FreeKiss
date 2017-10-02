@@ -13,6 +13,8 @@ var FreeKiss = {
 		// Default options
 		options: {
 			frontpageManager: true,
+			mangaManager: true,
+			chapterManager: true,
 			enhancedDisplay: true,
 			bookmarksSorting: true,
 			maxPageWidth: 800,

@@ -1,0 +1,16 @@
+.fk-imgLoader {
+	margin-top: 8px;
+}
+
+.fk-onHoldDisplay {
+	position: absolute;
+	width: 190px;
+	height: 250px;
+	top: 0px;
+	left: 1px;
+	line-height: 250px;
+	font-size: 40px;
+	font-weight: bold;
+	color: rgba(230, 230, 230, 0.7);
+	background-color: rgba(10, 10, 10, 0.7);
+}

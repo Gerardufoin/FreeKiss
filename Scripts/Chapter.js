@@ -4,26 +4,48 @@
 var fk_test_image = new Image();
 
 function Chapter() {
+	if (FreeKiss.Options.get("chapterManager")) {
+		SyncManagers();
+	}
 	Mutations();
 }
 
 function Mutations() {
 	// Mutation are used to get the images as they are added to the page to resize them
 	var observer = new MutationObserver(function(mutations) {
-	  mutations.forEach(function(mutation) {
-	  	// All images are in the #divImage element
-	  	if (mutation.target.id == "divImage") {
-		  	mutation.addedNodes.forEach(function(node) {
-		  		// If the node is an element (1) we apply the onLoad (could be a text (3))
-		  		if (node.nodeType == 1) {
-		  			$(node).find("img").on('load', function() {
-						FK_ApplyResizeOptions($(this));
-					});
-		  		}
-		  	});
-	  	}
+		mutations.forEach(function(mutation) {
+			// All images are in the #divImage element
+			if (mutation.target.id == "divImage") {
+				mutation.addedNodes.forEach(function(node) {
+					// If the node is an element (1) we apply the onLoad (could be a text (3))
+					if (node.nodeType == 1) {
+						$(node).find("img").on('load', function() {
+							FK_ApplyResizeOptions($(this));
+						});
+					}
+				});
+			}
 
-	  });
+			// Add the manager
+			if (FreeKiss.Options.get("chapterManager") && $(mutation.target).prop("tagName") == "DIV") {
+				mutation.addedNodes.forEach(function(node) {
+					if (node.nodeType == 1 && $(node).prev().attr("id") == "headnav") {
+						let info = $('div#navsubbar p a');
+						$(node).prepend(CreateBookmarkManagementNode($(info).parent().text().split('\n')[3], $(info).attr("href").replace("http://kissmanga.com/", "")));
+					}
+				});
+			}
+
+			// We get the manga id from the page script
+			if ($(mutation.target).prop("tagName") == "SCRIPT") {
+				mutation.addedNodes.forEach(function(node) {
+					let mid = $(node).text().match(/mangaID=(\d+)/);
+					if (mid != null) {
+						$(".fk-mAdd").attr("mid", mid[1]);
+					}
+				});
+			}
+		});
 	});
 
 	observer.observe(document,
