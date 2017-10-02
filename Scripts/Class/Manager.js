@@ -283,3 +283,12 @@ function MarkAsUnread(node) {
 		}
 	);
 }
+
+// Synchronize the bookmarks with the managers. (asynchrone)
+function SyncManagers() {
+	Bookmarks.sync(function() {
+		$(".fk-management").each(function() {
+			UpdateBookmarkManagement(this);
+		});
+	});
+}

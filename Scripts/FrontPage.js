@@ -4,11 +4,7 @@ function FrontPage() {
 	// If the frontpage managers are disabled, we do nothing
 	if (FreeKiss.Options.get("frontpageManager") == false) return;
 
-	Bookmarks.sync(function() {
-		$(".fk-management").each(function() {
-			UpdateBookmarkManagement(this);
-		});
-	});
+	SyncManagers();
 
 	// Using mutations allow the data to change at page load AND to update new datas when kissmanga adds mangas in the scrollbar
 	var observer = new MutationObserver(function(mutations) {

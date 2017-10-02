@@ -4,12 +4,8 @@ function Manga() {
 	// If the manga manager is disabled, we do nothing
 	if (FreeKiss.Options.get("mangaManager") == false) return;
 
-	Bookmarks.sync(function() {
-		$(".fk-management").each(function() {
-			UpdateBookmarkManagement(this);
-		});
-	});
-
+	SyncManagers();
+	
 	// Using mutations allow the data to change at page load for a smooth display
 	var observer = new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
