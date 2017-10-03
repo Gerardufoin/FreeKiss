@@ -38,3 +38,7 @@
 	height: 20px;
 	display: inline-block;
 }
+
+.fk-management a {
+	cursor: pointer
+}

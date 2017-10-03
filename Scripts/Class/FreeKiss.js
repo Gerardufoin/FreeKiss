@@ -100,6 +100,10 @@ var FreeKiss = {
 			chrome.storage.local.remove("fk-status");
 		}
 	},
+	// Return a boolean (true if user is connected)
+	isUserConnected: function() {
+		return ($("#aDropDown").length > 0);
+	},
 	optionsLoaded: false,
 	statusLoaded: false,
 	loadCallbacks: [],

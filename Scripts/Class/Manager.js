@@ -185,6 +185,9 @@ function RemoveManga(node) {
 // Add the manga whose id is the mid of the passed node
 // Note that the mid of new manga is not known on the front page and needs to be fetched
 function AddManga(node) {
+	// If the user is not connected, we do nothing
+	if (!FreeKiss.isUserConnected()) return;
+
 	var management = $(node).parents(".fk-management");
 	ShowLoading(management);
 	if ($(node).attr("mid") === undefined) {
