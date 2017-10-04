@@ -26,7 +26,7 @@
     {
       "matches": ["*://kissmanga.com/*"],
       "css": ["Styles/FreeKiss.css"],
-      "js": ["Tools/jquery-3.1.1.min.js", "Scripts/Class/FreeKiss.js", "Scripts/Class/Bookmarks.js", "Scripts/Menu.js"],
+      "js": ["Tools/jquery-3.1.1.min.js", "Tools/lz-string.min.js", "Scripts/Class/FreeKiss.js", "Scripts/Class/Bookmarks.js", "Scripts/Menu.js"],
       "run_at": "document_start"
     },
     {
