@@ -1,5 +1,5 @@
 0.7
-Account management (connected or not, compression and google synchro)
+Account management (connected or not, compression and google synchro) - DONE
 "Plan to Read" section
 Advanced option to customize managers (status/remove/add/...)
 

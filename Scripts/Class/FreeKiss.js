@@ -29,13 +29,12 @@ var FreeKiss = {
 		init: function(fk) {
 			var obj = this;
 			chrome.storage.local.get("fk-options", function(opt) {
-					if (opt['fk-options'] != null && Object.keys(opt['fk-options']).length > 0) {
-						obj.options = opt['fk-options'];
-					}
-					fk.optionsLoaded = true;
-					fk.loaded();
+				if (opt['fk-options'] != null && Object.keys(opt['fk-options']).length > 0) {
+					obj.options = opt['fk-options'];
 				}
-			);
+				fk.optionsLoaded = true;
+				fk.loaded();
+			});
 		},
 		// Check if the option is set
 		isSet: function(property) {
@@ -64,14 +63,32 @@ var FreeKiss = {
 		// Use init to load the status.
 		init: function(fk) {
 			var obj = this;
-			chrome.storage.local.get("fk-status", function(opt) {
-					if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
-						obj.mangas = opt['fk-status'];
-					}
-					fk.statusLoaded = true;
-					fk.loaded();
+			chrome.storage.sync.get("fk-status", function(opt) {
+				if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
+					let st = obj.decompress(opt['fk-status']);
+					if (st != null) obj.mangas = st;
 				}
-			);
+				fk.statusLoaded = true;
+				fk.loaded();
+			});
+		},
+		// Compress json with lz-string. Return null if invalid
+		compress: function(json) {
+			try {
+				return LZString.compress(JSON.stringify(json));
+			} catch(e) {
+				console.error("Unable to compress status json.");
+				return null;
+			}
+		},
+		// Decompress json with lz-string. Return null if invalid
+		decompress: function(data) {
+			try {
+				return JSON.parse(LZString.decompress(data));
+			} catch(e) {
+				console.error("Unable to decompress status json.");
+				return null;
+			}
 		},
 		// Check if the manga has a status
 		isSet: function(mid) {
@@ -93,11 +110,14 @@ var FreeKiss = {
 		},
 		// Save the status in localstorage
 		save: function() {
-			chrome.storage.local.set({"fk-status": this.mangas});
+			let cmprs = this.compress(this.mangas);
+			if (cmprs != null) {
+				chrome.storage.sync.set({"fk-status": cmprs});
+			}
 		},
 		// Clear the status in localstorage
 		clear: function() {
-			chrome.storage.local.remove("fk-status");
+			chrome.storage.sync.remove("fk-status");
 		}
 	},
 	// Return a boolean (true if user is connected)
