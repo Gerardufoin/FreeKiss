@@ -15,7 +15,7 @@ function Manga() {
 				mutation.addedNodes.forEach(function(node) {
 					if (node.id === "spanBookmarkManager") {
 						let link = $(mutation.target).parent('div').find('a:first-child');
-						$(node).before(CreateBookmarkManagementNode($(link).text(), $(link).attr("href").substring(1)));
+						$(node).before(Management.CreateManager($(link).text(), $(link).attr("href").substring(1)));
 						$(node).remove();
 					}
 				});

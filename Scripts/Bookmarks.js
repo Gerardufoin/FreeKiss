@@ -130,7 +130,7 @@ function BookmarksPage() {
 				}
 				// Sort the bookmarks
 				if (mutation.target.tagName == "TR" && $(mutation.target).parent().parent().hasClass("listing") && mutation.target.className != "head") {
-					if (FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid")) == Mangas.Status.ONHOLD) {
+					if (FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid")) == Mangas.Status.ON_HOLD) {
 						$(mutation.target).appendTo($(tOnHold));
 					} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
 						$(mutation.target).appendTo($(tUnreadChapter));
@@ -241,10 +241,10 @@ function AddOnHoldStatus(node, withClass = true) {
 	var status = FreeKiss.Status.get(mid);
 	$(node).find("td:nth-child(3)").after('\
 		<td>\
-			<a mid="' + mid + '" class="fk-notOnHold' + (status == Mangas.Status.ONHOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to change to OnHold">\
+			<a mid="' + mid + '" class="fk-notOnHold' + (status == Mangas.Status.ON_HOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to change to OnHold">\
 				<img border="0" style="width:16px" src="' + notOnHold_img_path + '">\
 			</a>\
-			<a mid="' + mid + '" class="fk-onHold' + (status != Mangas.Status.ONHOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to remove OnHold status">\
+			<a mid="' + mid + '" class="fk-onHold' + (status != Mangas.Status.ON_HOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to remove OnHold status">\
 				<img border="0" style="width:16px" src="' + onHold_img_path + '">\
 			</a>\
 		</td>\
@@ -255,7 +255,7 @@ function AddOnHoldStatus(node, withClass = true) {
 	// OnHold click interaction
 	$(node).find("td:nth-child(4) a").click(function() {
 		if ($(this).hasClass("fk-notOnHold")) {
-			FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ONHOLD);
+			FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ON_HOLD);
 		} else {
 			FreeKiss.Status.unset($(this).attr("mid"));
 		}

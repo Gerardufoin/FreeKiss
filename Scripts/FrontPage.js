@@ -48,7 +48,7 @@ function FrontPage() {
 						$(node).find('a > img').after('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
 					}
 					// Add the manager
-					var manager = CreateBookmarkManagementNode($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
+					var manager = Management.CreateManager($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
 					manager.addClass("fk-submenuManagement");
 					$(node).append(manager);
 				}
@@ -81,7 +81,7 @@ function WrapManager(node) {
 	}
 
 	// Add the manager
-	$(node).before(CreateBookmarkManagementNode($(node).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(node).attr("href")));
+	$(node).before(Management.CreateManager($(node).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(node).attr("href")));
 }
 
 FreeKiss.init(FrontPage);

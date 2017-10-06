@@ -1,13 +1,41 @@
 "use strict";
 
-// Recuperation of FreeKiss images path
-var onHold_img_path = chrome.extension.getURL("Images/Notifications/OnHold.png");
-var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
+var Management = {
+	Images: {
+		Default: chrome.extension.getURL("Images/Notifications/NotOnHold.png"),
+		OnHold: chrome.extension.getURL("Images/Notifications/OnHold.png"),
+	},
+	CreateManager: function(name, url) {
+		let management = $('<div class="fk-management"></div>');
 
-// Create the bookmark management node to be append into the DOM, store the name and url in the node for future use
-function CreateBookmarkManagementNode(name, url) {
-	var management = $('\
-		<div class="fk-management">\
+		// Add the name and url to the manager for genericity
+		$(management).attr("data-name", name);
+		$(management).attr("data-url", url);
+
+		// Add bookmark management
+		this._bookmark(management);
+		// If the BookmarksSorting option is enabled, we add the status manager
+		if (FreeKiss.Options.get("bookmarksSorting") == true) {
+			this._status(management);
+		}
+
+		// Add remove option
+		this._remove(management);
+		// Add new bookmark option
+		this._add(management);
+
+		// Add loading bar
+		this._loading(management);
+
+		// If the bookmarks are sync, we update the managers' infos immediately
+		if (!Bookmarks.syncing) {
+			UpdateBookmarkManagement(management);
+		}
+
+		return management;
+	},
+	_bookmark: function(management) {
+		$(management).append('\
 			<span class="fk-bookmarkManagement fk-hide">\
 				<a class="fk-bRead fk-hide" title="Click to change status to \'Unread\'">\
 					<img src="/Content/Images/include.png">\
@@ -16,50 +44,28 @@ function CreateBookmarkManagementNode(name, url) {
 					<img src="/Content/Images/notread.png">\
 				</a>\
 			</span>\
+		');
+		$(management).find(".fk-bRead").click(function() {
+			MarkAsUnread($(this));
+		});
+		$(management).find(".fk-bUnRead").click(function() {
+			MarkAsRead($(this));
+		});
+	},
+	_status: function(management) {
+		$(management).append('\
 			<span class="fk-statusManagement fk-hide">\
 				<a class="fk-notOnHold fk-hide" title="Click to change to OnHold">\
-					<img style="width:16px" src="' + notOnHold_img_path + '">\
+					<img style="width:16px" src="' + this.Images.Default + '">\
 				</a>\
 				<a class="fk-onHold fk-hide" title="Click to remove OnHold status">\
-					<img style="width:16px" src="' + onHold_img_path + '">\
+					<img style="width:16px" src="' + this.Images.OnHold + '">\
 				</a>\
 			</span>\
-			<span class="fk-mangaManagement fk-hide">\
-				<a class="fk-mRemove" title="Remove from bookmark list">\
-					<img src="/Content/Images/exclude.png">\
-				</a>\
-			</span>\
-			<span class="fk-addMangaManagement fk-hide">\
-				<a class="fk-mAdd" title="Add to bookmark list">\
-					<img src="/Content/Images/plus.png">\
-				</a>\
-			</span>\
-			<img class="fk-imgLoader" src="../../Content/images/loader.gif">\
-		</div>\
-	');
-
-	// Add the name and url to the manager for genericity
-	$(management).attr("data-name", name);
-	$(management).attr("data-url", url);
-
-	// Linking of the manager actions
-	$(management).find(".fk-bRead").click(function() {
-		MarkAsUnread($(this));
-	});
-	$(management).find(".fk-bUnRead").click(function() {
-		MarkAsRead($(this));
-	});
-	$(management).find(".fk-mRemove").click(function() {
-		RemoveManga($(this));
-	});
-	$(management).find(".fk-mAdd").click(function() {
-		AddManga($(this));
-	});
-	// If the BookmarksSorting option is enabled, we add the status manager
-	if (FreeKiss.Options.get("bookmarksSorting") == true) {
+		');
 		$(management).find(".fk-onHold, .fk-notOnHold").click(function() {
 			if ($(this).hasClass("fk-notOnHold")) {
-				FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ONHOLD);
+				FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ON_HOLD);
 			} else {
 				FreeKiss.Status.unset($(this).attr("mid"));
 			}
@@ -73,15 +79,34 @@ function CreateBookmarkManagementNode(name, url) {
 				$(management).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").toggleClass("fk-hide");
 			}
 		});
-	} else {
-		$(management).find(".fk-statusManagement").remove();
+	},
+	_add: function(management) {
+		$(management).append('\
+			<span class="fk-addMangaManagement fk-hide">\
+				<a class="fk-mAdd" title="Add to bookmark list">\
+					<img src="/Content/Images/plus.png">\
+				</a>\
+			</span>\
+		');
+		$(management).find(".fk-mAdd").click(function() {
+			AddManga($(this));
+		});
+	},
+	_remove: function(management) {
+		$(management).append('\
+			<span class="fk-mangaManagement fk-hide">\
+				<a class="fk-mRemove" title="Remove from bookmark list">\
+					<img src="/Content/Images/exclude.png">\
+				</a>\
+			</span>\
+		');
+		$(management).find(".fk-mRemove").click(function() {
+			RemoveManga($(this));
+		});
+	},
+	_loading: function(management) {
+		$(management).append('<img class="fk-imgLoader" src="../../Content/images/loader.gif">');
 	}
-	// If the bookmarks are sync, we update the managers' infos immediately
-	if (!Bookmarks.syncing) {
-		UpdateBookmarkManagement(management);
-	}
-
-	return management;
 }
 
 // Add the management information on the manager (bid, mid) or nothing if the manga is not bookmarked
@@ -119,7 +144,7 @@ function UpdateBookmarkManagement(node) {
 			var noh = $(node).find(".fk-notOnHold");
 			$(oh).attr("mid", bkmark.mid);
 			$(noh).attr("mid", bkmark.mid);
-			if (FreeKiss.Status.get(bkmark.mid) == Mangas.Status.ONHOLD) {
+			if (FreeKiss.Status.get(bkmark.mid) == Mangas.Status.ON_HOLD) {
 				$(oh).removeClass("fk-hide");
 				// If there is only one instance of fk-onHoldDisplay, we are on the Manga page
 				if ($(".fk-onHoldDisplay").length == 1) {

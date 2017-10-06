@@ -31,7 +31,7 @@ function Mutations() {
 				mutation.addedNodes.forEach(function(node) {
 					if (node.nodeType == 1 && $(node).prev().attr("id") == "headnav") {
 						let info = $('div#navsubbar p a');
-						$(node).prepend(CreateBookmarkManagementNode($(info).parent().text().split('\n')[3], $(info).attr("href").replace("http://kissmanga.com/", "")));
+						$(node).prepend(Management.CreateManager($(info).parent().text().split('\n')[3], $(info).attr("href").replace("http://kissmanga.com/", "")));
 					}
 				});
 			}

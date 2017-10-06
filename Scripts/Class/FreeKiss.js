@@ -1,7 +1,8 @@
 var Mangas = {
 	Status: {
 		NONE: 0,
-		ONHOLD: 1
+		ON_HOLD: 1,
+		PLAN_TO_READ: 2
 	}
 };
 
