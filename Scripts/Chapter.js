@@ -5,7 +5,7 @@ var fk_test_image = new Image();
 
 function Chapter() {
 	if (FreeKiss.Options.get("chapterManager")) {
-		SyncManagers();
+		Management.Synchronize();
 	}
 	Mutations();
 }

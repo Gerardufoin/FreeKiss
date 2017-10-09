@@ -4,7 +4,7 @@ function FrontPage() {
 	// If the frontpage managers are disabled, we do nothing
 	if (FreeKiss.Options.get("frontpageManager") == false) return;
 
-	SyncManagers();
+	Management.Synchronize();
 
 	// Using mutations allow the data to change at page load AND to update new datas when kissmanga adds mangas in the scrollbar
 	var observer = new MutationObserver(function(mutations) {

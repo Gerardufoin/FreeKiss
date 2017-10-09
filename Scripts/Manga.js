@@ -4,7 +4,7 @@ function Manga() {
 	// If the manga manager is disabled, we do nothing
 	if (FreeKiss.Options.get("mangaManager") == false) return;
 
-	SyncManagers();
+	Management.Synchronize();
 	
 	// Using mutations allow the data to change at page load for a smooth display
 	var observer = new MutationObserver(function(mutations) {
