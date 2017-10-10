@@ -47,10 +47,10 @@ var Management = {
 		$(management).append('\
 			<span class="fk-bookmarkManagement fk-hide">\
 				<a class="fk-bRead fk-hide" title="Click to change status to \'Unread\'">\
-					<img src="/Content/Images/include.png">\
+					<span class="fk-imgHelper"></span><img src="/Content/Images/include.png">\
 				</a>\
 				<a class="fk-bUnRead fk-hide" title="Click to change status to \'Read\'">\
-					<img src="/Content/Images/notread.png">\
+					<span class="fk-imgHelper"></span><img src="/Content/Images/notread.png">\
 				</a>\
 			</span>\
 		');
@@ -64,11 +64,12 @@ var Management = {
 	_Status: function(management) {
 		$(management).append('\
 			<span class="fk-statusManagement fk-hide">\
+				<div class="fk-statusSubMenu">Test</div>\
 				<a class="fk-notOnHold fk-hide" title="Click to change to OnHold">\
-					<img style="width:16px" src="' + this.Images.Default + '">\
+					<span class="fk-imgHelper"></span><img style="width:16px" src="' + this.Images.Default + '">\
 				</a>\
 				<a class="fk-onHold fk-hide" title="Click to remove OnHold status">\
-					<img style="width:16px" src="' + this.Images.OnHold + '">\
+					<span class="fk-imgHelper"></span><img style="width:16px" src="' + this.Images.OnHold + '">\
 				</a>\
 			</span>\
 		');
@@ -93,7 +94,7 @@ var Management = {
 		$(management).append('\
 			<span class="fk-addMangaManagement fk-hide">\
 				<a class="fk-mAdd" title="Add to bookmark list">\
-					<img src="/Content/Images/plus.png">\
+					<span class="fk-imgHelper"></span><img src="/Content/Images/plus.png">\
 				</a>\
 			</span>\
 		');
@@ -105,7 +106,7 @@ var Management = {
 		$(management).append('\
 			<span class="fk-mangaManagement fk-hide">\
 				<a class="fk-mRemove" title="Remove from bookmark list">\
-					<img src="/Content/Images/exclude.png">\
+					<span class="fk-imgHelper"></span><img src="/Content/Images/exclude.png">\
 				</a>\
 			</span>\
 		');
@@ -114,7 +115,7 @@ var Management = {
 		});
 	},
 	_Loading: function(management) {
-		$(management).append('<img class="fk-imgLoader" src="../../Content/images/loader.gif">');
+		$(management).append('<span class="fk-imgHelper"></span><img class="fk-imgLoader" src="../../Content/images/loader.gif">');
 	},
 	/*
 	* Update a manager node and add informations as the bookmark id (bid) and manga id (mid) if the manga is in the bookmarks
