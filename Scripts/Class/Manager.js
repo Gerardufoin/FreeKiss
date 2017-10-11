@@ -64,16 +64,23 @@ var Management = {
 	_Status: function(management) {
 		$(management).append('\
 			<span class="fk-statusManagement fk-hide">\
-				<div class="fk-statusSubMenu">Test</div>\
-				<a class="fk-notOnHold fk-hide" title="Click to change to OnHold">\
+				<div class="fk-statusSubMenu fk-hide">\
+					<a class="fk-notOnHold" title="No status">\
+						<span class="fk-imgHelper"></span><img style="width:15px" src="' + this.Images.Default + '">\
+					</a>\
+					<a class="fk-onHold" title="On hold">\
+						<span class="fk-imgHelper"></span><img style="width:15px" src="' + this.Images.OnHold + '">\
+					</a>\
+				</div>\
+				<a class="fk-statusDisplay" title="Click to change status">\
 					<span class="fk-imgHelper"></span><img style="width:16px" src="' + this.Images.Default + '">\
-				</a>\
-				<a class="fk-onHold fk-hide" title="Click to remove OnHold status">\
-					<span class="fk-imgHelper"></span><img style="width:16px" src="' + this.Images.OnHold + '">\
 				</a>\
 			</span>\
 		');
-		$(management).find(".fk-onHold, .fk-notOnHold").click(function() {
+		$(management).find(".fk-statusDisplay").click(function() {
+			$(this).siblings(".fk-statusSubMenu").removeClass("fk-hide");
+		});
+		/*$(management).find(".fk-onHold, .fk-notOnHold").click(function() {
 			if ($(this).hasClass("fk-notOnHold")) {
 				FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ON_HOLD);
 			} else {
@@ -88,7 +95,7 @@ var Management = {
 			} else {
 				$(management).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").toggleClass("fk-hide");
 			}
-		});
+		});*/
 	},
 	_Add: function(management) {
 		$(management).append('\
@@ -165,7 +172,7 @@ var Management = {
 	_UpdateStatus: function(manager, bkmark) {
 		if (!bkmark) return;
 
-		let oh = $(manager).find(".fk-onHold");
+		/*let oh = $(manager).find(".fk-onHold");
 		let noh = $(manager).find(".fk-notOnHold");
 
 		$(oh).attr("mid", bkmark.mid);
@@ -180,7 +187,7 @@ var Management = {
 			}
 		} else {
 			$(noh).removeClass("fk-hide");
-		}
+		}*/
 
 		$(manager).find(".fk-statusManagement").removeClass("fk-hide");
 	},
@@ -195,6 +202,19 @@ var Management = {
 		});
 	}
 }
+
+/*
+* Event closing any open status submenu when clicking outside of the element
+*/
+$(document).click(function(event) { 
+	if(!$(event.target).closest('.fk-statusManagement').length) {
+		$('.fk-statusSubMenu').each((i, elem) => {
+			if ($(elem).is(":visible")) {
+				$(elem).addClass("fk-hide");
+			}
+		});
+	}
+});
 
 // Show the loading bar and hide the managers
 function ShowLoading(management) {

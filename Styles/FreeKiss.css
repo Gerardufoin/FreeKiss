@@ -53,6 +53,7 @@
 
 .fk-statusSubMenu {
 	position: absolute;
+	line-height: normal;
 	height: 17px;
 	width: 50%;
 	left: 24%;
@@ -60,4 +61,11 @@
 	background-color: rgba(46, 46, 47, 0.9);
 	border: 1px solid rgba(67, 67, 67, 0.9);
 	border-radius: 2px;
+}
+
+.fk-statusSubMenu a {
+	display: inline-block !important;
+	height: 100% !important;
+	float: none !important;
+	margin: 0px !important;
 }
