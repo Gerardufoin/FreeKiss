@@ -7,6 +7,7 @@ var Management = {
 	Images: {
 		Default: chrome.extension.getURL("Images/Notifications/NotOnHold.png"),
 		OnHold: chrome.extension.getURL("Images/Notifications/OnHold.png"),
+		PlanToRead: chrome.extension.getURL("Images/Notifications/OnHold.png"),
 	},
 	/*
 	* Create a manager node allowing the manipulation of bookmarks and status
@@ -65,11 +66,14 @@ var Management = {
 		$(management).append('\
 			<span class="fk-statusManagement fk-hide">\
 				<div class="fk-statusSubMenu fk-hide">\
-					<a class="fk-notOnHold" title="No status">\
+					<a class="fk-defaultStatus" title="No status">\
 						<span class="fk-imgHelper"></span><img style="width:15px" src="' + this.Images.Default + '">\
 					</a>\
-					<a class="fk-onHold" title="On hold">\
+					<a class="fk-onHoldStatus" title="On hold">\
 						<span class="fk-imgHelper"></span><img style="width:15px" src="' + this.Images.OnHold + '">\
+					</a>\
+					<a class="fk-planToReadStatus" title="Plan to read">\
+						<span class="fk-imgHelper"></span><img style="width:15px" src="' + this.Images.PlanToRead + '">\
 					</a>\
 				</div>\
 				<a class="fk-statusDisplay" title="Click to change status">\
@@ -78,10 +82,32 @@ var Management = {
 			</span>\
 		');
 		$(management).find(".fk-statusDisplay").click(function() {
+			$(".fk-statusSubMenu:visible").addClass("fk-hide");
 			$(this).siblings(".fk-statusSubMenu").removeClass("fk-hide");
 		});
-		/*$(management).find(".fk-onHold, .fk-notOnHold").click(function() {
-			if ($(this).hasClass("fk-notOnHold")) {
+		$(management).find(".fk-defaultStatus").click(function() {
+			let manager = $(this).parents(".fk-statusManagement");
+			FreeKiss.Status.unset($(this).parent().attr("mid"));
+			FreeKiss.Status.save();
+			$(manager).find(".fk-statusDisplay img").attr("src", Management.Images.Default);
+			$(this).parent().addClass("fk-hide");
+		});
+		$(management).find(".fk-onHoldStatus").click(function() {
+			let manager = $(this).parents(".fk-statusManagement");
+			FreeKiss.Status.set($(this).parent().attr("mid"), Mangas.Status.ON_HOLD);
+			FreeKiss.Status.save();
+			$(manager).find(".fk-statusDisplay img").attr("src", Management.Images.OnHold);
+			$(this).parent().addClass("fk-hide");
+		});
+		$(management).find(".fk-planToReadStatus").click(function() {
+			let manager = $(this).parents(".fk-statusManagement");
+			FreeKiss.Status.set($(this).parent().attr("mid"), Mangas.Status.PLAN_TO_READ);
+			FreeKiss.Status.save();
+			$(manager).find(".fk-statusDisplay img").attr("src", Management.Images.PlanToRead);
+			$(this).parent().addClass("fk-hide");
+		});
+		/*$(management).find(".fk-onHoldStatus, .fk-defaultStatus").click(function() {
+			if ($(this).hasClass("fk-defaultStatus")) {
 				FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ON_HOLD);
 			} else {
 				FreeKiss.Status.unset($(this).attr("mid"));
@@ -172,8 +198,21 @@ var Management = {
 	_UpdateStatus: function(manager, bkmark) {
 		if (!bkmark) return;
 
-		/*let oh = $(manager).find(".fk-onHold");
-		let noh = $(manager).find(".fk-notOnHold");
+		$(manager).find(".fk-statusSubMenu").attr("mid", bkmark.mid);
+
+		let statusImg = "";
+		let status = FreeKiss.Status.get(bkmark.mid);
+		if (status == Mangas.Status.ON_HOLD) {
+			statusImg = Management.Images.OnHold;
+		} else if (status == Mangas.Status.PLAN_TO_READ) {
+			statusImg = Management.Images.PlanToRead;
+		} else {
+			statusImg = Management.Images.Default;
+		}
+		$(manager).find(".fk-statusDisplay img").attr("src", statusImg);
+
+		/*let oh = $(manager).find(".fk-onHoldStatus");
+		let noh = $(manager).find(".fk-defaultStatus");
 
 		$(oh).attr("mid", bkmark.mid);
 		$(noh).attr("mid", bkmark.mid);
@@ -217,32 +256,32 @@ $(document).click(function(event) {
 });
 
 // Show the loading bar and hide the managers
-function ShowLoading(management) {
-	$(management).find(".fk-bookmarkManagement").addClass("fk-hide");
-	$(management).find(".fk-statusManagement").addClass("fk-hide");
-	$(management).find(".fk-mangaManagement").addClass("fk-hide");
-	$(management).find(".fk-addMangaManagement").addClass("fk-hide");
-	$(management).find(".fk-imgLoader").removeClass("fk-hide");
+function ShowLoading(manager) {
+	$(manager).find(".fk-bookmarkManagement").addClass("fk-hide");
+	$(manager).find(".fk-statusManagement").addClass("fk-hide");
+	$(manager).find(".fk-mangaManagement").addClass("fk-hide");
+	$(manager).find(".fk-addMangaManagement").addClass("fk-hide");
+	$(manager).find(".fk-imgLoader").removeClass("fk-hide");
 }
 
 // Hide the loading bar. If show is true, unhide the managers
-function HideLoading(management, show = false) {
+function HideLoading(manager, show = false) {
 	if (show) {
-		$(management).find(".fk-bookmarkManagement").removeClass("fk-hide");
-		$(management).find(".fk-statusManagement").removeClass("fk-hide");
-		$(management).find(".fk-mangaManagement").removeClass("fk-hide");
+		$(manager).find(".fk-bookmarkManagement").removeClass("fk-hide");
+		$(manager).find(".fk-statusManagement").removeClass("fk-hide");
+		$(manager).find(".fk-mangaManagement").removeClass("fk-hide");
 	} else {
-		$(management).find(".fk-addMangaManagement").removeClass("fk-hide");
+		$(manager).find(".fk-addMangaManagement").removeClass("fk-hide");
 	}
-	$(management).find(".fk-imgLoader").addClass("fk-hide");
+	$(manager).find(".fk-imgLoader").addClass("fk-hide");
 }
 
 // Remove the manga whose id is the mid of the passed node
 function RemoveManga(node) {
-	var management = $(node).parents(".fk-management");
-	var isSure = confirm("Do you want to remove \"" + $(management).attr("data-name") + "\" from your bookmark list?");
+	var manager = $(node).parents(".fk-management");
+	var isSure = confirm("Do you want to remove \"" + $(manager).attr("data-name") + "\" from your bookmark list?");
 	if (isSure) {
-		ShowLoading(management);
+		ShowLoading(manager);
 
 		// Call the the KissManga's page
 		$.ajax(
@@ -251,10 +290,10 @@ function RemoveManga(node) {
 				url: "/Bookmark/" + node.attr("mid") + "/remove",
 				success: function (message) {
 					if (message != "") {
-						HideLoading(management);
+						HideLoading(manager);
 					} else {
 						// TODO ERROR ?
-						HideLoading(management, true);
+						HideLoading(manager, true);
 					}
 				}
 			}
@@ -268,32 +307,32 @@ function AddManga(node) {
 	// If the user is not connected, we do nothing
 	if (!FreeKiss.isUserConnected()) return;
 
-	var management = $(node).parents(".fk-management");
-	ShowLoading(management);
+	var manager = $(node).parents(".fk-management");
+	ShowLoading(manager);
 	if ($(node).attr("mid") === undefined) {
 		$.ajax(
 			{
 				type: "GET",
-				url: $(management).attr("data-url"),
+				url: $(manager).attr("data-url"),
 				success: function (html) {
 					var reg = html.match(/mangaID=(\d+)/);
 					if (reg != null) {
 						$(node).attr("mid", reg[1]);
-						AddMangaQuery(node, management);
+						AddMangaQuery(node, manager);
 					} else {
 						// TODO ERROR ?
-						HideLoading(management);
+						HideLoading(manager);
 					}
 				}
 			}
 		);
 	} else {
-		AddMangaQuery(node, management);
+		AddMangaQuery(node, manager);
 	}
 }
 
 // Ajax request to add manga
-function AddMangaQuery(node, management) {
+function AddMangaQuery(node, manager) {
 	$.ajax(
 		{
 			type: "POST",
@@ -301,12 +340,12 @@ function AddMangaQuery(node, management) {
 			success: function (message) {
 				if (message != "") {
 					Bookmarks.sync(function() {
-						Manager.UpdateManager(management);
-						HideLoading(management, true);
+						Management.UpdateManager(manager);
+						HideLoading(manager, true);
 					});
 				} else {
 					// TODO ERROR ?
-					HideLoading(management);
+					HideLoading(manager);
 				}
 			}
 		}
@@ -315,8 +354,8 @@ function AddMangaQuery(node, management) {
 
 // Mark as read the manga whose id is the bid of the passed node
 function MarkAsRead(node) {
-	var management = $(node).parents(".fk-management");
-	ShowLoading(management);
+	var manager = $(node).parents(".fk-management");
+	ShowLoading(manager);
 
 	// Call the the KissManga's page
 	$.ajax(
@@ -334,7 +373,7 @@ function MarkAsRead(node) {
 				} else {
 					// TODO ERROR ?
 				}
-				HideLoading(management, true);
+				HideLoading(manager, true);
 			}
 		}
 	);
@@ -342,8 +381,8 @@ function MarkAsRead(node) {
 
 // Mark as unread the manga whose id is the bid of the passed node
 function MarkAsUnread(node) {
-	var management = $(node).parents(".fk-management");
-    ShowLoading(management);
+	var manager = $(node).parents(".fk-management");
+    ShowLoading(manager);
 
     // Call the the KissManga's page
 	$.ajax(
@@ -361,7 +400,7 @@ function MarkAsUnread(node) {
 				} else {
 					// TODO ERROR ?
 				}
-				HideLoading(management, true);
+				HideLoading(manager, true);
 			}
 		}
 	);
