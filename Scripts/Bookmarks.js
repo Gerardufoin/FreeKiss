@@ -230,8 +230,8 @@ function BookmarksPage() {
 }
 
 // Recuperation of FreeKiss images path
-var onHold_img_path = chrome.extension.getURL("Images/Notifications/OnHold.png");
-var notOnHold_img_path = chrome.extension.getURL("Images/Notifications/NotOnHold.png");
+var onHold_img_path = chrome.extension.getURL("Images/Status/OnHold.png");
+var notOnHold_img_path = chrome.extension.getURL("Images/Status/Default.png");
 
 // Create the OnHold status button after the read/unread button
 // node is the bookmark DOM element

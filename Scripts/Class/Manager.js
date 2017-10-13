@@ -5,9 +5,9 @@ var Management = {
 	* Images used for the managers
 	*/
 	Images: {
-		Default: chrome.extension.getURL("Images/Notifications/NotOnHold.png"),
-		OnHold: chrome.extension.getURL("Images/Notifications/OnHold.png"),
-		PlanToRead: chrome.extension.getURL("Images/Notifications/OnHold.png"),
+		Default: chrome.extension.getURL("Images/Status/Default.png"),
+		OnHold: chrome.extension.getURL("Images/Status/OnHold.png"),
+		PlanToRead: chrome.extension.getURL("Images/Status/PlanToRead.png"),
 	},
 	/*
 	* Create a manager node allowing the manipulation of bookmarks and status
@@ -16,36 +16,36 @@ var Management = {
 	* @return {jQuery Node} The manager node created
 	*/
 	CreateManager: function(name, url) {
-		let management = $('<div class="fk-management"></div>');
+		let manager = $('<div class="fk-management"></div>');
 
 		// Add the name and url to the manager for genericity
-		$(management).attr("data-name", name);
-		$(management).attr("data-url", url);
+		$(manager).attr("data-name", name);
+		$(manager).attr("data-url", url);
 
 		// Add bookmark management
-		this._Bookmark(management);
+		this._Bookmark(manager);
 		// If the BookmarksSorting option is enabled, we add the status manager
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
-			this._Status(management);
+			this._Status(manager);
 		}
 
 		// Add remove option
-		this._Remove(management);
+		this._Remove(manager);
 		// Add new bookmark option
-		this._Add(management);
+		this._Add(manager);
 
 		// Add loading bar
-		this._Loading(management);
+		this._Loading(manager);
 
 		// If the bookmarks are sync, we update the managers' infos immediately
 		if (!Bookmarks.syncing) {
-			this.UpdateManager(management);
+			this.UpdateManager(manager);
 		}
 
-		return management;
+		return manager;
 	},
-	_Bookmark: function(management) {
-		$(management).append('\
+	_Bookmark: function(manager) {
+		$(manager).append('\
 			<span class="fk-bookmarkManagement fk-hide">\
 				<a class="fk-bRead fk-hide" title="Click to change status to \'Unread\'">\
 					<span class="fk-imgHelper"></span><img src="/Content/Images/include.png">\
@@ -55,18 +55,18 @@ var Management = {
 				</a>\
 			</span>\
 		');
-		$(management).find(".fk-bRead").click(function() {
+		$(manager).find(".fk-bRead").click(function() {
 			MarkAsUnread($(this));
 		});
-		$(management).find(".fk-bUnRead").click(function() {
+		$(manager).find(".fk-bUnRead").click(function() {
 			MarkAsRead($(this));
 		});
 	},
-	_Status: function(management) {
-		$(management).append('\
+	_Status: function(manager) {
+		$(manager).append('\
 			<span class="fk-statusManagement fk-hide">\
 				<div class="fk-statusSubMenu fk-hide">\
-					<a class="fk-defaultStatus" title="No status">\
+					<a class="fk-defaultStatus" title="Reading">\
 						<span class="fk-imgHelper"></span><img style="width:15px" src="' + this.Images.Default + '">\
 					</a>\
 					<a class="fk-onHoldStatus" title="On hold">\
@@ -81,74 +81,57 @@ var Management = {
 				</a>\
 			</span>\
 		');
-		$(management).find(".fk-statusDisplay").click(function() {
+		$(manager).find(".fk-statusDisplay").click((e) => {
 			$(".fk-statusSubMenu:visible").addClass("fk-hide");
-			$(this).siblings(".fk-statusSubMenu").removeClass("fk-hide");
+			$(e.currentTarget).siblings(".fk-statusSubMenu").removeClass("fk-hide");
 		});
-		$(management).find(".fk-defaultStatus").click(function() {
-			let manager = $(this).parents(".fk-statusManagement");
-			FreeKiss.Status.unset($(this).parent().attr("mid"));
+		$(manager).find(".fk-defaultStatus").click((e) => {
+			FreeKiss.Status.unset($(e.currentTarget).parent().attr("mid"));
 			FreeKiss.Status.save();
-			$(manager).find(".fk-statusDisplay img").attr("src", Management.Images.Default);
-			$(this).parent().addClass("fk-hide");
+			$(e.currentTarget).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", Management.Images.Default);
+			$(e.currentTarget).parent().addClass("fk-hide");
+			this._showOnHoldDisplay(manager, false);
 		});
-		$(management).find(".fk-onHoldStatus").click(function() {
-			let manager = $(this).parents(".fk-statusManagement");
-			FreeKiss.Status.set($(this).parent().attr("mid"), Mangas.Status.ON_HOLD);
+		$(manager).find(".fk-onHoldStatus").click((e) => {
+			FreeKiss.Status.set($(e.currentTarget).parent().attr("mid"), Mangas.Status.ON_HOLD);
 			FreeKiss.Status.save();
-			$(manager).find(".fk-statusDisplay img").attr("src", Management.Images.OnHold);
-			$(this).parent().addClass("fk-hide");
+			$(e.currentTarget).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", Management.Images.OnHold);
+			$(e.currentTarget).parent().addClass("fk-hide");
+			this._showOnHoldDisplay(manager, true);
 		});
-		$(management).find(".fk-planToReadStatus").click(function() {
-			let manager = $(this).parents(".fk-statusManagement");
-			FreeKiss.Status.set($(this).parent().attr("mid"), Mangas.Status.PLAN_TO_READ);
+		$(manager).find(".fk-planToReadStatus").click((e) => {
+			FreeKiss.Status.set($(e.currentTarget).parent().attr("mid"), Mangas.Status.PLAN_TO_READ);
 			FreeKiss.Status.save();
-			$(manager).find(".fk-statusDisplay img").attr("src", Management.Images.PlanToRead);
-			$(this).parent().addClass("fk-hide");
+			$(e.currentTarget).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", Management.Images.PlanToRead);
+			$(e.currentTarget).parent().addClass("fk-hide");
 		});
-		/*$(management).find(".fk-onHoldStatus, .fk-defaultStatus").click(function() {
-			if ($(this).hasClass("fk-defaultStatus")) {
-				FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ON_HOLD);
-			} else {
-				FreeKiss.Status.unset($(this).attr("mid"));
-			}
-			FreeKiss.Status.save();
-			$(this).toggleClass("fk-hide");
-			$(this).siblings().toggleClass("fk-hide");
-			// Show/Hide the OnHold screen. If there is only one instance of fk-onHoldDisplay, we are on the Manga page
-			if ($(".fk-onHoldDisplay").length == 1) {
-				$(".fk-onHoldDisplay").toggleClass("fk-hide");
-			} else {
-				$(management).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").toggleClass("fk-hide");
-			}
-		});*/
 	},
-	_Add: function(management) {
-		$(management).append('\
+	_Add: function(manager) {
+		$(manager).append('\
 			<span class="fk-addMangaManagement fk-hide">\
 				<a class="fk-mAdd" title="Add to bookmark list">\
 					<span class="fk-imgHelper"></span><img src="/Content/Images/plus.png">\
 				</a>\
 			</span>\
 		');
-		$(management).find(".fk-mAdd").click(function() {
+		$(manager).find(".fk-mAdd").click(function() {
 			AddManga($(this));
 		});
 	},
-	_Remove: function(management) {
-		$(management).append('\
+	_Remove: function(manager) {
+		$(manager).append('\
 			<span class="fk-mangaManagement fk-hide">\
 				<a class="fk-mRemove" title="Remove from bookmark list">\
 					<span class="fk-imgHelper"></span><img src="/Content/Images/exclude.png">\
 				</a>\
 			</span>\
 		');
-		$(management).find(".fk-mRemove").click(function() {
+		$(manager).find(".fk-mRemove").click(function() {
 			RemoveManga($(this));
 		});
 	},
-	_Loading: function(management) {
-		$(management).append('<span class="fk-imgHelper"></span><img class="fk-imgLoader" src="../../Content/images/loader.gif">');
+	_Loading: function(manager) {
+		$(manager).append('<span class="fk-imgHelper"></span><img class="fk-imgLoader" src="../../Content/images/loader.gif">');
 	},
 	/*
 	* Update a manager node and add informations as the bookmark id (bid) and manga id (mid) if the manga is in the bookmarks
@@ -204,31 +187,37 @@ var Management = {
 		let status = FreeKiss.Status.get(bkmark.mid);
 		if (status == Mangas.Status.ON_HOLD) {
 			statusImg = Management.Images.OnHold;
+			this._showOnHoldDisplay(manager, true);
 		} else if (status == Mangas.Status.PLAN_TO_READ) {
 			statusImg = Management.Images.PlanToRead;
 		} else {
 			statusImg = Management.Images.Default;
+			this._showOnHoldDisplay(manager, false);
 		}
 		$(manager).find(".fk-statusDisplay img").attr("src", statusImg);
 
-		/*let oh = $(manager).find(".fk-onHoldStatus");
-		let noh = $(manager).find(".fk-defaultStatus");
-
-		$(oh).attr("mid", bkmark.mid);
-		$(noh).attr("mid", bkmark.mid);
-		if (FreeKiss.Status.get(bkmark.mid) == Mangas.Status.ON_HOLD) {
-			$(oh).removeClass("fk-hide");
-			// If there is only one instance of fk-onHoldDisplay, we are on the Manga page
-			if ($(".fk-onHoldDisplay").length == 1) {
-				$(".fk-onHoldDisplay").toggleClass("fk-hide");
+		$(manager).find(".fk-statusManagement").removeClass("fk-hide");
+	},
+	/*
+	* Show or hide the OnHold screen on manga's preview.
+	* @param {jQuery Node} manager - A manager node
+	* @param {boolean} show - Show the manager if true, hide otherwise
+	*/
+	_showOnHoldDisplay: function(manager, show) {
+		// If there is only one instance of fk-onHoldDisplay, we are on the Manga page
+		if ($(".fk-onHoldDisplay").length == 1) {
+			if (show) {
+				$(".fk-onHoldDisplay").removeClass("fk-hide");
 			} else {
-				$('a[href="' + bkmark.href + '"] .fk-onHoldDisplay, a[href="' + bkmark.href + '"] .fk-onHoldSubdisplay').removeClass("fk-hide");
+				$(".fk-onHoldDisplay").addClass("fk-hide");
 			}
 		} else {
-			$(noh).removeClass("fk-hide");
-		}*/
-
-		$(manager).find(".fk-statusManagement").removeClass("fk-hide");
+			if (show) {
+				$(manager).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").removeClass("fk-hide");
+			} else {
+				$(manager).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").addClass("fk-hide");
+			}
+		}
 	},
 	/*
 	* Synchronize the bookmarks with the managers using the Bookmarks class

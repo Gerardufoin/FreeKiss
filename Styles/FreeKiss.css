@@ -32,6 +32,7 @@
 
 .fk-management img {
 	border: none !important;
+	margin: 0 !important;
 	vertical-align: middle;
 }
 
@@ -53,14 +54,21 @@
 
 .fk-statusSubMenu {
 	position: absolute;
+	padding: 0 !important;
 	line-height: normal;
 	height: 17px;
-	width: 50%;
+	width: 50% !important;
 	left: 24%;
 	top: 0px;
-	background-color: rgba(46, 46, 47, 0.9);
+	background-color: rgba(46, 46, 47, 0.9) !important;
 	border: 1px solid rgba(67, 67, 67, 0.9);
 	border-radius: 2px;
+	text-align: center;
+}
+
+.fk-submenuManagement .fk-statusSubMenu {
+	top: 10px;
+	left: 5px;
 }
 
 .fk-statusSubMenu a {

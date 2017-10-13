@@ -59,8 +59,9 @@
   ],
 
   "web_accessible_resources": [
-    "Images/Notifications/OnHold.png",
-    "Images/Notifications/NotOnHold.png"
+    "Images/Status/Default.png",
+    "Images/Status/OnHold.png",
+    "Images/Status/PlanToRead.png"
   ],
 
   "permissions": [
