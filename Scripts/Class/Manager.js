@@ -44,6 +44,10 @@ var Management = {
 
 		return manager;
 	},
+	/*
+	* Add the buttons allowing to mark a bookmark as read/unread to the manager passed as parameter
+	* @param {jQuery Node} manager - The manager to which the nodes will be added
+	*/
 	_Bookmark: function(manager) {
 		$(manager).append('\
 			<span class="fk-bookmarkManagement fk-hide">\
@@ -62,6 +66,10 @@ var Management = {
 			MarkAsRead($(this));
 		});
 	},
+	/*
+	* Add the buttons allowing to change the status of the bookmark to the manager passed as parameter
+	* @param {jQuery Node} manager - The manager to which the nodes will be added
+	*/
 	_Status: function(manager) {
 		$(manager).append('\
 			<span class="fk-statusManagement fk-hide">\
@@ -81,31 +89,48 @@ var Management = {
 				</a>\
 			</span>\
 		');
+		// Display the submenu when the status button is clicked
 		$(manager).find(".fk-statusDisplay").click((e) => {
+			// Close all currently opened submenu
 			$(".fk-statusSubMenu:visible").addClass("fk-hide");
 			$(e.currentTarget).siblings(".fk-statusSubMenu").removeClass("fk-hide");
 		});
 		$(manager).find(".fk-defaultStatus").click((e) => {
-			FreeKiss.Status.unset($(e.currentTarget).parent().attr("mid"));
-			FreeKiss.Status.save();
-			$(e.currentTarget).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", Management.Images.Default);
-			$(e.currentTarget).parent().addClass("fk-hide");
-			this._showOnHoldDisplay(manager, false);
+			this._ChangeStatus(e.currentTarget, Mangas.Status.DEFAULT, Management.Images.Default, manager);
 		});
 		$(manager).find(".fk-onHoldStatus").click((e) => {
-			FreeKiss.Status.set($(e.currentTarget).parent().attr("mid"), Mangas.Status.ON_HOLD);
-			FreeKiss.Status.save();
-			$(e.currentTarget).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", Management.Images.OnHold);
-			$(e.currentTarget).parent().addClass("fk-hide");
-			this._showOnHoldDisplay(manager, true);
+			this._ChangeStatus(e.currentTarget, Mangas.Status.ON_HOLD, Management.Images.OnHold, manager, {
+				"OnHoldDisplay": true
+			});
 		});
 		$(manager).find(".fk-planToReadStatus").click((e) => {
-			FreeKiss.Status.set($(e.currentTarget).parent().attr("mid"), Mangas.Status.PLAN_TO_READ);
-			FreeKiss.Status.save();
-			$(e.currentTarget).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", Management.Images.PlanToRead);
-			$(e.currentTarget).parent().addClass("fk-hide");
+			this._ChangeStatus(e.currentTarget, Mangas.Status.PLAN_TO_READ, Management.Images.PlanToRead, manager, {
+				"PlanToReadDisplay": true
+			});
 		});
 	},
+	/*
+	* Allow to change the status of a bookmark and display those changes to the current page.
+	* Set the status, the image of the StatusDisplay, and apply the options (any unset option are considered as disabled)
+	* @param {jQuery Node} elem - The node which fired the event
+	* @param {Mangas.Status} status - New status of the bookmark
+	* @param {Management.Images} image - Path to the image to display as new status
+	* @param {jQuery Node} manager - Manager node linked to the bookmark
+	* @param {JSON} options - Options to display some specific screen.
+	*/
+	_ChangeStatus: function(elem, status, image, manager, options = {}) {
+		FreeKiss.Status.set($(elem).parent().attr("mid"), status);
+		FreeKiss.Status.save();
+		$(elem).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", image);
+		$(elem).parent().addClass("fk-hide");
+
+		this._showOnHoldDisplay(manager, options.hasOwnProperty("OnHoldDisplay") && options["OnHoldDisplay"]);
+		this._showPlanToReadDisplay(manager, options.hasOwnProperty("PlanToReadDisplay") && options["PlanToReadDisplay"]);
+	},
+	/*
+	* Add the button to add the manga as bookmark to the manager passed as parameter
+	* @param {jQuery Node} manager - The manager to which the nodes will be added
+	*/	
 	_Add: function(manager) {
 		$(manager).append('\
 			<span class="fk-addMangaManagement fk-hide">\
@@ -118,6 +143,10 @@ var Management = {
 			AddManga($(this));
 		});
 	},
+	/*
+	* Add the button to remove the manga from the bookmarks to the manager passed as parameter
+	* @param {jQuery Node} manager - The manager to which the nodes will be added
+	*/	
 	_Remove: function(manager) {
 		$(manager).append('\
 			<span class="fk-mangaManagement fk-hide">\
@@ -130,6 +159,10 @@ var Management = {
 			RemoveManga($(this));
 		});
 	},
+	/*
+	* Add the loading bar to the manager passed as parameter
+	* @param {jQuery Node} manager - The manager to which the node will be added
+	*/
 	_Loading: function(manager) {
 		$(manager).append('<span class="fk-imgHelper"></span><img class="fk-imgLoader" src="../../Content/images/loader.gif">');
 	},
@@ -188,11 +221,15 @@ var Management = {
 		if (status == Mangas.Status.ON_HOLD) {
 			statusImg = Management.Images.OnHold;
 			this._showOnHoldDisplay(manager, true);
+			this._showPlanToReadDisplay(manager, false);
 		} else if (status == Mangas.Status.PLAN_TO_READ) {
 			statusImg = Management.Images.PlanToRead;
+			this._showPlanToReadDisplay(manager, true);
+			this._showOnHoldDisplay(manager, false);
 		} else {
 			statusImg = Management.Images.Default;
 			this._showOnHoldDisplay(manager, false);
+			this._showPlanToReadDisplay(manager, false);
 		}
 		$(manager).find(".fk-statusDisplay img").attr("src", statusImg);
 
@@ -201,7 +238,7 @@ var Management = {
 	/*
 	* Show or hide the OnHold screen on manga's preview.
 	* @param {jQuery Node} manager - A manager node
-	* @param {boolean} show - Show the manager if true, hide otherwise
+	* @param {boolean} show - Show the "on hold" screen if true, hides it otherwise
 	*/
 	_showOnHoldDisplay: function(manager, show) {
 		// If there is only one instance of fk-onHoldDisplay, we are on the Manga page
@@ -216,6 +253,27 @@ var Management = {
 				$(manager).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").removeClass("fk-hide");
 			} else {
 				$(manager).parent().find(".fk-onHoldDisplay, .fk-onHoldSubdisplay").addClass("fk-hide");
+			}
+		}
+	},
+	/*
+	* Show or hide the PlanToRead screen on manga's preview.
+	* @param {jQuery Node} manager - A manager node
+	* @param {boolean} show - Show the "plan to read" screen if true, hides it otherwise
+	*/
+	_showPlanToReadDisplay: function(manager, show) {
+		// If there is only one instance of fk-planToReadDisplay, we are on the Manga page
+		if ($(".fk-planToReadDisplay").length == 1) {
+			if (show) {
+				$(".fk-planToReadDisplay").removeClass("fk-hide");
+			} else {
+				$(".fk-planToReadDisplay").addClass("fk-hide");
+			}
+		} else {
+			if (show) {
+				$(manager).parent().find(".fk-planToReadDisplay, .fk-planToReadSubdisplay").removeClass("fk-hide");
+			} else {
+				$(manager).parent().find(".fk-planToReadDisplay, .fk-planToReadSubdisplay").addClass("fk-hide");
 			}
 		}
 	},

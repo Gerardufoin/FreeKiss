@@ -45,7 +45,7 @@ function FrontPage() {
 				if (node.childNodes.length == 5) {
 					// Add the OnHold display (hidden by default)
 					if (FreeKiss.Options.get("bookmarksSorting") == true) {
-						$(node).find('a > img').after('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div>');
+						$(node).find('a > img').after('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div><div class="fk-planToReadSubdisplay fk-hide">Plan To Read</div>');
 					}
 					// Add the manager
 					var manager = Management.CreateManager($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
@@ -77,7 +77,7 @@ function WrapManager(node) {
 
 	// Add the OnHold display (hidden by default)
 	if (FreeKiss.Options.get("bookmarksSorting") == true) {
-		$(node).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
+		$(node).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div><div class="fk-planToReadDisplay fk-hide">Plan To Read</div>');
 	}
 
 	// Add the manager

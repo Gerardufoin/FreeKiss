@@ -99,9 +99,13 @@ var FreeKiss = {
 		get: function(mid) {
 			return (this.isSet(mid) ? this.mangas[mid] : 0);
 		},
-		// Set the manga status with the appropriate value
+		// Set the manga status with the appropriate value. If the value is 0, the status is unset instead to free up memory space
 		set: function(mid, value) {
-			this.mangas[mid] = value;
+			if (value == 0) {
+				this.unset(mid);
+			} else {
+				this.mangas[mid] = value;
+			}
 		},
 		// Remove the specified manga status
 		unset: function(mid) {
