@@ -1,5 +1,57 @@
 "use strict";
 
+String.prototype.capitalize = function() {
+	return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+function AddSortingTable(table, name, idName, selected = false) {
+	let navigation = $('<div id="fk-menu' + idName.capitalize() + '">' + name + '</div>');
+	if (selected) {
+		$(navigation).addClass("fk-selected");
+	}
+	// Link the tab to the navigation menu
+	$(navigation).click(function() {
+		if (!$(this).hasClass("selected"))
+		{
+			$("#fk-bookmarksNavigation div").removeClass("fk-selected");
+			$(this).addClass("fk-selected");
+			$("#fk-bookmarks table").addClass("fk-hide");
+			$("#fk-" + idName).removeClass("fk-hide");
+			$("#fk-nbMangas").text($("#fk-" + idName + " tbody tr").length);
+		}
+	});
+	$(table).find("#fk-bookmarksNavigation #fk-nbMangasDisplay").before(navigation);
+	let content = $('<table id="fk-' + idName + '"><tbody></tbody></table>');
+	if (!selected) {
+		$(content).addClass("fk-hide");
+	}
+
+	// If the EnhacedDisplayed option is disabled, we recreate KissManga basic layout in the tabs
+	if (FreeKiss.Options.get("enhancedDisplay") == false) {
+		$(content).prepend('\
+			<thead>\
+				<tr>\
+					<th width="40%">\
+						Manga Name\
+					</th>\
+					<th width="33%">\
+						Latest Chapter\
+					</th>\
+					<th width="10%">\
+						Status\
+					</th>\
+					<th width="4%">\
+					</th>\
+					<th width="13%">\
+					</th>\
+				</tr>\
+			</thead>\
+		');
+	}
+	$(table).append(content);
+	return $(content).find("tbody");
+}
+
 function BookmarksPage() {
 	// If the BookmarksSorting option is enabled
 	if (FreeKiss.Options.get("bookmarksSorting") == true) {
@@ -7,113 +59,22 @@ function BookmarksPage() {
 		var table = $('\
 			<div id="fk-bookmarks">\
 				<div id="fk-bookmarksNavigation">\
-					<div id="fk-menuUnread" class="fk-selected">\
-						Unread Chapters\
-					</div>\
-					<div id="fk-menuReading">\
-						Reading\
-					</div>\
-					<div id="fk-menuOnHold">\
-						On Hold\
-					</div>\
-					<div id="fk-menuCompleted">\
-						Completed\
-					</div>\
 					<span id="fk-nbMangasDisplay" class="fk-hide"><span id="fk-nbMangas"></span> Mangas</span>\
 				</div>\
-				<table id="fk-unread">\
-					<tbody>\
-					</tbody>\
-				</table>\
-				<table id="fk-reading" class="fk-hide">\
-					<tbody>\
-					</tbody>\
-				</table>\
-				<table id="fk-onHold" class="fk-hide">\
-					<tbody>\
-					</tbody>\
-				</table>\
-				<table id="fk-completed" class="fk-hide">\
-					<tbody>\
-					</tbody>\
-				</table>\
 			</div>\
 		');
 		// References
-		var tUnreadChapter = $(table).find("#fk-unread tbody");
-		var tReading = $(table).find("#fk-reading tbody");
-		var tOnHold = $(table).find("#fk-onHold tbody");
-		var tCompleted = $(table).find("#fk-completed tbody");
+		var tUnreadChapter = AddSortingTable(table, "Unread Chapters", "unread", true);
+		var tReading = AddSortingTable(table, "Reading", "reading");
+		var tOnHold = AddSortingTable(table, "On Hold", "onHold");
+		var tPlanToRead = AddSortingTable(table, "Plan To Read", "planToRead");
+		var tCompleted = AddSortingTable(table, "Completed", "completed");
 		var injected = false;
 
 		// If the EnhacedDisplayed option is disabled, we recreate KissManga basic layout in the tabs
 		if (FreeKiss.Options.get("enhancedDisplay") == false) {
 			$(table).addClass("fk-notEnhanced");
-			$(table).find("table").prepend('\
-				<thead>\
-					<tr>\
-						<th width="40%">\
-							Manga Name\
-						</th>\
-						<th width="33%">\
-							Latest Chapter\
-						</th>\
-						<th width="10%">\
-							Status\
-						</th>\
-						<th width="4%">\
-						</th>\
-						<th width="13%">\
-						</th>\
-					</tr>\
-				</thead>\
-			');
 		}
-
-		// Link the Unread tab to the navigation menu
-		$(table).find("#fk-menuUnread").click(function() {
-			if (!$(this).hasClass("selected"))
-			{
-				$("#fk-bookmarksNavigation div").removeClass("fk-selected");
-				$(this).addClass("fk-selected");
-				$("#fk-bookmarks table").addClass("fk-hide");
-				$("#fk-unread").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
-			}
-		});
-		// Link the Reading tab to the navigation menu
-		$(table).find("#fk-menuReading").click(function() {
-			if (!$(this).hasClass("selected"))
-			{
-				$("#fk-bookmarksNavigation div").removeClass("fk-selected");
-				$(this).addClass("fk-selected");
-				$("#fk-bookmarks table").addClass("fk-hide");
-				$("#fk-reading").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-reading tbody tr").length);
-			}
-		});
-		// Link the OnHold tab to the navigation menu
-		$(table).find("#fk-menuOnHold").click(function() {
-			if (!$(this).hasClass("selected"))
-			{
-				$("#fk-bookmarksNavigation div").removeClass("fk-selected");
-				$(this).addClass("fk-selected");
-				$("#fk-bookmarks table").addClass("fk-hide");
-				$("#fk-onHold").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-onHold tbody tr").length);
-			}
-		});
-		// Link the Completed tab to the navigation menu
-		$(table).find("#fk-menuCompleted").click(function() {
-			if (!$(this).hasClass("selected"))
-			{
-				$("#fk-bookmarksNavigation div").removeClass("fk-selected");
-				$(this).addClass("fk-selected");
-				$("#fk-bookmarks table").addClass("fk-hide");
-				$("#fk-completed").removeClass("fk-hide");
-				$("#fk-nbMangas").text($("#fk-completed tbody tr").length);
-			}
-		});
 	}
 
 	// Mutations. Will take the bookmarks as they are added to the page to change and order them
@@ -130,8 +91,11 @@ function BookmarksPage() {
 				}
 				// Sort the bookmarks
 				if (mutation.target.tagName == "TR" && $(mutation.target).parent().parent().hasClass("listing") && mutation.target.className != "head") {
-					if (FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid")) == Mangas.Status.ON_HOLD) {
+					let status = FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid"));
+					if (status == Mangas.Status.ON_HOLD) {
 						$(mutation.target).appendTo($(tOnHold));
+					} else if (status == Mangas.Status.PLAN_TO_READ) {
+						$(mutation.target).appendTo($(tPlanToRead));
 					} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
 						$(mutation.target).appendTo($(tUnreadChapter));
 					} else if ($(mutation.target).find("td:nth-child(2) a").length == 0) {
