@@ -68,30 +68,40 @@ function BookmarksPage() {
 		var tReading = AddSortingTable(table, "Reading", "reading");
 		var tOnHold = AddSortingTable(table, "On Hold", "onHold");
 		var tPlanToRead = AddSortingTable(table, "Plan To Read", "planToRead");
-		var tCompleted = AddSortingTable(table, "Completed", "completed");
+		var tCompvared = AddSortingTable(table, "Compvared", "compvared");
 		var injected = false;
 
 		// If the EnhacedDisplayed option is disabled, we recreate KissManga basic layout in the tabs
 		if (FreeKiss.Options.get("enhancedDisplay") == false) {
 			$(table).addClass("fk-notEnhanced");
 		}
+	} else {
+		// If the sorting is disabled, we create a simple tab to transfer the bookmarks
+		var table = $('<table class="listing"><tbody class="fk-ignore"></tbody></table>');
+		var body = $(table).find('tbody');		
 	}
 
 	// Mutations. Will take the bookmarks as they are added to the page to change and order them
-	var bookmarksObserver = new MutationObserver(function(mutations) {
+	let bookmarksObserver = new MutationObserver(function(mutations) {
 		// Scroll the mutations
 		mutations.forEach(function(mutation) {
-			// BookmarkSorting option
-			if (FreeKiss.Options.get("bookmarksSorting") == true) {
-				// Add the tabs in the page and hide KissManga table
-				if (!injected && mutation.target.className == "listing") {
-					injected = true;
-					$(mutation.target).before(table);
-					$(mutation.target).addClass("fk-hide");
+			mutation.addedNodes.forEach(function(node) {
+				if (mutation.target.tagName == "TBODY" && node.tagName == "TR" && !$(mutation.target).hasClass("fk-ignore")) {
+					$(body).append(node);
 				}
+			});
+			// Add the tabs in the page and hide KissManga table
+			if (!injected && mutation.target.className == "listing") {
+				injected = true;
+				$(mutation.target).addClass("fk-hide");
+				$(mutation.target).before(table);
+			}
+
+			/*// BookmarkSorting option
+			if (FreeKiss.Options.get("bookmarksSorting") == true) {
 				// Sort the bookmarks
 				if (mutation.target.tagName == "TR" && $(mutation.target).parent().parent().hasClass("listing") && mutation.target.className != "head") {
-					let status = FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid"));
+					var status = FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid"));
 					if (status == Mangas.Status.ON_HOLD) {
 						$(mutation.target).appendTo($(tOnHold));
 					} else if (status == Mangas.Status.PLAN_TO_READ) {
@@ -99,7 +109,7 @@ function BookmarksPage() {
 					} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
 						$(mutation.target).appendTo($(tUnreadChapter));
 					} else if ($(mutation.target).find("td:nth-child(2) a").length == 0) {
-						$(mutation.target).appendTo($(tCompleted));
+						$(mutation.target).appendTo($(tCompvared));
 					} else {
 						$(mutation.target).appendTo($(tReading));
 					}
@@ -144,7 +154,7 @@ function BookmarksPage() {
 						$(mutation.target).remove();
 					}
 				}
-			}
+			}*/
 		});
 	});
 	// Mutation, I choose you !
@@ -177,7 +187,7 @@ function BookmarksPage() {
 
 					// Add the "Read" title
 					if ($(this).find(".aRead").is(":visible")) {
-						var prevNode = $(this).prev(".fk-bookmarkRow");
+						let prevNode = $(this).prev(".fk-bookmarkRow");
 						if (prevNode != null && prevNode.find(".aUnRead").is(":visible")) {
 							prevNode.after('<tr class="head fk-bookmarkHeader"><th colspan="4">Read</th></tr>');
 						}
@@ -201,8 +211,8 @@ var notOnHold_img_path = chrome.extension.getURL("Images/Status/Default.png");
 // node is the bookmark DOM element
 // withClass determines if "fk-bookmarkStatus" should be added to the element
 function AddOnHoldStatus(node, withClass = true) {
-	var mid = $(node).find("td:nth-child(4) a").attr("mid");
-	var status = FreeKiss.Status.get(mid);
+	let mid = $(node).find("td:nth-child(4) a").attr("mid");
+	let status = FreeKiss.Status.get(mid);
 	$(node).find("td:nth-child(3)").after('\
 		<td>\
 			<a mid="' + mid + '" class="fk-notOnHold' + (status == Mangas.Status.ON_HOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to change to OnHold">\
