@@ -26,13 +26,13 @@
     {
       "matches": ["*://kissmanga.com/*"],
       "css": ["Styles/FreeKiss.css"],
-      "js": ["Tools/jquery-3.1.1.min.js", "Tools/lz-string.min.js", "Scripts/Class/FreeKiss.js", "Scripts/Class/Bookmarks.js", "Scripts/Menu.js"],
+      "js": ["Tools/jquery-3.1.1.min.js", "Tools/lz-string.min.js", "Scripts/Class/FreeKiss.js", "Scripts/Class/Bookmarks.js", "Scripts/Class/Manager.js", "Scripts/Menu.js"],
       "run_at": "document_start"
     },
     {
       "matches": ["*://kissmanga.com/"],
       "css": ["Styles/FrontPage.css"],
-      "js": ["Scripts/Class/Manager.js", "Scripts/FrontPage.js"],
+      "js": ["Scripts/FrontPage.js"],
       "run_at": "document_start"
     },
     {
@@ -47,13 +47,13 @@
         "*://kissmanga.com/Manga/*/*"
       ],
       "css": ["Styles/Manga.css"],
-      "js": ["Scripts/Class/Manager.js", "Scripts/Manga.js"],
+      "js": ["Scripts/Manga.js"],
       "run_at": "document_start"
     },
     {
       "matches": ["*://kissmanga.com/Manga/*/*"],
       "css": ["Styles/Chapter.css"],
-      "js": ["Scripts/Class/Manager.js", "Scripts/Chapter.js"],
+      "js": ["Scripts/Chapter.js"],
       "run_at": "document_start"
     }
   ],

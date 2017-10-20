@@ -87,6 +87,16 @@ function BookmarksPage() {
 		mutations.forEach(function(mutation) {
 			mutation.addedNodes.forEach(function(node) {
 				if (mutation.target.tagName == "TBODY" && node.tagName == "TR" && !$(mutation.target).hasClass("fk-ignore")) {
+					if ($(node).find("th").length > 0) {
+						$(node).find("th:last-child").remove();
+						$(node).find("th:last-child").attr("width", "26%");
+					} else if ($(node).children().length == 4) {
+						Bookmarks.updateBookmark(node);
+						$(node).find("td:last-child").remove();
+						$(node).find("td:last-child").html("");
+						let link = $(node).find("td:first-child a");
+						$(node).find("td:last-child").append(Management.CreateManager($(link).text(), $(link).attr("href").substring(1)));
+					}
 					$(body).append(node);
 				}
 			});
