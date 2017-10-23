@@ -1,9 +1,17 @@
 "use strict";
 
+// String capitalize function
 String.prototype.capitalize = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+/*
+* Create a new sorting table named "name" with "idName" as id and insert it into "table"
+* @param {jQuery Node} table - The table which will contain the new sorting table
+* @param {String} name - Name displayed on the tab of the new sorting table
+* @param {String} idName - The id used to identify the table. Should start with a lowercase and without "fk-"
+* @param {Boolean} selected - If set to true, the sorting table tab will be displayed as selected at page load. False by default.
+*/
 function AddSortingTable(table, name, idName, selected = false) {
 	let navigation = $('<div id="fk-menu' + idName.capitalize() + '">' + name + '</div>');
 	if (selected) {
@@ -87,16 +95,7 @@ function BookmarksPage() {
 		mutations.forEach(function(mutation) {
 			mutation.addedNodes.forEach(function(node) {
 				if (mutation.target.tagName == "TBODY" && node.tagName == "TR" && !$(mutation.target).hasClass("fk-ignore")) {
-					if ($(node).find("th").length > 0) {
-						$(node).find("th:last-child").remove();
-						$(node).find("th:last-child").attr("width", "26%");
-					} else if ($(node).children().length == 4) {
-						Bookmarks.updateBookmark(node);
-						$(node).find("td:last-child").remove();
-						$(node).find("td:last-child").html("");
-						let link = $(node).find("td:first-child a");
-						$(node).find("td:last-child").append(Management.CreateManager($(link).text(), $(link).attr("href").substring(1)));
-					}
+					UpgradeBookmarkNode(node);
 					$(body).append(node);
 				}
 			});
@@ -128,41 +127,9 @@ function BookmarksPage() {
 						AddOnHoldStatus($(mutation.target), false);
 					}
 				}
-				// Update the Tooltip script present in the page. The include is important to avoid infinite looping
+				// Update the Tooltip script present in the page. The .includes() is important to avoid infinite looping
 				if (mutation.target.tagName == "SCRIPT" && $(mutation.target).html().includes(".listing td[title]")) {
 					$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
-				}
-			}
-
-			// EnhancedDisplay option
-			if (FreeKiss.Options.get("enhancedDisplay") == true) {
-				if (mutation.target.tagName == "TR" && !mutation.target.className.includes("fk-bookmarkRow")) {
-					if (mutation.target.className != "head") {
-						// Recuperation of the image from the tooltip and add it to the bookmarks
-						var infos = $(mutation.target).find("td[title]");
-						var node = $($(infos).attr("title"));
-						$(infos).prepend('<a class="fk-bookmarkTitle-imgLink" href="' + infos.find("a").attr("href") + '"><img src="' + $(node[0]).attr("src") + '" class="fk-bookmarkImage" /></a>');
-						
-						// Add our own class
-						$(mutation.target).addClass("fk-bookmarkRow");
-						$(mutation.target).find("td:nth-child(1)").addClass("fk-bookmarkTitle");
-						$(mutation.target).find("td:nth-child(2)").addClass("fk-bookmarkChapter");
-						$(mutation.target).find("td:nth-child(3), td:nth-child(4)").addClass("fk-bookmarkStatus");
-						
-						// Remove the text beside the icons
-						$(mutation.target).find(".fk-bookmarkStatus a").each(function() {
-							$(this).html($(this).find("img"));
-						});
-
-						// If BookmarkSorting is also enabled, we add the OnHold menu
-						if (FreeKiss.Options.get("bookmarksSorting") == true) {
-							AddOnHoldStatus($(mutation.target));
-						}
-					// If it's the header and BookmarkSorting is disabled, we remove it and add our own
-					} else if (FreeKiss.Options.get("bookmarksSorting") == false) {
-						$(mutation.target).before('<tr class="head fk-bookmarkHeader"><th colspan="4">New Chapters</th></tr>');
-						$(mutation.target).remove();
-					}
 				}
 			}*/
 		});
@@ -196,9 +163,9 @@ function BookmarksPage() {
 				$(".fk-bookmarkRow").each(function() {
 
 					// Add the "Read" title
-					if ($(this).find(".aRead").is(":visible")) {
+					if ($(this).find(".fk-bRead").is(":visible")) {
 						let prevNode = $(this).prev(".fk-bookmarkRow");
-						if (prevNode != null && prevNode.find(".aUnRead").is(":visible")) {
+						if (prevNode != null && prevNode.find(".fk-bUnRead").is(":visible")) {
 							prevNode.after('<tr class="head fk-bookmarkHeader"><th colspan="4">Read</th></tr>');
 						}
 					}
@@ -213,40 +180,47 @@ function BookmarksPage() {
 	});
 }
 
-// Recuperation of FreeKiss images path
-var onHold_img_path = chrome.extension.getURL("Images/Status/OnHold.png");
-var notOnHold_img_path = chrome.extension.getURL("Images/Status/Default.png");
-
-// Create the OnHold status button after the read/unread button
-// node is the bookmark DOM element
-// withClass determines if "fk-bookmarkStatus" should be added to the element
-function AddOnHoldStatus(node, withClass = true) {
-	let mid = $(node).find("td:nth-child(4) a").attr("mid");
-	let status = FreeKiss.Status.get(mid);
-	$(node).find("td:nth-child(3)").after('\
-		<td>\
-			<a mid="' + mid + '" class="fk-notOnHold' + (status == Mangas.Status.ON_HOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to change to OnHold">\
-				<img border="0" style="width:16px" src="' + notOnHold_img_path + '">\
-			</a>\
-			<a mid="' + mid + '" class="fk-onHold' + (status != Mangas.Status.ON_HOLD ? ' fk-hide' : '') + '" href="#" onClick="return false;" title="Click to remove OnHold status">\
-				<img border="0" style="width:16px" src="' + onHold_img_path + '">\
-			</a>\
-		</td>\
-	');
-	if (withClass) {
-		$(node).find("td:nth-child(4)").addClass("fk-bookmarkStatus");
+/*
+* Receive a bookmark node as parameter and apply the FreeKiss design modifications
+* This function is called during the mutation when the table row is added in the page. As such, not all node may not be present at the time.
+* If this happend, the function is called again after 100ms elasped.
+* @param {jQuery Node} node - The bookmark row
+*/
+function UpgradeBookmarkNode(node) {
+	if ($(node).children().length < 4) {
+		setTimeout(() => {
+			UpgradeBookmarkNode(node);
+		}, 100);
+		return;
 	}
-	// OnHold click interaction
-	$(node).find("td:nth-child(4) a").click(function() {
-		if ($(this).hasClass("fk-notOnHold")) {
-			FreeKiss.Status.set($(this).attr("mid"), Mangas.Status.ON_HOLD);
-		} else {
-			FreeKiss.Status.unset($(this).attr("mid"));
+
+	if ($(node).find("th").length > 0) {
+		$(node).find("th:last-child").remove();
+		$(node).find("th:last-child").attr("width", "26%");
+
+		if (FreeKiss.Options.get("enhancedDisplay") == true) {
+			$(node).html('<th colspan="4">New Chapters</th>');
+			$(node).addClass("fk-bookmarkHeader");
 		}
-		FreeKiss.Status.save();
-		$(this).toggleClass("fk-hide");
-		$(this).siblings().toggleClass("fk-hide");
-	});
+	} else {
+		Bookmarks.updateBookmark(node);
+		$(node).find("td:last-child").remove();
+		$(node).find("td:last-child").empty();
+		let link = $(node).find("td:first-child a");
+		$(node).find("td:last-child").append(Management.CreateManager($(link).text(), $(link).attr("href").substring(1)));
+
+		if (FreeKiss.Options.get("enhancedDisplay") == true) {
+			// Recuperation of the image from the tooltip and add it to the bookmarks
+			let title = $($(node).find("td[title]").attr("title"));
+			$(node).find("td:first-child").prepend('<a class="fk-bookmarkTitle-imgLink" href="' + link + '"><img src="' + $(title[0]).attr("src") + '" class="fk-bookmarkImage" /></a>');
+			
+			// Add our own class
+			$(node).addClass("fk-bookmarkRow");
+			$(node).find("td:nth-child(1)").addClass("fk-bookmarkTitle");
+			$(node).find("td:nth-child(2)").addClass("fk-bookmarkChapter");
+			$(node).find("td:nth-child(3)").addClass("fk-bookmarkStatus");
+		}
+	}
 }
 
 FreeKiss.init(BookmarksPage);
