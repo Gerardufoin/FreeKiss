@@ -77,7 +77,6 @@ function BookmarksPage() {
 		var tOnHold = AddSortingTable(table, "On Hold", "onHold");
 		var tPlanToRead = AddSortingTable(table, "Plan To Read", "planToRead");
 		var tCompvared = AddSortingTable(table, "Compvared", "compvared");
-		var injected = false;
 
 		// If the EnhacedDisplayed option is disabled, we recreate KissManga basic layout in the tabs
 		if (FreeKiss.Options.get("enhancedDisplay") == false) {
@@ -89,16 +88,20 @@ function BookmarksPage() {
 		var body = $(table).find('tbody');		
 	}
 
+	var injected = false;
 	// Mutations. Will take the bookmarks as they are added to the page to change and order them
-	let bookmarksObserver = new MutationObserver(function(mutations) {
+	new MutationObserver(function(mutations) {
 		// Scroll the mutations
 		mutations.forEach(function(mutation) {
-			mutation.addedNodes.forEach(function(node) {
-				if (mutation.target.tagName == "TBODY" && node.tagName == "TR" && !$(mutation.target).hasClass("fk-ignore")) {
-					UpgradeBookmarkNode(node);
-					$(body).append(node);
-				}
-			});
+			if (mutation.target.tagName == "TBODY" && !$(mutation.target).hasClass("fk-ignore")) {
+				mutation.addedNodes.forEach(function(node) {
+					if (node.tagName == "TR") {
+						UpgradeBookmarkNode(node);
+						$(body).append(node);
+					}
+				});
+			}
+
 			// Add the tabs in the page and hide KissManga table
 			if (!injected && mutation.target.className == "listing") {
 				injected = true;
@@ -133,17 +136,7 @@ function BookmarksPage() {
 				}
 			}*/
 		});
-	});
-	// Mutation, I choose you !
-	bookmarksObserver.observe(document,
-		{
-			attributes: false,
-			attributeOldValue: false,
-			childList: true,
-			characterData: false,
-			subtree: true
-		}
-	);
+	}).observe(document, {childList: true, subtree: true});
 
 	$(document).ready(function () {
 
@@ -166,7 +159,7 @@ function BookmarksPage() {
 					if ($(this).find(".fk-bRead").is(":visible")) {
 						let prevNode = $(this).prev(".fk-bookmarkRow");
 						if (prevNode != null && prevNode.find(".fk-bUnRead").is(":visible")) {
-							prevNode.after('<tr class="head fk-bookmarkHeader"><th colspan="4">Read</th></tr>');
+							prevNode.after('<tr class="head fk-bookmarkHeader"><th colspan="3">Read</th></tr>');
 						}
 					}
 
@@ -182,15 +175,19 @@ function BookmarksPage() {
 
 /*
 * Receive a bookmark node as parameter and apply the FreeKiss design modifications
-* This function is called during the mutation when the table row is added in the page. As such, not all node may not be present at the time.
-* If this happend, the function is called again after 100ms elasped.
+* This function is called during the mutation when the table row is added in the page. As such, not all nodes may not be present at the time.
 * @param {jQuery Node} node - The bookmark row
 */
 function UpgradeBookmarkNode(node) {
+	// If the node does not contain all the td, we place an observer on it and return
 	if ($(node).children().length < 4) {
-		setTimeout(() => {
-			UpgradeBookmarkNode(node);
-		}, 100);
+		new MutationObserver(function(mutations, observer) {
+			// We don't care about the mutation content, we just want to know when all the 4 nodes are added
+			if ($(node).children().length >= 4) {
+				observer.disconnect();
+				UpgradeBookmarkNode(node);
+			}
+		}).observe(node, {childList: true});
 		return;
 	}
 
@@ -199,7 +196,7 @@ function UpgradeBookmarkNode(node) {
 		$(node).find("th:last-child").attr("width", "26%");
 
 		if (FreeKiss.Options.get("enhancedDisplay") == true) {
-			$(node).html('<th colspan="4">New Chapters</th>');
+			$(node).html('<th colspan="3">New Chapters</th>');
 			$(node).addClass("fk-bookmarkHeader");
 		}
 	} else {
