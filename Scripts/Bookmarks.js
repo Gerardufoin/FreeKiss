@@ -109,32 +109,11 @@ function BookmarksPage() {
 				$(mutation.target).before(table);
 			}
 
-			/*// BookmarkSorting option
-			if (FreeKiss.Options.get("bookmarksSorting") == true) {
-				// Sort the bookmarks
-				if (mutation.target.tagName == "TR" && $(mutation.target).parent().parent().hasClass("listing") && mutation.target.className != "head") {
-					var status = FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid"));
-					if (status == Mangas.Status.ON_HOLD) {
-						$(mutation.target).appendTo($(tOnHold));
-					} else if (status == Mangas.Status.PLAN_TO_READ) {
-						$(mutation.target).appendTo($(tPlanToRead));
-					} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
-						$(mutation.target).appendTo($(tUnreadChapter));
-					} else if ($(mutation.target).find("td:nth-child(2) a").length == 0) {
-						$(mutation.target).appendTo($(tCompvared));
-					} else {
-						$(mutation.target).appendTo($(tReading));
-					}
-					// If enhancedDisplay is disabled, we add the OnHold status here
-					if (FreeKiss.Options.get("enhancedDisplay") == false) {
-						AddOnHoldStatus($(mutation.target), false);
-					}
-				}
-				// Update the Tooltip script present in the page. The .includes() is important to avoid infinite looping
-				if (mutation.target.tagName == "SCRIPT" && $(mutation.target).html().includes(".listing td[title]")) {
+			// Update the Tooltip script present in the page. The .includes() is important to avoid infinite looping
+			if (FreeKiss.Options.get("bookmarksSorting") == true && mutation.target.tagName == "SCRIPT" && $(mutation.target).html().includes(".listing td[title]")) {
 					$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
 				}
-			}*/
+			}
 		});
 	}).observe(document, {childList: true, subtree: true});
 
@@ -152,9 +131,8 @@ function BookmarksPage() {
 			});
 
 			if (FreeKiss.Options.get("bookmarksSorting") == false) {
-				// "Read" header is added here, because it breaks the CSS when added during the mutations.
+				// "Read" header is added here, in order to be certain that all the cells are fully loaded.
 				$(".fk-bookmarkRow").each(function() {
-
 					// Add the "Read" title
 					if ($(this).find(".fk-bRead").is(":visible")) {
 						let prevNode = $(this).prev(".fk-bookmarkRow");
@@ -162,9 +140,18 @@ function BookmarksPage() {
 							prevNode.after('<tr class="head fk-bookmarkHeader"><th colspan="3">Read</th></tr>');
 						}
 					}
-
 				});
 			}
+
+			// I... I honestly don't know. Sometimes, the cells will not have the correct display and will break a line for no reason.
+			// I have to trick the CSS into thinking it has to redisplay itself to correct the issue.
+			// (To do that I change the display to "inline-table" which is the same as with "inline-block" so it's invisible, and then I switch back)
+			// The mutations must be at fault somehow, but I have no clue why.
+			// If someone stumbles upon this comment and has an idea, I'm curious to know.
+			$(".fk-bookmarkRow").css("display", "inline-table");
+			setTimeout(() => {
+				$(".fk-bookmarkRow").css("display", "");
+			}, 50);
 		}
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
 			$("#fk-nbMangasDisplay").removeClass("fk-hide");
@@ -200,7 +187,7 @@ function UpgradeBookmarkNode(node) {
 			$(node).addClass("fk-bookmarkHeader");
 		}
 	} else {
-		Bookmarks.updateBookmark(node);
+		let mid = Bookmarks.updateBookmark(node);
 		$(node).find("td:last-child").remove();
 		$(node).find("td:last-child").empty();
 		let link = $(node).find("td:first-child a");
@@ -217,6 +204,26 @@ function UpgradeBookmarkNode(node) {
 			$(node).find("td:nth-child(2)").addClass("fk-bookmarkChapter");
 			$(node).find("td:nth-child(3)").addClass("fk-bookmarkStatus");
 		}
+
+		/*// Sort the bookmarks if sorting is enabled
+		if (FreeKiss.Options.get("bookmarksSorting") == true) {
+			var status = FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid"));
+			if (status == Mangas.Status.ON_HOLD) {
+				$(mutation.target).appendTo($(tOnHold));
+			} else if (status == Mangas.Status.PLAN_TO_READ) {
+				$(mutation.target).appendTo($(tPlanToRead));
+			} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
+				$(mutation.target).appendTo($(tUnreadChapter));
+			} else if ($(mutation.target).find("td:nth-child(2) a").length == 0) {
+				$(mutation.target).appendTo($(tCompvared));
+			} else {
+				$(mutation.target).appendTo($(tReading));
+			}
+			// If enhancedDisplay is disabled, we add the OnHold status here
+			if (FreeKiss.Options.get("enhancedDisplay") == false) {
+				AddOnHoldStatus($(mutation.target), false);
+			}
+		}*/
 	}
 }
 
