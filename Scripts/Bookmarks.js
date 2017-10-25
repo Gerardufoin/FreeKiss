@@ -111,8 +111,7 @@ function BookmarksPage() {
 
 			// Update the Tooltip script present in the page. The .includes() is important to avoid infinite looping
 			if (FreeKiss.Options.get("bookmarksSorting") == true && mutation.target.tagName == "SCRIPT" && $(mutation.target).html().includes(".listing td[title]")) {
-					$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
-				}
+				$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
 			}
 		});
 	}).observe(document, {childList: true, subtree: true});
