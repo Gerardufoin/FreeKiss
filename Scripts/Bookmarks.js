@@ -45,19 +45,14 @@ function AddSortingTable(table, name, idName, selected = false) {
 					<th width="33%">\
 						Latest Chapter\
 					</th>\
-					<th width="10%">\
+					<th width="26%">\
 						Status\
-					</th>\
-					<th width="4%">\
-					</th>\
-					<th width="13%">\
 					</th>\
 				</tr>\
 			</thead>\
 		');
 	}
 	$(table).append(content);
-	return $(content).find("tbody");
 }
 
 function BookmarksPage() {
@@ -72,11 +67,11 @@ function BookmarksPage() {
 			</div>\
 		');
 		// References
-		var tUnreadChapter = AddSortingTable(table, "Unread Chapters", "unread", true);
-		var tReading = AddSortingTable(table, "Reading", "reading");
-		var tOnHold = AddSortingTable(table, "On Hold", "onHold");
-		var tPlanToRead = AddSortingTable(table, "Plan To Read", "planToRead");
-		var tCompvared = AddSortingTable(table, "Compvared", "compvared");
+		AddSortingTable(table, "Unread Chapters", "unread", true);
+		AddSortingTable(table, "Reading", "reading");
+		AddSortingTable(table, "On Hold", "onHold");
+		AddSortingTable(table, "Plan To Read", "planToRead");
+		AddSortingTable(table, "Completed", "completed");
 
 		// If the EnhacedDisplayed option is disabled, we recreate KissManga basic layout in the tabs
 		if (FreeKiss.Options.get("enhancedDisplay") == false) {
@@ -84,8 +79,7 @@ function BookmarksPage() {
 		}
 	} else {
 		// If the sorting is disabled, we create a simple tab to transfer the bookmarks
-		var table = $('<table class="listing"><tbody class="fk-ignore"></tbody></table>');
-		var body = $(table).find('tbody');		
+		var table = $('<table id="fk-bookmarksDefaultTable" class="listing"><tbody class="fk-ignore"></tbody></table>');
 	}
 
 	var injected = false;
@@ -97,7 +91,6 @@ function BookmarksPage() {
 				mutation.addedNodes.forEach(function(node) {
 					if (node.tagName == "TR") {
 						UpgradeBookmarkNode(node);
-						$(body).append(node);
 					}
 				});
 			}
@@ -163,21 +156,23 @@ function BookmarksPage() {
 * Receive a bookmark node as parameter and apply the FreeKiss design modifications
 * This function is called during the mutation when the table row is added in the page. As such, not all nodes may not be present at the time.
 * @param {jQuery Node} node - The bookmark row
+* @param {boolean} delayed - If true, the node needed to use an observer before being inserted into the table and needs to be sorted
 */
-function UpgradeBookmarkNode(node) {
+function UpgradeBookmarkNode(node, delayed = false) {
 	// If the node does not contain all the td, we place an observer on it and return
 	if ($(node).children().length < 4) {
 		new MutationObserver(function(mutations, observer) {
 			// We don't care about the mutation content, we just want to know when all the 4 nodes are added
 			if ($(node).children().length >= 4) {
 				observer.disconnect();
-				UpgradeBookmarkNode(node);
+				UpgradeBookmarkNode(node, true);
 			}
 		}).observe(node, {childList: true});
 		return;
 	}
 
 	if ($(node).find("th").length > 0) {
+		if (FreeKiss.Options.get("bookmarksSorting") == true) return;
 		$(node).find("th:last-child").remove();
 		$(node).find("th:last-child").attr("width", "26%");
 
@@ -185,6 +180,8 @@ function UpgradeBookmarkNode(node) {
 			$(node).html('<th colspan="3">New Chapters</th>');
 			$(node).addClass("fk-bookmarkHeader");
 		}
+
+		$(document.getElementById("fk-bookmarksDefaultTable")).append(node);
 	} else {
 		let mid = Bookmarks.updateBookmark(node);
 		$(node).find("td:last-child").remove();
@@ -204,26 +201,47 @@ function UpgradeBookmarkNode(node) {
 			$(node).find("td:nth-child(3)").addClass("fk-bookmarkStatus");
 		}
 
-		/*// Sort the bookmarks if sorting is enabled
+		let destination = document.getElementById("fk-bookmarksDefaultTable");
+		// Sort the bookmarks if sorting is enabled
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
-			var status = FreeKiss.Status.get($(mutation.target).find("td:nth-child(4) a").attr("mid"));
+			var status = FreeKiss.Status.get(mid);
 			if (status == Mangas.Status.ON_HOLD) {
-				$(mutation.target).appendTo($(tOnHold));
+				destination = document.getElementById("fk-onHold");
 			} else if (status == Mangas.Status.PLAN_TO_READ) {
-				$(mutation.target).appendTo($(tPlanToRead));
-			} else if ($(mutation.target).find(".aRead").css('display') == 'none') {
-				$(mutation.target).appendTo($(tUnreadChapter));
-			} else if ($(mutation.target).find("td:nth-child(2) a").length == 0) {
-				$(mutation.target).appendTo($(tCompvared));
+				destination = document.getElementById("fk-planToRead");
+			} else if ($(node).find(".fk-bRead").css('display') == 'none') {
+				destination = document.getElementById("fk-unread");
+			} else if ($(node).find("td:nth-child(2) a").length == 0) {
+				destination = document.getElementById("fk-completed");
 			} else {
-				$(mutation.target).appendTo($(tReading));
+				destination = document.getElementById("fk-reading");
 			}
-			// If enhancedDisplay is disabled, we add the OnHold status here
-			if (FreeKiss.Options.get("enhancedDisplay") == false) {
-				AddOnHoldStatus($(mutation.target), false);
-			}
-		}*/
+		}
+		InsertInto($(destination).find("tbody"), node, delayed);
 	}
+}
+
+/*
+* Insert a bookmark node at the end of destination. If sorted is true, then the node is sorted alphabetically and by read/unread
+* @param {jQuery Node} destination - The destination node (probably a tbody)
+* @param {jQuery Node} node - A bookmark node to insert
+* @param {boolean} sorted - If true, insert the node at the right position alphabetically and respecting the read/unread categories
+*/
+function InsertInto(destination, node, sorted = false) {
+	if (sorted && $(destination).find(".fk-bookmarkRow").length > 0) {
+		let name = $(node).find("a.aManga").text().trim();
+		console.log(name);
+		let read = $(node).find(".fk-bUnRead").hasClass("fk-hide");
+		let bkmks = $(destination).find(".fk-bookmarkRow");
+		for (let i = 0; i < bkmks.length; ++i) {
+			let currentRead = $(bkmks[i]).find(".fk-bUnRead").hasClass("fk-hide");
+			if ((!read || currentRead) && ((!read && currentRead) || (name < $(bkmks[i]).find("a.aManga").text().trim()))) {
+				$(bkmks[i]).before(node);
+				return;
+			}
+		}
+	}
+	$(destination).append(node);
 }
 
 FreeKiss.init(BookmarksPage);
