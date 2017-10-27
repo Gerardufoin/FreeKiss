@@ -13,7 +13,7 @@ String.prototype.capitalize = function() {
 * @param {Boolean} selected - If set to true, the sorting table tab will be displayed as selected at page load. False by default.
 */
 function AddSortingTable(table, name, idName, selected = false) {
-	let navigation = $('<div id="fk-menu' + idName.capitalize() + '">' + name + '</div>');
+	let navigation = $('<a href="#' + idName.capitalize() + '" id="fk-menu' + idName.capitalize() + '">' + name + '</a>');
 	if (selected) {
 		$(navigation).addClass("fk-selected");
 	}
@@ -21,7 +21,7 @@ function AddSortingTable(table, name, idName, selected = false) {
 	$(navigation).click(function() {
 		if (!$(this).hasClass("selected"))
 		{
-			$("#fk-bookmarksNavigation div").removeClass("fk-selected");
+			$("#fk-bookmarksNavigation a").removeClass("fk-selected");
 			$(this).addClass("fk-selected");
 			$("#fk-bookmarks table").addClass("fk-hide");
 			$("#fk-" + idName).removeClass("fk-hide");
@@ -55,6 +55,9 @@ function AddSortingTable(table, name, idName, selected = false) {
 	$(table).append(content);
 }
 
+/*
+* Main function of the bookmarks page, fired by a FreeKiss.init at the bottom
+*/
 function BookmarksPage() {
 	// If the BookmarksSorting option is enabled
 	if (FreeKiss.Options.get("bookmarksSorting") == true) {
@@ -67,11 +70,11 @@ function BookmarksPage() {
 			</div>\
 		');
 		// References
-		AddSortingTable(table, "Unread Chapters", "unread", true);
-		AddSortingTable(table, "Reading", "reading");
-		AddSortingTable(table, "On Hold", "onHold");
-		AddSortingTable(table, "Plan To Read", "planToRead");
-		AddSortingTable(table, "Completed", "completed");
+		AddSortingTable(table, "Unread Chapters", "unread", (window.location.hash == "" || window.location.hash.toLowerCase() == "#unread"));
+		AddSortingTable(table, "Reading", "reading", (window.location.hash.toLowerCase() == "#reading"));
+		AddSortingTable(table, "On Hold", "onHold", (window.location.hash.toLowerCase() == "#onhold"));
+		AddSortingTable(table, "Plan To Read", "planToRead", (window.location.hash.toLowerCase() == "#plantoread"));
+		AddSortingTable(table, "Completed", "completed", (window.location.hash.toLowerCase() == "#completed"));
 
 		// If the EnhacedDisplayed option is disabled, we recreate KissManga basic layout in the tabs
 		if (FreeKiss.Options.get("enhancedDisplay") == false) {
@@ -83,8 +86,35 @@ function BookmarksPage() {
 	}
 
 	var injected = false;
+	var guideline = !FreeKiss.Options.get("enhancedDisplay");
+	var bigDisplay = !FreeKiss.Options.get("enhancedDisplay");
 	// Mutations. Will take the bookmarks as they are added to the page to change and order them
 	new MutationObserver(function(mutations) {
+		if (!bigDisplay && document.getElementById("leftside") != undefined) {
+			$("#leftside").addClass("fk-noGuidelines");
+		}
+
+		if (!guideline && document.getElementById("rightside") != undefined) {
+			guideline = true;
+			// Guidelines Changes
+			$("#rightside").insertBefore($("#leftside"));
+			$("#rightside, .rightBox").addClass("fk-noGuidelines");
+			$("#rightside .barContent").addClass("fk-hide");
+			$("#rightside .barTitle").addClass("fk-guidelinesTitle");
+
+			$("#rightside .barTitle").click(function() {
+				$("#rightside .barContent").toggleClass("fk-hide");
+			});
+		}
+
+		let kmtable;
+		// Add FreeKiss table in the page and hide KissManga table.
+		if (!injected && (kmtable = document.getElementsByClassName("listing")).length > 0) {
+			injected = true;
+			$(kmtable[0]).addClass("fk-hide");
+			$(kmtable[0]).before(table);
+		}
+
 		// Scroll the mutations
 		mutations.forEach(function(mutation) {
 			if (mutation.target.tagName == "TBODY" && !$(mutation.target).hasClass("fk-ignore")) {
@@ -95,13 +125,6 @@ function BookmarksPage() {
 				});
 			}
 
-			// Add the tabs in the page and hide KissManga table
-			if (!injected && mutation.target.className == "listing") {
-				injected = true;
-				$(mutation.target).addClass("fk-hide");
-				$(mutation.target).before(table);
-			}
-
 			// Update the Tooltip script present in the page. The .includes() is important to avoid infinite looping
 			if (FreeKiss.Options.get("bookmarksSorting") == true && mutation.target.tagName == "SCRIPT" && $(mutation.target).html().includes(".listing td[title]")) {
 				$(mutation.target).html($(mutation.target).html().replace(/.listing td\[title\]/g, "td[title]"));
@@ -110,18 +133,7 @@ function BookmarksPage() {
 	}).observe(document, {childList: true, subtree: true});
 
 	$(document).ready(function () {
-
 		if (FreeKiss.Options.get("enhancedDisplay") == true) {
-			// Guidelines Changes
-			$("#rightside").insertBefore($("#leftside"));
-			$("#leftside, #rightside, .rightBox").addClass("fk-noGuidelines");
-			$("#rightside .barContent").addClass("fk-hide");
-			$("#rightside .barTitle").addClass("fk-guidelinesTitle");
-
-			$("#rightside .barTitle").click(function() {
-				$("#rightside .barContent").toggleClass("fk-hide");
-			});
-
 			if (FreeKiss.Options.get("bookmarksSorting") == false) {
 				// "Read" header is added here, in order to be certain that all the cells are fully loaded.
 				$(".fk-bookmarkRow").each(function() {
@@ -192,7 +204,7 @@ function UpgradeBookmarkNode(node, delayed = false) {
 		if (FreeKiss.Options.get("enhancedDisplay") == true) {
 			// Recuperation of the image from the tooltip and add it to the bookmarks
 			let title = $($(node).find("td[title]").attr("title"));
-			$(node).find("td:first-child").prepend('<a class="fk-bookmarkTitle-imgLink" href="' + link + '"><img src="' + $(title[0]).attr("src") + '" class="fk-bookmarkImage" /></a>');
+			$(node).find("td:first-child").prepend('<a class="fk-bookmarkTitle-imgLink" href="' + $(link).attr("href") + '"><img src="' + $(title[0]).attr("src") + '" class="fk-bookmarkImage" /></a>');
 			
 			// Add our own class
 			$(node).addClass("fk-bookmarkRow");
@@ -228,11 +240,10 @@ function UpgradeBookmarkNode(node, delayed = false) {
 * @param {boolean} sorted - If true, insert the node at the right position alphabetically and respecting the read/unread categories
 */
 function InsertInto(destination, node, sorted = false) {
-	if (sorted && $(destination).find(".fk-bookmarkRow").length > 0) {
+	let bkmks = $(destination).find("tr:has(td)");
+	if (sorted && $(bkmks).length > 0) {
 		let name = $(node).find("a.aManga").text().trim();
-		console.log(name);
 		let read = $(node).find(".fk-bUnRead").hasClass("fk-hide");
-		let bkmks = $(destination).find(".fk-bookmarkRow");
 		for (let i = 0; i < bkmks.length; ++i) {
 			let currentRead = $(bkmks[i]).find(".fk-bUnRead").hasClass("fk-hide");
 			if ((!read || currentRead) && ((!read && currentRead) || (name < $(bkmks[i]).find("a.aManga").text().trim()))) {
