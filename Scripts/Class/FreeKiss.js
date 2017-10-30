@@ -144,13 +144,13 @@ var FreeKiss = {
 		this.Status.init(this);
 	},
 	loaded: function() {
-		// Once all the data is loaded, we execute the callback if FreeKiss is enabled or needEnable is false
+		// Once all the data is loaded, we execute the callback if FreeKiss is enabled
 		if (this.optionsLoaded && this.statusLoaded) {
 			for (var i = 0; i < this.loadCallbacks.length; i++) {
 				this.loadCallbacks[i]();
 			}
 			this.loadCallbacks = [];
-			if (!this.needEnable || this.Options.get("disable") === false) {
+			if (this.Options.get("disable") === false) {
 				for (var i = 0; i < this.blockCallbacks.length; i++) {
 					this.blockCallbacks[i]();
 				}

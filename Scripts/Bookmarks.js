@@ -87,7 +87,7 @@ function BookmarksPage() {
 
 	var injected = false;
 	var guideline = !FreeKiss.Options.get("enhancedDisplay");
-	var bigDisplay = !FreeKiss.Options.get("enhancedDisplay");
+	var bigDisplay = guideline;
 	// Mutations. Will take the bookmarks as they are added to the page to change and order them
 	new MutationObserver(function(mutations) {
 		if (!bigDisplay && document.getElementById("leftside") != undefined) {
@@ -174,7 +174,7 @@ function UpgradeBookmarkNode(node, delayed = false) {
 	// If the node does not contain all the td, we place an observer on it and return
 	if ($(node).children().length < 4) {
 		new MutationObserver(function(mutations, observer) {
-			// We don't care about the mutation content, we just want to know when all the 4 nodes are added
+			// We don't care about the mutation content, we just want to know when all 4 of the nodes are here
 			if ($(node).children().length >= 4) {
 				observer.disconnect();
 				UpgradeBookmarkNode(node, true);
