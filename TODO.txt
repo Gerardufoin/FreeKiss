@@ -1,13 +1,3 @@
-0.6
-Managers on Manga pages
-Option to enable/disable managers on Manga pages - DONE
-Bookmark Manga from frontpage - DONE
-
-0.7
-"Plan to Read" section
-Advanced option to customize managers (status/remove/add/...)
-Account management (connected or not, compression and google synchro)
-
 0.8
 Export Bookmarks
 
@@ -15,4 +5,5 @@ Export Bookmarks
 Blacklist
 
 1.0
+Bug correction (misaligned bookmarks when not in advanced sorting)
 Test + Clean

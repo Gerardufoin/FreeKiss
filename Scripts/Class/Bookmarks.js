@@ -7,16 +7,25 @@ var Bookmarks = {
 	// Get the bookmarks from a jquery element passed in parameter
 	setBookmarks: function(bookmarks) {
 		this.mangas = {};
-		var obj = this;
-		bookmarks.each(function() {
-			var m = {
-				// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
-				href: $(this).find("td:eq(0) a.aManga").attr("href").substring(1),
-				bid: $(this).find("td:eq(2) a").attr("bdid"),
-				read: ($(this).find("td:eq(2) .aRead").css('display') != 'none')
-			};
-			obj.mangas[$(this).find("td:eq(3) a").attr("mid")] = m;
+		bookmarks.each((i, node) => {
+			this.updateBookmark(node);
 		});
+	},
+	/*
+	* Update the information of a specific bookmark
+	* @param {jQuery Node} node - A bookmark node found on the bookmarklist page
+	* @return {integer} - Manga id of the updated bookmark
+	*/
+	updateBookmark: function(node) {
+		let mid = $(node).find("td:eq(3) a").attr("mid");
+		let m = {
+			// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
+			href: $(node).find("td:eq(0) a.aManga").attr("href").substring(1),
+			bid: $(node).find("td:eq(2) a").attr("bdid"),
+			read: ($(node).find("td:eq(2) .aRead").css('display') != 'none')
+		};
+		this.mangas[mid] = m;
+		return mid;
 	},
 	// Synchronize the bookmarks.
 	sync: function(callback = null) {

@@ -1,7 +1,8 @@
 var Mangas = {
 	Status: {
 		NONE: 0,
-		ONHOLD: 1
+		ON_HOLD: 1,
+		PLAN_TO_READ: 2
 	}
 };
 
@@ -29,13 +30,12 @@ var FreeKiss = {
 		init: function(fk) {
 			var obj = this;
 			chrome.storage.local.get("fk-options", function(opt) {
-					if (opt['fk-options'] != null && Object.keys(opt['fk-options']).length > 0) {
-						obj.options = opt['fk-options'];
-					}
-					fk.optionsLoaded = true;
-					fk.loaded();
+				if (opt['fk-options'] != null && Object.keys(opt['fk-options']).length > 0) {
+					obj.options = opt['fk-options'];
 				}
-			);
+				fk.optionsLoaded = true;
+				fk.loaded();
+			});
 		},
 		// Check if the option is set
 		isSet: function(property) {
@@ -64,14 +64,32 @@ var FreeKiss = {
 		// Use init to load the status.
 		init: function(fk) {
 			var obj = this;
-			chrome.storage.local.get("fk-status", function(opt) {
-					if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
-						obj.mangas = opt['fk-status'];
-					}
-					fk.statusLoaded = true;
-					fk.loaded();
+			chrome.storage.sync.get("fk-status", function(opt) {
+				if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
+					let st = obj.decompress(opt['fk-status']);
+					if (st != null) obj.mangas = st;
 				}
-			);
+				fk.statusLoaded = true;
+				fk.loaded();
+			});
+		},
+		// Compress json with lz-string. Return null if invalid
+		compress: function(json) {
+			try {
+				return LZString.compress(JSON.stringify(json));
+			} catch(e) {
+				console.error("Unable to compress status json.");
+				return null;
+			}
+		},
+		// Decompress json with lz-string. Return null if invalid
+		decompress: function(data) {
+			try {
+				return JSON.parse(LZString.decompress(data));
+			} catch(e) {
+				console.error("Unable to decompress status json.");
+				return null;
+			}
 		},
 		// Check if the manga has a status
 		isSet: function(mid) {
@@ -81,9 +99,13 @@ var FreeKiss = {
 		get: function(mid) {
 			return (this.isSet(mid) ? this.mangas[mid] : 0);
 		},
-		// Set the manga status with the appropriate value
+		// Set the manga status with the appropriate value. If the value is 0, the status is unset instead to free up memory space
 		set: function(mid, value) {
-			this.mangas[mid] = value;
+			if (value == 0) {
+				this.unset(mid);
+			} else {
+				this.mangas[mid] = value;
+			}
 		},
 		// Remove the specified manga status
 		unset: function(mid) {
@@ -93,12 +115,19 @@ var FreeKiss = {
 		},
 		// Save the status in localstorage
 		save: function() {
-			chrome.storage.local.set({"fk-status": this.mangas});
+			let cmprs = this.compress(this.mangas);
+			if (cmprs != null) {
+				chrome.storage.sync.set({"fk-status": cmprs});
+			}
 		},
 		// Clear the status in localstorage
 		clear: function() {
-			chrome.storage.local.remove("fk-status");
+			chrome.storage.sync.remove("fk-status");
 		}
+	},
+	// Return a boolean (true if user is connected)
+	isUserConnected: function() {
+		return ($("#aDropDown").length > 0);
 	},
 	optionsLoaded: false,
 	statusLoaded: false,
@@ -115,13 +144,13 @@ var FreeKiss = {
 		this.Status.init(this);
 	},
 	loaded: function() {
-		// Once all the data is loaded, we execute the callback if FreeKiss is enabled or needEnable is false
+		// Once all the data is loaded, we execute the callback if FreeKiss is enabled
 		if (this.optionsLoaded && this.statusLoaded) {
 			for (var i = 0; i < this.loadCallbacks.length; i++) {
 				this.loadCallbacks[i]();
 			}
 			this.loadCallbacks = [];
-			if (!this.needEnable || this.Options.get("disable") === false) {
+			if (this.Options.get("disable") === false) {
 				for (var i = 0; i < this.blockCallbacks.length; i++) {
 					this.blockCallbacks[i]();
 				}

@@ -4,7 +4,7 @@ function Manga() {
 	// If the manga manager is disabled, we do nothing
 	if (FreeKiss.Options.get("mangaManager") == false) return;
 
-	SyncManagers();
+	Management.Synchronize();
 	
 	// Using mutations allow the data to change at page load for a smooth display
 	var observer = new MutationObserver(function(mutations) {
@@ -15,7 +15,7 @@ function Manga() {
 				mutation.addedNodes.forEach(function(node) {
 					if (node.id === "spanBookmarkManager") {
 						let link = $(mutation.target).parent('div').find('a:first-child');
-						$(node).before(CreateBookmarkManagementNode($(link).text(), $(link).attr("href").substring(1)));
+						$(node).before(Management.CreateManager($(link).text(), $(link).attr("href").substring(1)));
 						$(node).remove();
 					}
 				});
@@ -38,7 +38,7 @@ function Manga() {
 						let image = $(node).find("img:only-child");
 						if (image != undefined) {
 							$(image).parent('div').addClass("fk-makeRelative");
-							$(image).after('<div class="fk-onHoldDisplay fk-hide">On Hold</div>');
+							$(image).after('<div class="fk-onHoldDisplay fk-hide">On Hold</div><div class="fk-planToReadDisplay fk-hide">Plan To Read</div>');
 						}
 					});
 				}

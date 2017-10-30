@@ -12,6 +12,7 @@
 	width: 135px !important;
 	height: 20px;
 	text-align: center;
+	position: relative;
 	float: none !important;
 }
 
@@ -31,10 +32,48 @@
 
 .fk-management img {
 	border: none !important;
+	margin: 0 !important;
+	vertical-align: middle;
+}
+
+.fk-imgHelper {
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
 }
 
 .fk-bookmarkManagement, .fk-statusManagement, .fk-mangaManagement, .fk-addMangaManagement {
 	width: 20px;
 	height: 20px;
 	display: inline-block;
+}
+
+.fk-management a {
+	cursor: pointer
+}
+
+.fk-statusSubMenu {
+	position: absolute;
+	padding: 0 !important;
+	line-height: normal;
+	height: 17px;
+	width: 50% !important;
+	left: 24%;
+	top: 0px;
+	background-color: rgba(46, 46, 47, 0.9) !important;
+	border: 1px solid rgba(67, 67, 67, 0.9);
+	border-radius: 2px;
+	text-align: center;
+}
+
+.fk-submenuManagement .fk-statusSubMenu {
+	top: 10px;
+	left: 5px;
+}
+
+.fk-statusSubMenu a {
+	display: inline-block !important;
+	height: 100% !important;
+	float: none !important;
+	margin: 0px !important;
 }
