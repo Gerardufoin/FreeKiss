@@ -4,7 +4,10 @@ var Bookmarks = {
 	mangas: {},
 	syncCallbacks: [],
 	syncing: false,
-	// Get the bookmarks from a jquery element passed in parameter
+	/*
+	* Get the bookmarks from a jquery element passed in parameter
+	* @param {jQuery Node} bookmarks - Node containing the bookmarks in a table format
+	*/
 	setBookmarks: function(bookmarks) {
 		this.mangas = {};
 		bookmarks.each((i, node) => {
@@ -27,25 +30,33 @@ var Bookmarks = {
 		this.mangas[mid] = m;
 		return mid;
 	},
-	// Synchronize the bookmarks.
+	/*
+	* Synchronize the bookmarks. The bookmarks are fetched from kissmanga BookmarkList page via an ajax request.
+	* @param {function} callback - The function to call when the bookmarks are loaded. Multiple call to sync queue the callbacks
+	*/
 	sync: function(callback = null) {
 		if (callback != null) {
 			this.syncCallbacks.push(callback);
 		}
-		this.syncing = true;
-		var obj = this;
-		var xhr = new XMLHttpRequest();
-		xhr.open("GET", "http://kissmanga.com/BookmarkList", true);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4) {
-				obj.setBookmarks($(xhr.responseText).find(".listing tr:not(:first-child)"));
-				obj.executeCallbacks();
-				obj.syncing = false;
-			}
+		if (!this.syncing) {
+			this.syncing = true;
+			var obj = this;
+			$.ajax({
+				type: "GET",
+				url: "http://kissmanga.com/BookmarkList",
+				success: function (html) {
+					html = html.replace(/<img[^>]*>/g, "");
+					obj.setBookmarks($(html).find(".listing tr:not(:first-child)"));
+					obj.executeCallbacks();
+					obj.syncing = false;
+				}
+			});
 		}
-		xhr.send();
 	},
-	// Queue a function for when the bookmarks are loaded
+	/*
+	* Queue a callback in the syncCallbacks list.
+	* @param {function} callback - Callback to queue
+	*/
 	queueCallback: function(callback) {
 		if (this.syncing) {
 			this.syncCallbacks.push(callback);
@@ -53,14 +64,20 @@ var Bookmarks = {
 			callback();
 		}
 	},
-	// Execute all the stored synchronization dependant callbacks
+	/*
+	* Execute all the stored synchronization dependant callbacks. The syncCallbacks queue is then cleared.
+	*/
 	executeCallbacks: function() {
 		for (var i = 0; i < this.syncCallbacks.length; ++i) {
 			this.syncCallbacks[i]();
 		}
 		this.syncCallbacks = [];
 	},
-	// Get a bookmark using its url (when no mID is available (looking at you, frontpage è.é))
+	/*
+	* Get a bookmark using its url. (To use when no mID is available (looking at you, frontpage è.é))
+	* @param {string} url - Url of the bookmark page. Note that only the end of the url is stored (format: "Manga/*")
+	* @return {JSON} Informations about the bookmark or null if the url does not match a stored bookmark
+	*/
 	getByUrl: function(url) {
 		for (var key in this.mangas) {
 			if (this.mangas.hasOwnProperty(key) && this.mangas[key].href == url) {
@@ -71,8 +88,18 @@ var Bookmarks = {
 		}
 		return null;
 	},
-	// Check if there is any bookmarks loaded
+	/*
+	* Check if there is any bookmarks loaded
+	* @return {boolean} True if there are bookmarks in the mangas variable, false otherwise
+	*/
 	isEmpty: function() {
 		return (Object.keys(this.mangas).length == 0);
+	},
+	/*
+	* Return all the bookmarks informations
+	* @return {JSON} Bookmarks informations
+	*/
+	fetchAll: function() {
+		return this.mangas;
 	}
 };
