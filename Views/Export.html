@@ -1,32 +1,43 @@
 <!doctype html>
 <html>
-  <head>
-    <title>FreeKiss - Export</title>
-    <link rel="stylesheet" href="../Styles/FreeKiss/Options.css">
-  </head>
-  <body>
-    
-    <div id="navigation">
+    <head>
+        <title>FreeKiss - Export</title>
+        <link rel="stylesheet" href="../Styles/FreeKiss/Options.css">
+    </head>
+    <body>
+        <div id="navigation">
+            <div id="title">
+                <img src="../Images/Icons/FreeKissTitle.png" width="220px" />
+            </div>
+            <ul>
+                <li><a href="Options.html">Advanced Options</a></li>
+                <li class="selected"><a href="#">Export Bookmarks</a></li>
+                <li><a href="Patchnotes.html">Patchnotes</a></li>
+            </ul>
+        </div>
 
-    	<div id="title">
-    		<img src="../Images/Icons/FreeKissTitle.png" width="220px" />
-    	</div>
-    	<ul>
-    		<li><a href="Options.html">Advanced Options</a></li>
-    		<li class="selected"><a href="#">Export Bookmarks</a></li>
-    		<li><a href="Patchnotes.html">Patchnotes</a></li>
-    	</ul>
+        <div id="content">
+            <h1>Export bookmarks</h1>
+            <hr/>
+            <h2>Choose export format</h2>
+            <div id="formats">
+                <img class="fk-imgLoader fk-hide" src="http://kissmanga.com/Content/images/loader.gif">
+                <button id="txtFormat">Text</button>
+                <button id="xmlFormat">XML</button>
+                <button id="jsonFormat">JSON</button>
+            </div>
+            <div id="preview" class="fk-hide">
+                <span id="previewTitle">Preview</span>
+                <div id="previewContent"></div>
+                <span id="previewExt" class="fk-hide">txt</span>
+                <button id="previewDownload">Download result</button>
+            </div>
+        </div>
 
-    </div>
-
-    <div id="content">
-        Coming Soon&trade;
-    </div>
-
-    <script src="../Tools/jquery-3.1.1.min.js"></script>
-    <script src="../Tools/lz-string.min.js"></script>
-    <script src="../Scripts/Class/FreeKiss.js"></script>
-    <script src="../Scripts/Class/Bookmarks.js"></script>
-    <script src="../Scripts/FreeKiss/Export.js"></script>
-  </body>
+        <script src="../Tools/jquery-3.1.1.min.js"></script>
+        <script src="../Tools/lz-string.min.js"></script>
+        <script src="../Scripts/Class/FreeKiss.js"></script>
+        <script src="../Scripts/Class/Bookmarks.js"></script>
+        <script src="../Scripts/FreeKiss/Export.js"></script>
+    </body>
 </html>

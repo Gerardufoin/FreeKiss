@@ -21,9 +21,11 @@ var Bookmarks = {
 	*/
 	updateBookmark: function(node) {
 		let mid = $(node).find("td:eq(3) a").attr("mid");
+		let link = $(node).find("td:eq(0) a.aManga");
 		let m = {
+			name: $(link).text().trim(),
 			// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
-			href: $(node).find("td:eq(0) a.aManga").attr("href").substring(1),
+			href: $(link).attr("href").substring(1),
 			bid: $(node).find("td:eq(2) a").attr("bdid"),
 			read: ($(node).find("td:eq(2) .aRead").css('display') != 'none')
 		};

@@ -130,3 +130,7 @@ html, body {
 	font-style: italic;
 	color: #696969;
 }
+
+.fk-hide {
+	display: none !important;
+}
