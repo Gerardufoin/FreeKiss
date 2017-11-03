@@ -3,6 +3,7 @@
     <head>
         <title>FreeKiss - Export</title>
         <link rel="stylesheet" href="../Styles/FreeKiss/Options.css">
+        <link rel="stylesheet" href="../Styles/FreeKiss/Export.css">
     </head>
     <body>
         <div id="navigation">
@@ -19,7 +20,7 @@
         <div id="content">
             <h1>Export bookmarks</h1>
             <hr/>
-            <h2>Choose export format</h2>
+            <h2 class="exportTitle">Choose export format</h2>
             <div id="formats">
                 <img class="fk-imgLoader fk-hide" src="http://kissmanga.com/Content/images/loader.gif">
                 <button id="txtFormat">Text</button>
@@ -27,7 +28,7 @@
                 <button id="jsonFormat">JSON</button>
             </div>
             <div id="preview" class="fk-hide">
-                <span id="previewTitle">Preview</span>
+                <h2 class="exportTitle">Preview</h2>
                 <div id="previewContent"></div>
                 <span id="previewExt" class="fk-hide">txt</span>
                 <button id="previewDownload">Download result</button>

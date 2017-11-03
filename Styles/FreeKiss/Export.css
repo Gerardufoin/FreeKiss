@@ -1,0 +1,38 @@
+.exportTitle {
+	margin-top: 10px;
+	margin-bottom: 5px;
+	font-size: 15px;
+}
+
+#formats {
+	width: 325px;
+	height: 100px;
+	line-height: 100px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+#formats button {
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#formats button:not(:last-child) {
+	margin-right: 8px;	
+}
+
+#preview {
+	margin-bottom: 10px;
+}
+
+#previewContent {
+	height: 200px;
+	width: 100%;
+	border: 1px solid black;
+	margin-bottom: 5px;
+	box-sizing: border-box;
+	padding: 5px;
+}

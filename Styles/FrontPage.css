@@ -20,7 +20,7 @@
 	height: 210px !important;
 }
 
-.fk-onHoldDisplay {
+.fk-scrollable .fk-onHoldDisplay {
 	position: absolute;
 	width: 130px;
 	height: 150px;
@@ -33,7 +33,7 @@
 	background-color: rgba(10, 10, 10, 0.7);
 }
 
-.fk-onHoldSubdisplay {
+#subcontent .fk-onHoldDisplay {
 	position: absolute;
 	padding: 0 !important;
 	width: 80px !important;
@@ -48,7 +48,7 @@
 	background-color: rgba(10, 10, 10, 0.7) !important;
 }
 
-.fk-planToReadDisplay {
+.fk-scrollable .fk-planToReadDisplay {
 	position: absolute;
 	width: 130px;
 	height: 20px;
@@ -61,7 +61,7 @@
 	background-color: rgba(103, 142, 42, 0.85);
 }
 
-.fk-planToReadSubdisplay {
+#subcontent .fk-planToReadDisplay {
 	position: absolute;
 	padding: 0 !important;
 	width: 80px !important;
