@@ -216,7 +216,7 @@ function UpgradeBookmarkNode(node, delayed = false) {
 		let destination = document.getElementById("fk-bookmarksDefaultTable");
 		// Sort the bookmarks if sorting is enabled
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
-			var status = FreeKiss.Status.get(mid);
+			let status = FreeKiss.Status.get(mid);
 			if (status == Mangas.Status.ON_HOLD) {
 				destination = document.getElementById("fk-onHold");
 			} else if (status == Mangas.Status.PLAN_TO_READ) {

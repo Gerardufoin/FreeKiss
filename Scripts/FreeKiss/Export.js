@@ -35,6 +35,7 @@ function HidePreview() {
 function ChooseFormat(format) {
 	HideFormats();
 	HidePreview();
+	// We synchronize the bookmarks with syncOnce at true to avoid pulling them every time
 	Bookmarks.sync(() => {
 		let bookmarks = Bookmarks.fetchAll();
 		ShowFormats();
@@ -46,12 +47,13 @@ function ChooseFormat(format) {
 				ShowPreview("JSON", "json");
 				break;
 			default:
-				ShowPreview("TEXT", "txt");
+				ShowPreview(SortBookmarks(bookmarks), "txt");
 		}
-	});
+	}, true);
 }
 
 function Init() {
+	Bookmarks.extended = true;
 	$(document).ready(function() {
 		$("#txtFormat").click(() => {
 			ChooseFormat(Format.TEXT);
@@ -70,3 +72,32 @@ function Init() {
 }
 
 FreeKiss.init(Init, false);
+
+function SortBookmarks(bkmarks) {
+	let sorted = {
+		reading: [],
+		completed: [],
+		onHold: [],
+		planToRead: []
+	};
+
+	for (let mid in bkmarks) {
+		let bookmark = bkmarks[mid];
+		let status = FreeKiss.Status.get(mid);
+		if (status == Mangas.Status.ON_HOLD) {
+			sorted.onHold.push(bookmark.name);
+		} else if (status == Mangas.Status.PLAN_TO_READ) {
+			sorted.planToRead.push(bookmark.name);
+		} else if (bookmark.read == true && bookmark.completed == true) {
+			sorted.completed.push(bookmark.name);
+		} else {
+			sorted.reading.push(bookmark.name);
+		}
+	}
+	sorted.reading.sort();
+	sorted.completed.sort();
+	sorted.onHold.sort();
+	sorted.planToRead.sort();
+
+	return JSON.stringify(sorted);
+}

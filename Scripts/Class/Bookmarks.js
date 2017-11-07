@@ -4,6 +4,8 @@ var Bookmarks = {
 	mangas: {},
 	syncCallbacks: [],
 	syncing: false,
+	// Flag. If set to true, store additionnal informations on the bookmarks
+	extended: false,
 	/*
 	* Get the bookmarks from a jquery element passed in parameter
 	* @param {jQuery Node} bookmarks - Node containing the bookmarks in a table format
@@ -23,20 +25,28 @@ var Bookmarks = {
 		let mid = $(node).find("td:eq(3) a").attr("mid");
 		let link = $(node).find("td:eq(0) a.aManga");
 		let m = {
-			name: $(link).text().trim(),
 			// href will be used to do fancy stuffs on the front page, like a blacklist (as the mid/bid are not on the front page)
 			href: $(link).attr("href").substring(1),
 			bid: $(node).find("td:eq(2) a").attr("bdid"),
 			read: ($(node).find("td:eq(2) .aRead").css('display') != 'none')
 		};
+		if (this.extended) {
+			m.name = $(link).text().trim();
+			m.completed = $(node).find("td:eq(1) a").length == 0;
+		}
 		this.mangas[mid] = m;
 		return mid;
 	},
 	/*
 	* Synchronize the bookmarks. The bookmarks are fetched from kissmanga BookmarkList page via an ajax request.
 	* @param {function} callback - The function to call when the bookmarks are loaded. Multiple call to sync queue the callbacks
+	* @param {boolean} syncOnce - If set to true, do not sync the bookmarks if they have already been sync one time. False by default
 	*/
-	sync: function(callback = null) {
+	sync: function(callback = null, syncOnce = false) {
+		if (syncOnce && !this.isEmpty()) {
+			callback();
+			return;
+		}
 		if (callback != null) {
 			this.syncCallbacks.push(callback);
 		}
