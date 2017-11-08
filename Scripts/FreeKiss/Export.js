@@ -41,13 +41,13 @@ function ChooseFormat(format) {
 		ShowFormats();
 		switch (format) {
 			case Format.XML:
-				ShowPreview("XML", "xml");
+				ShowPreview(FormatXML(SortBookmarks(bookmarks)), "xml");
 				break;
 			case Format.JSON:
-				ShowPreview("JSON", "json");
+				ShowPreview(FormatJSON(SortBookmarks(bookmarks)), "json");
 				break;
 			default:
-				ShowPreview(SortBookmarks(bookmarks), "txt");
+				ShowPreview(FormatText(SortBookmarks(bookmarks)), "txt");
 		}
 	}, true);
 }
@@ -99,5 +99,37 @@ function SortBookmarks(bkmarks) {
 	sorted.onHold.sort();
 	sorted.planToRead.sort();
 
-	return JSON.stringify(sorted);
+	return sorted;
+}
+
+function FormatText(datas) {
+	let text = "##### BOOKMARKS #####";
+
+	text += TextCategory(datas.reading, "READING");
+	text += TextCategory(datas.onHold, "ON HOLD");
+	text += TextCategory(datas.planToRead, "PLAN TO READ");
+	text += TextCategory(datas.completed, "COMPLETED");
+
+	return text;
+}
+
+function TextCategory(array, title) {
+	let text = "";
+
+	if (array.length > 0) {
+		text += "\n\n==== " + title + " ====\n"
+		text += array.join("\n") + "\n";
+	}
+
+	return text;
+}
+
+function FormatJSON(datas) {
+	let text = "";
+	return text;
+}
+
+function FormatXML(datas) {
+	let text = "";
+	return text;
 }
