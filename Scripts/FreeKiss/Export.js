@@ -75,10 +75,11 @@ FreeKiss.init(Init, false);
 
 function SortBookmarks(bkmarks) {
 	let sorted = {
+		mangas: Object.keys(bkmarks).length,
 		reading: [],
-		completed: [],
 		onHold: [],
-		planToRead: []
+		planToRead: [],
+		completed: []
 	};
 
 	for (let mid in bkmarks) {
@@ -95,15 +96,16 @@ function SortBookmarks(bkmarks) {
 		}
 	}
 	sorted.reading.sort();
-	sorted.completed.sort();
 	sorted.onHold.sort();
 	sorted.planToRead.sort();
+	sorted.completed.sort();
 
 	return sorted;
 }
 
 function FormatText(datas) {
 	let text = "##### BOOKMARKS #####";
+	text += "\nTotal: " + datas.mangas + " mangas";
 
 	text += TextCategory(datas.reading, "READING");
 	text += TextCategory(datas.onHold, "ON HOLD");
@@ -117,19 +119,40 @@ function TextCategory(array, title) {
 	let text = "";
 
 	if (array.length > 0) {
-		text += "\n\n==== " + title + " ====\n"
+		text += "\n\n=== " + title + " (" + array.length + ") ===\n"
 		text += array.join("\n") + "\n";
 	}
 
 	return text;
 }
 
-function FormatJSON(datas) {
-	let text = "";
+function FormatXML(datas) {
+	let text = '<?xml version="1.0" encoding="UTF-8"?>\n';
+
+	text += '<Bookmarks mangas="' + datas.mangas + '">\n';
+	text += XMLCategory(datas.reading, "Reading");
+	text += XMLCategory(datas.onHold, "OnHold");
+	text += XMLCategory(datas.planToRead, "PlanToRead");
+	text += XMLCategory(datas.completed, "Completed");
+	text += "</Bookmarks>\n";
+
 	return text;
 }
 
-function FormatXML(datas) {
+function XMLCategory(array, title) {
 	let text = "";
+
+	if (array.length > 0) {
+		text += '    <' + title + ' entries="' + array.length + '">\n';
+		for (let i = 0; i < array.length; ++i) {
+			text += "        <name>" + array[i] + "</name>\n";
+		}
+		text += "    </" + title + ">\n";
+	}
+
 	return text;
+}
+
+function FormatJSON(datas) {
+	return JSON.stringify(datas, null, 4);
 }
