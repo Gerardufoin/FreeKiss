@@ -65,7 +65,7 @@ function BookmarksPage() {
 		var table = $('\
 			<div id="fk-bookmarks">\
 				<div id="fk-bookmarksNavigation">\
-					<span id="fk-nbMangasDisplay" class="fk-hide"><span id="fk-nbMangas"></span> Mangas</span>\
+					<span id="fk-nbMangasDisplay" class="fk-hide"><span id="fk-nbMangas"></span>/<span id="fk-totalMangas"></span> Mangas</span>\
 				</div>\
 			</div>\
 		');
@@ -149,7 +149,7 @@ function BookmarksPage() {
 
 			// I... I honestly don't know. Sometimes, the cells will not have the correct display and will break a line for no reason.
 			// I have to trick the CSS into thinking it has to redisplay itself to correct the issue.
-			// (To do that I change the display to "inline-table" which is the same as with "inline-block" so it's invisible, and then I switch back)
+			// (To do that I change the display to "inline-table" which is the same as with "inline-block" so it's unnoticeable, and then I switch back)
 			// The mutations must be at fault somehow, but I have no clue why.
 			// If someone stumbles upon this comment and has an idea, I'm curious to know.
 			$(".fk-bookmarkRow").css("display", "inline-table");
@@ -160,6 +160,7 @@ function BookmarksPage() {
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
 			$("#fk-nbMangasDisplay").removeClass("fk-hide");
 			$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
+			$("#fk-totalMangas").text(Bookmarks.count());
 		}
 	});
 }
@@ -216,7 +217,7 @@ function UpgradeBookmarkNode(node, delayed = false) {
 		let destination = document.getElementById("fk-bookmarksDefaultTable");
 		// Sort the bookmarks if sorting is enabled
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
-			var status = FreeKiss.Status.get(mid);
+			let status = FreeKiss.Status.get(mid);
 			if (status == Mangas.Status.ON_HOLD) {
 				destination = document.getElementById("fk-onHold");
 			} else if (status == Mangas.Status.PLAN_TO_READ) {

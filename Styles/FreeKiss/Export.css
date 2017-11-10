@@ -1,0 +1,70 @@
+.exportTitle {
+	margin-top: 10px;
+	margin-bottom: 5px;
+	font-size: 15px;
+}
+
+#formats {
+	width: 205px;
+	height: 60px;
+	line-height: 60px;
+	margin-bottom: 16px;
+	text-align: center;
+}
+
+#formats button {
+	width: 60px;
+	height: 60px;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 0;
+	background-image: linear-gradient(to bottom, #3498db, #2980b9);
+	box-shadow: 0px 1px 3px #666666;
+	border-radius: 15px;
+	border: none;
+	outline: none;
+	color: white;
+}
+
+#formats button:hover {
+	background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+	cursor: pointer;
+}
+
+#formats button:not(:last-child) {
+	margin-right: 8px;	
+}
+
+#preview {
+	margin-bottom: 16px;
+}
+
+#previewContent {
+	height: 300px;
+	width: 100%;
+	overflow-y: auto;
+	border: 1px solid black;
+	margin-bottom: 10px;
+	box-sizing: border-box;
+	padding: 5px;
+	white-space: pre-wrap;
+}
+
+#previewDownload {
+	width: 125px;
+	height: 25px;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 0;
+	background-image: linear-gradient(to bottom, #34db58, #29b941);
+	box-shadow: 0px 1px 3px #666666;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	color: white;
+}
+
+#previewDownload:hover {
+	background-image: linear-gradient(to bottom, #66e682, #57bd68);
+	cursor: pointer;
+}

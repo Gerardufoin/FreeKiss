@@ -43,12 +43,8 @@ function FrontPage() {
 			if (mutation.target.id == "tab-newest" || mutation.target.id == "tab-mostview") {
 				mutation.addedNodes.forEach(function(node) {
 					if (node.childNodes.length == 5) {
-						// Add the OnHold display (hidden by default)
-						if (FreeKiss.Options.get("bookmarksSorting") == true) {
-							$(node).find('a > img').after('<div class="fk-onHoldSubdisplay fk-hide">On Hold</div><div class="fk-planToReadSubdisplay fk-hide">Plan To Read</div>');
-						}
 						// Add the manager
-						var manager = Management.CreateManager($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"));
+						var manager = Management.CreateManager($(node).find("span.title").text(), $(node).find("a:first-child").attr("href"), $(node).find('a:first-child'));
 						manager.addClass("fk-submenuManagement");
 						$(node).append(manager);
 					}
@@ -75,13 +71,8 @@ function WrapManager(node) {
 	$(node).wrap('<div class="fk-scrollingWrapper"></div>');
 	$(node).addClass("fk-makeRelative");
 
-	// Add the OnHold display (hidden by default)
-	if (FreeKiss.Options.get("bookmarksSorting") == true) {
-		$(node).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div><div class="fk-planToReadDisplay fk-hide">Plan To Read</div>');
-	}
-
 	// Add the manager
-	$(node).before(Management.CreateManager($(node).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(node).attr("href")));
+	$(node).before(Management.CreateManager($(node).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(), $(node).attr("href"), $(node)));
 }
 
 FreeKiss.init(FrontPage);
