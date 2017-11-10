@@ -1,9 +1,5 @@
-0.8
-Export Bookmarks
-
-0.9
-Blacklist
-
 1.0
-Bug correction (misaligned bookmarks when not in advanced sorting)
+Bug fixes
+Check page resize speed
+Reorder files
 Test + Clean

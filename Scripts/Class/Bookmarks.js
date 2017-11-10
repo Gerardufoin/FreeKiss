@@ -113,5 +113,12 @@ var Bookmarks = {
 	*/
 	fetchAll: function() {
 		return this.mangas;
+	},
+	/*
+	* Return the number of bookmarks
+	* @return {integer} Number of bookmarks
+	*/
+	count: function() {
+		return Object.keys(this.mangas).length;
 	}
 };
