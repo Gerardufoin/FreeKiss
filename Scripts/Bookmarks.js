@@ -159,7 +159,7 @@ function BookmarksPage() {
 		}
 		if (FreeKiss.Options.get("bookmarksSorting") == true) {
 			$("#fk-nbMangasDisplay").removeClass("fk-hide");
-			$("#fk-nbMangas").text($("#fk-unread tbody tr").length);
+			$("#fk-nbMangas").text($("#fk-bookmarks table:visible tbody tr").length);
 			$("#fk-totalMangas").text(Bookmarks.count());
 		}
 	});

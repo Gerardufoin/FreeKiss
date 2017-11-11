@@ -76,7 +76,7 @@ var FreeKiss = {
 		// Compress json with lz-string. Return null if invalid
 		compress: function(json) {
 			try {
-				return LZString.compress(JSON.stringify(json));
+				return LZString.compressToUTF16(JSON.stringify(json));
 			} catch(e) {
 				console.error("Unable to compress status json.");
 				return null;
@@ -85,7 +85,7 @@ var FreeKiss = {
 		// Decompress json with lz-string. Return null if invalid
 		decompress: function(data) {
 			try {
-				return JSON.parse(LZString.decompress(data));
+				return JSON.parse(LZString.decompressFromUTF16(data));
 			} catch(e) {
 				console.error("Unable to decompress status json.");
 				return null;
