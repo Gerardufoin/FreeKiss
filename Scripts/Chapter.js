@@ -11,8 +11,17 @@ function Chapter() {
 }
 
 function Mutations() {
+	let injectManager = !FreeKiss.Options.get("chapterManager");
 	// Mutation are used to get the images as they are added to the page to resize them
-	var observer = new MutationObserver(function(mutations) {
+	new MutationObserver(function(mutations) {
+		// We inject the manager if #navsubbar has been added to the page
+		if (!injectManager && document.getElementById("navsubbar") != undefined) {
+			injectManager = true;
+			let info = $('div#navsubbar p a');
+			let manager = $('<div class="fk-managerWrapper"></div>').prepend(Management.CreateManager($(info).parent().text().split('\n')[3], $(info).attr("href").replace("http://kissmanga.com/", "")));
+			$("#headnav").after(manager);
+		}
+
 		mutations.forEach(function(mutation) {
 			// All images are in the #divImage element
 			if (mutation.target.id == "divImage") {
@@ -22,16 +31,6 @@ function Mutations() {
 						$(node).find("img").on('load', function() {
 							FK_ApplyResizeOptions($(this));
 						});
-					}
-				});
-			}
-
-			// Add the manager
-			if (FreeKiss.Options.get("chapterManager") && $(mutation.target).prop("tagName") == "DIV") {
-				mutation.addedNodes.forEach(function(node) {
-					if (node.nodeType == 1 && $(node).prev().attr("id") == "headnav") {
-						let info = $('div#navsubbar p a');
-						$(node).prepend(Management.CreateManager($(info).parent().text().split('\n')[3], $(info).attr("href").replace("http://kissmanga.com/", "")));
 					}
 				});
 			}
@@ -46,17 +45,7 @@ function Mutations() {
 				});
 			}
 		});
-	});
-
-	observer.observe(document,
-		{
-			attributes: false,
-			attributeOldValue: false,
-			childList: true,
-			characterData: false,
-			subtree: true
-		}
-	);
+	}).observe(document, {childList: true, subtree: true});
 }
 
 FreeKiss.init(Chapter);
