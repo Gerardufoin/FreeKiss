@@ -1,22 +1,23 @@
 "use strict";
 
+/** Management class. Allow the creation and management of the managers nodes */
 var Management = {
 	/*
-	* Images used for the managers
-	*/
+	 * Images used for the managers
+	 */
 	Images: {
 		Default: chrome.extension.getURL("Images/Status/Default.png"),
 		OnHold: chrome.extension.getURL("Images/Status/OnHold.png"),
 		PlanToRead: chrome.extension.getURL("Images/Status/PlanToRead.png"),
 	},
-	/*
-	* PUBLIC
-	* Create a manager node allowing the manipulation of bookmarks and status
-	* @param {string} name - The name of the manga linked to the manager
-	* @param {string} url - The url of the manga linked to the manager
-	* @param {jQuery Node} statusDisplay - Node containing the status displayers. If null, the displays are not added to the page. 
-	* @return {jQuery Node} The manager node created
-	*/
+	/**
+	 * PUBLIC
+	 * Create a manager node allowing the manipulation of bookmarks and status
+	 * @param {string} name - The name of the manga linked to the manager
+	 * @param {string} url - The url of the manga linked to the manager
+	 * @param {jQuery Node} statusDisplay - Node containing the status displayers. If null, the displays are not added to the page.
+	 * @return {jQuery Node} The manager node created
+	 */
 	CreateManager: function(name, url, statusDisplay = null) {
 		let manager = $('<div class="fk-management"></div>');
 
@@ -46,11 +47,11 @@ var Management = {
 
 		return manager;
 	},
-	/*
-	* PRIVATE
-	* Add the buttons allowing to mark a bookmark as read/unread to the manager passed as parameter
-	* @param {jQuery Node} manager - The manager to which the nodes will be added
-	*/
+	/**
+	 * PRIVATE
+	 * Add the buttons allowing to mark a bookmark as read/unread to the manager passed as parameter
+	 * @param {jQuery Node} manager - The manager to which the nodes will be added
+	 */
 	_Bookmark: function(manager) {
 		$(manager).append('\
 			<span class="fk-bookmarkManagement fk-hide">\
@@ -69,12 +70,12 @@ var Management = {
 			MarkAsRead($(this));
 		});
 	},
-	/*
-	* PRIVATE
-	* Add the buttons allowing to change the status of the bookmark to the manager passed as parameter
-	* @param {jQuery Node} manager - The manager to which the nodes will be added
-	* @param {jQuery Node} statusDisplay - Node that will contain the status displayers. If null, they are not added to the page
-	*/
+	/**
+	 * PRIVATE
+	 * Add the buttons allowing to change the status of the bookmark to the manager passed as parameter
+	 * @param {jQuery Node} manager - The manager to which the nodes will be added
+	 * @param {jQuery Node} statusDisplay - Node that will contain the status displayers. If null, they are not added to the page
+	 */
 	_Status: function(manager, statusDisplay = null) {
 		$(manager).append('\
 			<span class="fk-statusManagement fk-hide">\
@@ -118,16 +119,16 @@ var Management = {
 			$(statusDisplay).append('<div class="fk-onHoldDisplay fk-hide">On Hold</div><div class="fk-planToReadDisplay fk-hide">Plan To Read</div>');
 		}
 	},
-	/*
-	* PRIVATE
-	* Allow to change the status of a bookmark and display those changes to the current page.
-	* Set the status, the image of the StatusDisplay, and apply the options (any unset option are considered as disabled)
-	* @param {jQuery Node} elem - The node which fired the event
-	* @param {Mangas.Status} status - New status of the bookmark
-	* @param {Management.Images} image - Path to the image to display as new status
-	* @param {jQuery Node} manager - Manager node linked to the bookmark
-	* @param {JSON} options - Options to display some specific screen.
-	*/
+	/**
+	 * PRIVATE
+	 * Allow to change the status of a bookmark and display those changes to the current page.
+	 * Set the status, the image of the StatusDisplay, and apply the options (any unset option are considered as disabled)
+	 * @param {jQuery Node} elem - The node which fired the event
+	 * @param {Mangas.Status} status - New status of the bookmark
+	 * @param {Management.Images} image - Path to the image to display as new status
+	 * @param {jQuery Node} manager - Manager node linked to the bookmark
+	 * @param {JSON} options - Options to display some specific screen.
+	 */
 	_ChangeStatus: function(elem, status, image, manager, options = {}) {
 		FreeKiss.Status.set($(elem).parent().attr("mid"), status);
 		FreeKiss.Status.save();
@@ -137,11 +138,11 @@ var Management = {
 		this._showOnHoldDisplay(manager, options.hasOwnProperty("OnHoldDisplay") && options["OnHoldDisplay"]);
 		this._showPlanToReadDisplay(manager, options.hasOwnProperty("PlanToReadDisplay") && options["PlanToReadDisplay"]);
 	},
-	/*
-	* PRIVATE
-	* Add the button to add the manga as bookmark to the manager passed as parameter
-	* @param {jQuery Node} manager - The manager to which the nodes will be added
-	*/
+	/**
+	 * PRIVATE
+	 * Add the button to add the manga as bookmark to the manager passed as parameter
+	 * @param {jQuery Node} manager - The manager to which the nodes will be added
+	 */
 	_Add: function(manager) {
 		$(manager).append('\
 			<span class="fk-addMangaManagement fk-hide">\
@@ -154,11 +155,11 @@ var Management = {
 			AddManga($(this));
 		});
 	},
-	/*
-	* PRIVATE
-	* Add the button to remove the manga from the bookmarks to the manager passed as parameter
-	* @param {jQuery Node} manager - The manager to which the nodes will be added
-	*/
+	/**
+	 * PRIVATE
+	 * Add the button to remove the manga from the bookmarks to the manager passed as parameter
+	 * @param {jQuery Node} manager - The manager to which the nodes will be added
+	 */
 	_Remove: function(manager) {
 		$(manager).append('\
 			<span class="fk-mangaManagement fk-hide">\
@@ -171,20 +172,20 @@ var Management = {
 			RemoveManga($(this));
 		});
 	},
-	/*
-	* PRIVATE
-	* Add the loading bar to the manager passed as parameter
-	* @param {jQuery Node} manager - The manager to which the node will be added
-	*/
+	/**
+	 * PRIVATE
+	 * Add the loading bar to the manager passed as parameter
+	 * @param {jQuery Node} manager - The manager to which the node will be added
+	 */
 	_Loading: function(manager) {
 		$(manager).append('<span class="fk-imgHelper"></span><img class="fk-imgLoader" src="../../Content/images/loader.gif">');
 	},
-	/*
-	* PUBLIC
-	* Update a manager node and add informations as the bookmark id (bid) and manga id (mid) if the manga is in the bookmarks
-	* @param {jQuery Node} manager - A node created by CreateManager(...)
-	* @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
-	*/
+	/**
+	 * PUBLIC
+	 * Update a manager node and add informations as the bookmark id (bid) and manga id (mid) if the manga is in the bookmarks
+	 * @param {jQuery Node} manager - A node created by CreateManager(...)
+	 * @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
+	 */
 	UpdateManager: function(manager, statusDisplay = null) {
 		$(manager).find(".fk-imgLoader").addClass("fk-hide");
 		// Test if the url is found in the bookmarks
@@ -196,12 +197,12 @@ var Management = {
 		// If the BookmarksSorting option is enabled, we check the status
 		if (FreeKiss.Options.get("bookmarksSorting") == true) this._UpdateStatus(manager, bkmark, statusDisplay);
 	},
-	/*
-	* PRIVATE
-	* Update the bookmark status (read/unread) of the manager based on the datas fetched by the class Bookmarks
-	* @param {jQuery Node} manager - The manager affected by the update
-	* @param {JSON} bkmark - Datas of a specific bookmark received from the class Bookmarks
-	*/
+	/**
+	 * PRIVATE
+	 * Update the bookmark status (read/unread) of the manager based on the datas fetched by the class Bookmarks
+	 * @param {jQuery Node} manager - The manager affected by the update
+	 * @param {JSON} bkmark - Datas of a specific bookmark received from the class Bookmarks
+	 */
 	_UpdateBookmark: function(manager, bkmark) {
 		if (!bkmark) return;
 
@@ -221,12 +222,12 @@ var Management = {
 
 		$(manager).find(".fk-bookmarkManagement").removeClass("fk-hide");
 	},
-	/*
-	* PRIVATE
-	* Show if the manga is bookmarked or not on the manager based on the datas fetched by the class Bookmarks
-	* @param {jQuery Node} manager - The manager affected by the update
-	* @param {JSON} bkmark - Datas of a specific bookmark received from the class Bookmarks
-	*/
+	/**
+	 * PRIVATE
+	 * Show if the manga is bookmarked or not on the manager based on the datas fetched by the class Bookmarks
+	 * @param {jQuery Node} manager - The manager affected by the update
+	 * @param {JSON} bkmark - Datas of a specific bookmark received from the class Bookmarks
+	 */
 	_UpdateManga: function(manager, bkmark) {
 		if (!bkmark) {
 			$(manager).find(".fk-addMangaManagement").removeClass("fk-hide");
@@ -238,13 +239,13 @@ var Management = {
 
 		$(manager).find(".fk-mangaManagement").removeClass("fk-hide");
 	},
-	/*
-	* PRIVATE
-	* Update the manga status (default/on hold/plan to read) of the manager based on the datas fetched by the class Bookmarks
-	* @param {jQuery Node} manager - The manager affected by the update
-	* @param {JSON} bkmark - Datas of a specific bookmark received from the class Bookmarks
-	* @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
-	*/
+	/**
+	 * PRIVATE
+	 * Update the manga status (default/on hold/plan to read) of the manager based on the datas fetched by the class Bookmarks
+	 * @param {jQuery Node} manager - The manager affected by the update
+	 * @param {JSON} bkmark - Datas of a specific bookmark received from the class Bookmarks
+	 * @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
+	 */
 	_UpdateStatus: function(manager, bkmark, statusDisplay = null) {
 		if (!bkmark) return;
 
@@ -269,13 +270,13 @@ var Management = {
 
 		$(manager).find(".fk-statusManagement").removeClass("fk-hide");
 	},
-	/*
-	* PRIVATE
-	* Show or hide the OnHold screen on manga's preview.
-	* @param {jQuery Node} manager - A manager node
-	* @param {boolean} show - Show the "on hold" screen if true, hides it otherwise
-	* @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
-	*/
+	/**
+	 * PRIVATE
+	 * Show or hide the OnHold screen on manga's preview.
+	 * @param {jQuery Node} manager - A manager node
+	 * @param {boolean} show - Show the "on hold" screen if true, hides it otherwise
+	 * @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
+	 */
 	_showOnHoldDisplay: function(manager, show, statusDisplay = null) {
 		// If there is only one instance of fk-onHoldDisplay, we are on the Manga page
 		if ($(".fk-onHoldDisplay").length == 1) {
@@ -293,13 +294,13 @@ var Management = {
 			}
 		}
 	},
-	/*
-	* PRIVATE
-	* Show or hide the PlanToRead screen on manga's preview.
-	* @param {jQuery Node} manager - A manager node
-	* @param {boolean} show - Show the "plan to read" screen if true, hides it otherwise
-	* @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
-	*/
+	/**
+	 * PRIVATE
+	 * Show or hide the PlanToRead screen on manga's preview.
+	 * @param {jQuery Node} manager - A manager node
+	 * @param {boolean} show - Show the "plan to read" screen if true, hides it otherwise
+	 * @param {jQuery Node} statusDisplay - Node containing the status displayers. If null the default node for the displayers will be tried
+	 */
 	_showPlanToReadDisplay: function(manager, show, statusDisplay = null) {
 		// If there is only one instance of fk-planToReadDisplay, we are on the Manga page
 		if ($(".fk-planToReadDisplay").length == 1) {
@@ -317,10 +318,10 @@ var Management = {
 			}
 		}
 	},
-	/*
-	* PUBLIC
-	* Synchronize the bookmarks with the managers using the Bookmarks class
-	*/
+	/**
+	 * PUBLIC
+	 * Synchronize the bookmarks with the managers using the Bookmarks class
+	 */
 	Synchronize: function() {
 		Bookmarks.sync(() => {
 			$(".fk-management").each((i, manager) => {
@@ -330,9 +331,7 @@ var Management = {
 	}
 }
 
-/*
-* Event closing any open status submenu when clicking outside of the element
-*/
+/** Event closing any open status submenu when clicking outside of the element */
 $(document).click(function(event) { 
 	if(!$(event.target).closest('.fk-statusManagement').length) {
 		$('.fk-statusSubMenu').each((i, elem) => {
@@ -343,7 +342,10 @@ $(document).click(function(event) {
 	}
 });
 
-// Show the loading bar and hide the managers
+/**
+ * Show the loading bar and hide the managers
+ * @param {manager node} manager - The manager node affected
+ */
 function ShowLoading(manager) {
 	$(manager).find(".fk-bookmarkManagement").addClass("fk-hide");
 	$(manager).find(".fk-statusManagement").addClass("fk-hide");
@@ -352,7 +354,11 @@ function ShowLoading(manager) {
 	$(manager).find(".fk-imgLoader").removeClass("fk-hide");
 }
 
-// Hide the loading bar. If show is true, unhide the managers
+/**
+ * Hide the loading bar.
+ * @param {manager node} manager - The manager node affected
+ * @param {boolean} show - If show is true, unhide the management nodes
+ */
 function HideLoading(manager, show = false) {
 	if (show) {
 		$(manager).find(".fk-bookmarkManagement").removeClass("fk-hide");
@@ -364,10 +370,13 @@ function HideLoading(manager, show = false) {
 	$(manager).find(".fk-imgLoader").addClass("fk-hide");
 }
 
-// Remove the manga whose id is the mid of the passed node
+/**
+ * Remove the manga whose id is the mid of the passed node
+ * @param {jQuery node} node - The node containing the manga id of the bookmark to remove
+ */
 function RemoveManga(node) {
-	var manager = $(node).parents(".fk-management");
-	var isSure = confirm("Do you want to remove \"" + $(manager).attr("data-name") + "\" from your bookmark list?");
+	let manager = $(node).parents(".fk-management");
+	let isSure = confirm("Do you want to remove \"" + $(manager).attr("data-name") + "\" from your bookmark list?");
 	if (isSure) {
 		ShowLoading(manager);
 
@@ -389,13 +398,16 @@ function RemoveManga(node) {
 	}
 }
 
-// Add the manga whose id is the mid of the passed node
-// Note that the mid of new manga is not known on the front page and needs to be fetched
+/**
+ * Add the manga whose id is the mid of the passed node
+ * Note that the mid of new manga is not known on the front page and needs to be fetched
+ * @param {jQuery node} node - The node containing the manga id of the bookmark to add
+ */
 function AddManga(node) {
 	// If the user is not connected, we do nothing
 	if (!FreeKiss.isUserConnected()) return;
 
-	var manager = $(node).parents(".fk-management");
+	let manager = $(node).parents(".fk-management");
 	ShowLoading(manager);
 	if ($(node).attr("mid") === undefined) {
 		$.ajax(
@@ -403,7 +415,7 @@ function AddManga(node) {
 				type: "GET",
 				url: $(manager).attr("data-url"),
 				success: function (html) {
-					var reg = html.match(/mangaID=(\d+)/);
+					let reg = html.match(/mangaID=(\d+)/);
 					if (reg != null) {
 						$(node).attr("mid", reg[1]);
 						AddMangaQuery(node, manager);
@@ -419,7 +431,11 @@ function AddManga(node) {
 	}
 }
 
-// Ajax request to add manga
+/**
+ * Ajax request to add manga
+ * @param {jQuery node} node - Node containing the manga id of the manga to add
+ * @param {manager node} manager - Manager associated to the manga
+ */
 function AddMangaQuery(node, manager) {
 	$.ajax(
 		{
@@ -440,9 +456,12 @@ function AddMangaQuery(node, manager) {
 	);
 }
 
-// Mark as read the manga whose id is the bid of the passed node
+/**
+ * Mark as read the manga whose id is the bid of the passed node
+ * @param {jQuery node} node - Node containing the bookmark id of the affected bookmark
+ */
 function MarkAsRead(node) {
-	var manager = $(node).parents(".fk-management");
+	let manager = $(node).parents(".fk-management");
 	ShowLoading(manager);
 
 	// Call the the KissManga's page
@@ -467,9 +486,12 @@ function MarkAsRead(node) {
 	);
 }
 
-// Mark as unread the manga whose id is the bid of the passed node
+/**
+ * Mark as unread the manga whose id is the bid of the passed node
+ * @param {jQuery node} node - Node containing the bookmark id of the affected bookmark
+ */
 function MarkAsUnread(node) {
-	var manager = $(node).parents(".fk-management");
+	let manager = $(node).parents(".fk-management");
 	ShowLoading(manager);
 
 	// Call the the KissManga's page

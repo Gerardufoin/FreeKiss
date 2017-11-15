@@ -1,3 +1,4 @@
+/** Mangas status enum */
 var Mangas = {
 	Status: {
 		NONE: 0,
@@ -6,12 +7,18 @@ var Mangas = {
 	}
 };
 
-// FreeKiss class. Manage the relation between FreeKiss and the localstorage (options, bookmarks status, etc.)
-// Every script should put its main function in init to check if FreeKiss is disabled
+/**
+ * FreeKiss class.
+ * Manage the relation between FreeKiss and the localstorage (options, bookmarks status, etc.)
+ * Every script should put its main function in init to check if FreeKiss is enabled
+ */
 var FreeKiss = {
-	// Option subclass. Allow to manipulate FreeKiss options
+	/**
+	 * Option subclass.
+	 * Allow to manipulate FreeKiss options
+	 */
 	Options: {
-		// Default options
+		/** Default options */
 		options: {
 			frontpageManager: true,
 			mangaManager: true,
@@ -26,54 +33,74 @@ var FreeKiss = {
 			minDisable: false,
 			disable: false
 		},
-		// Use init to load the options.
+		/**
+		 * Use init to load the options.
+		 * @param {FreeKiss} fk - The FreeKiss instance calling init
+		 */
 		init: function(fk) {
-			var obj = this;
-			chrome.storage.local.get("fk-options", function(opt) {
+			chrome.storage.local.get("fk-options", (opt) => {
 				if (opt['fk-options'] != null && Object.keys(opt['fk-options']).length > 0) {
-					obj.options = opt['fk-options'];
+					this.options = opt['fk-options'];
 				}
 				fk.optionsLoaded = true;
 				fk.loaded();
 			});
 		},
-		// Check if the option is set
+		/**
+		 * Check if the option is set
+		 * @param {string} property - Name of the option to check
+		 * @return {boolean} True if set, false otherwise
+		 */
 		isSet: function(property) {
 			return (this.options != null && this.options.hasOwnProperty(property));
 		},
-		// Return the option value or null if the option does not exist
+		/**
+		 * Return the option value
+		 * @param {string} property - Name of the option to get
+		 * @return {(boolean|number)} The value of the option or null if the option does not exist
+		 */
 		get: function(property) {
 			return (this.isSet(property) ? this.options[property] : null);
 		},
-		// Set the property in the options with the appropriate value
+		/**
+		 * Set the property in the options with the appropriate value
+		 * @param {string} property - Name of the option to set
+		 * @param {(boolean|number)} value - Value of the option to set
+		 */
 		set: function(property, value) {
 			this.options[property] = value;
 		},
-		// Save the options in localstorage
+		/** Save the options in localstorage */
 		save: function() {
 			chrome.storage.local.set({"fk-options": this.options});
 		},
-		// Clear the options in localstorage
+		/** Clear the options in localstorage */
 		clear: function() {
 			chrome.storage.local.remove("fk-options");
 		}
 	},
-	// Manga Status subclass. Allow to manipulate mangas status
+	/** Manga Status subclass. Allow to manipulate mangas status. */
 	Status: {
 		mangas: {},
-		// Use init to load the status.
+		/**
+		 * Use init to load the status.
+		 * @param {FreeKiss} fk - The FreeKiss instance calling init
+		 */
 		init: function(fk) {
-			var obj = this;
-			chrome.storage.sync.get("fk-status", function(opt) {
+			chrome.storage.sync.get("fk-status", (opt) => {
 				if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
-					let st = obj.decompress(opt['fk-status']);
-					if (st != null) obj.mangas = st;
+					let st = this.decompress(opt['fk-status']);
+					if (st != null) this.mangas = st;
 				}
 				fk.statusLoaded = true;
 				fk.loaded();
 			});
 		},
-		// Compress json with lz-string. Return null if invalid
+		/**
+		 * Compress json with lz-string.
+		 * @param {JSON} json - JSON to compress
+		 * @return {UTF-16 string} JSON compressed as string or null if invalid
+		 */
 		compress: function(json) {
 			try {
 				return LZString.compressToUTF16(JSON.stringify(json));
@@ -82,7 +109,11 @@ var FreeKiss = {
 				return null;
 			}
 		},
-		// Decompress json with lz-string. Return null if invalid
+		/**
+		 * Decompress json with lz-string.
+		 * @param {UTF-16 string} data - String containing the compressed data
+		 * @return {JSON} JSON or null if the string is invalid
+		 */
 		decompress: function(data) {
 			try {
 				return JSON.parse(LZString.decompressFromUTF16(data));
@@ -91,15 +122,27 @@ var FreeKiss = {
 				return null;
 			}
 		},
-		// Check if the manga has a status
+		/**
+		 * Check if the manga has a status
+		 * @param {integer} mid - Id of the manga to check
+		 * @return {boolean} True if the manga has a status, false otherwise
+		 */
 		isSet: function(mid) {
 			return (this.mangas != null && this.mangas.hasOwnProperty(mid));
 		},
-		// Return the status value or 0 if the manga does not have a status
+		/** 
+		 * Get the status of a manga
+		 * @param {integer} mid - Id of the manga to get
+		 * @return {Mangas.Status ENUM} Status of the manga or 0 if the manga does not have a status
+		 */
 		get: function(mid) {
 			return (this.isSet(mid) ? this.mangas[mid] : 0);
 		},
-		// Set the manga status with the appropriate value. If the value is 0, the status is unset instead to free up memory space
+		/**
+		 * Set the manga status with the appropriate value. If the value is 0, the status is unset instead to free up memory space
+		 * @param {integer} mid - Id of the manga to set
+		 * @param {Mangas.Status ENUM} - Status of the manga to set
+		 */
 		set: function(mid, value) {
 			if (value == 0) {
 				this.unset(mid);
@@ -107,51 +150,70 @@ var FreeKiss = {
 				this.mangas[mid] = value;
 			}
 		},
-		// Remove the specified manga status
+		/**
+		 * Remove the specified manga status
+		 * @param {integer} mid - Id of the manga to unset
+		 */
 		unset: function(mid) {
 			if (this.isSet(mid)) {
 				delete this.mangas[mid];
 			}
 		},
-		// Save the status in localstorage
+		/** Save the status in localstorage */
 		save: function() {
 			let cmprs = this.compress(this.mangas);
 			if (cmprs != null) {
 				chrome.storage.sync.set({"fk-status": cmprs});
 			}
 		},
-		// Clear the status in localstorage
+		/** Clear the status in localstorage */
 		clear: function() {
 			chrome.storage.sync.remove("fk-status");
 		}
 	},
-	// Return a boolean (true if user is connected)
+	/**
+	 * Check if the user is connected to KissManga
+	 * @return {boolean} True if user is connected, false otherwise
+	 */
 	isUserConnected: function() {
 		return ($("#aDropDown").length > 0);
 	},
+	initializing: false,
 	optionsLoaded: false,
 	statusLoaded: false,
 	loadCallbacks: [],
 	blockCallbacks: [],
-	// Used to initialize the data in localstorage. Any method can be used in the callback (as the everything will be loaded)
+	/**
+	 * Used to initialize the data in localstorage. Any method can be used in the callback (as everything will be loaded)
+	 * @param {function} callback - Callback to call once FreeKiss is initialized
+	 * @param {boolean} block - If block is true, the callback will not be called if Options.disable is true
+	 */
 	init: function(callback, block = true) {
 		if (block) {
 			this.blockCallbacks.push(callback);
 		} else {
 			this.loadCallbacks.push(callback);
 		}
-		this.Options.init(this);
-		this.Status.init(this);
+		if (!this.initializing) {
+			this.initializing = true;
+
+			this.optionsLoaded = false;
+			this.Options.init(this);
+			this.statusLoaded = false;
+			this.Status.init(this);			
+		}
 	},
+	/** Called by the subclasses once they are initialized */
 	loaded: function() {
 		// Once all the data is loaded, we execute the callback if FreeKiss is enabled
 		if (this.optionsLoaded && this.statusLoaded) {
-			for (var i = 0; i < this.loadCallbacks.length; i++) {
+			this.initializing = false;
+			for (let i = 0; i < this.loadCallbacks.length; i++) {
 				this.loadCallbacks[i]();
 			}
 			this.loadCallbacks = [];
 			if (this.Options.get("disable") === false) {
-				for (var i = 0; i < this.blockCallbacks.length; i++) {
+				for (let i = 0; i < this.blockCallbacks.length; i++) {
 					this.blockCallbacks[i]();
 				}
 			}
