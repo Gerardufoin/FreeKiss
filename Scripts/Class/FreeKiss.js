@@ -25,6 +25,7 @@ var FreeKiss = {
 			chapterManager: true,
 			enhancedDisplay: true,
 			bookmarksSorting: true,
+			showComments: false,
 			maxPageWidth: 800,
 			maxDoublePageWidth: 1800,
 			minPageWidth: 600,

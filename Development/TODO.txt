@@ -1,4 +1,5 @@
 1.0
 Bug fixes
 Check page resize speed
+Merge basic options and loaded options 
 Test + Clean

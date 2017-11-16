@@ -1,8 +1,6 @@
 "use strict";
 
-// Constant setting the acceptable range variation on the images resize. This is here to avoid unnecessary drop of images quality. (For exemple a max-size of 800px on a 802px image)
-var SIZE_RANGE = 50;
-
+/** Main function of the chapter page. Need to be called after FreeKiss has been loaded */
 function Chapter() {
 	// Sync the manager is required on the page, we sync the Management
 	if (FreeKiss.Options.get("chapterManager")) {
@@ -42,12 +40,18 @@ function Chapter() {
 				}
 			});
 		}
+		if (FreeKiss.Options.get("showComments")) {
+			$('#btnShowComments')[0].click();
+		}
 	});
 }
 
 FreeKiss.init(Chapter);
 
-// Resize of the image depending on the options and if it's a double-page or not
+/**
+ * Resize of the image depending on the options and if it's a double-page or not
+ * @param {jQuery Node} img - Image to resize
+ */
 function FK_ApplyResizeOptions(img) {
 	if (!$(img)[0].naturalWidth) {
 		setTimeout(() => { FK_ApplyResizeOptions(img); }, 50);
@@ -55,74 +59,88 @@ function FK_ApplyResizeOptions(img) {
 	}
 	if (!FK_IsDoublePage($(img)[0])) {
 		if (FreeKiss.Options.isSet("maxPageWidth") && FreeKiss.Options.get("maxDisable") === false) {
-			img.css("max-width", parseInt(FreeKiss.Options.get("maxPageWidth")) + SIZE_RANGE);
+			img.css("max-width", parseInt(FreeKiss.Options.get("maxPageWidth")));
 		}
 		if (FreeKiss.Options.isSet("minPageWidth") && FreeKiss.Options.get("minDisable") === false) {
-			img.css("min-width", parseInt(FreeKiss.Options.get("minPageWidth")) - SIZE_RANGE);
+			img.css("min-width", parseInt(FreeKiss.Options.get("minPageWidth")));
 		}
 	} else {
 		if (FreeKiss.Options.isSet("maxDoublePageWidth") && FreeKiss.Options.get("maxDisable") === false) {
-			img.css("max-width", parseInt(FreeKiss.Options.get("maxDoublePageWidth")) + SIZE_RANGE);
+			img.css("max-width", parseInt(FreeKiss.Options.get("maxDoublePageWidth")));
 		}
 		if (FreeKiss.Options.isSet("minDoublePageWidth") && FreeKiss.Options.get("minDisable") === false) {
-			img.css("min-width", parseInt(FreeKiss.Options.get("minDoublePageWidth")) - SIZE_RANGE);
+			img.css("min-width", parseInt(FreeKiss.Options.get("minDoublePageWidth")));
 		}
 	}
 }
 
-// This function is called by Popup.js when the options are changed
+/**
+ * This function is called by Popup.js when the options are changed
+ * @param {string} attribute - Name of the attribute modified
+ * @param {number} value - New value of the attribute
+ * @param {boolean} maxDisable - True if the max resize option is enabled, false otherwise
+ * @param {boolean} minDisable - True if the min resize option is enabled, false otherwise
+ */
 function FK_PageResize(attribute, value, maxDisable, minDisable) {
 	$("#divImage p > img").each(function() {
 		let isDouble = FK_IsDoublePage($(this)[0]);
 
 		switch(attribute) {
 			case "maxPageWidth":
-				if (!isDouble && !maxDisable) $(this).css("max-width", value + SIZE_RANGE);
+				if (!isDouble && !maxDisable) $(this).css("max-width", value);
 				break;
 			case "maxDoublePageWidth":
-				if (isDouble && !maxDisable) $(this).css("max-width", value + SIZE_RANGE);
+				if (isDouble && !maxDisable) $(this).css("max-width", value);
 				break;
 			case "minPageWidth":
-				if (!isDouble && !minDisable) $(this).css("min-width", value - SIZE_RANGE);
+				if (!isDouble && !minDisable) $(this).css("min-width", value);
 				break;
 			case "minDoublePageWidth":
-				if (isDouble && !minDisable) $(this).css("min-width", value - SIZE_RANGE);
+				if (isDouble && !minDisable) $(this).css("min-width", value);
 				break;
 		}
 	});
 }
 
-// Toggle the max page resize on or off depending on value
+/**
+ * Toggle the max page resize on or off depending on value
+ * @param {boolean} disable - Set to true to enable the image max resize and fasle to disable it
+ */
 function FK_ToggleMaxWidth(disable) {
 	$("#divImage p > img").each(function() {
 		if (disable) {
 			$(this).css("max-width", "");
 		} else {
-			var img = $(this);
 			// Need to reload the options
-			FreeKiss.init(function() {
-				FK_ApplyResizeOptions(img);
+			FreeKiss.init(() => {
+				FK_ApplyResizeOptions($(this));
 			});
 		}
 	});
 }
 
-// Toggle the min page resize on or off depending on value
+/**
+ * Toggle the min page resize on or off depending on value
+ * @param {boolean} disable - Set to true to enable the image min resize and fasle to disable it
+ */
 function FK_ToggleMinWidth(disable) {
 	$("#divImage p > img").each(function() {
 		if (disable) {
 			$(this).css("min-width", "");
 		} else {
-			var img = $(this);
 			// Need to reload the options
-			FreeKiss.init(function() {
-				FK_ApplyResizeOptions(img);
+			FreeKiss.init(() => {
+				FK_ApplyResizeOptions($(this));
 			});
 		}
 	});
 }
 
-// Check if the image is a double-page
+/**
+ * Check if the image is a double-page
+ * @param {javascript node} img - The image to test
+ * @return {boolean} True if image is doubled (width >= height) false otherwise
+ */
 function FK_IsDoublePage(img) {
 	return (img.naturalWidth >= img.naturalHeight);
 }
