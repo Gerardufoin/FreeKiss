@@ -1,6 +1,6 @@
 "use strict";
 
-/** Main function of the chapter page. Need to be called after FreeKiss has been loaded */
+/** Main function of the chapter page. Needs to be called after FreeKiss has been loaded */
 function Chapter() {
 	// Sync the manager is required on the page, we sync the Management
 	if (FreeKiss.Options.get("chapterManager")) {

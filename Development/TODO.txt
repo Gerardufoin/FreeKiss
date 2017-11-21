@@ -1,5 +1,4 @@
 1.0
 Bug fixes
-Check page resize speed
-Merge basic options and loaded options 
+Check Frontpage.js and Manga.js mutations for improvement
 Test + Clean

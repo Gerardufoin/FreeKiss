@@ -1,5 +1,6 @@
 "use strict";
 
+/** Main function of FreeKiss popup. Needs to be called after FreeKiss has been loaded as non blocking */
 function Popup() {
 	$(document).ready(function() {
 
@@ -97,4 +98,5 @@ function Popup() {
 	});
 }
 
+// Called as non blocking as the popup is still accessible as long as FreeKiss is not completly disabled from Chrome menu
 FreeKiss.init(Popup, false);

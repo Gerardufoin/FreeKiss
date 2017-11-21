@@ -1,5 +1,6 @@
 "use strict";
 
+/** Main function modifying KissManga user menu. Needs to be called after FreeKiss is loaded. */
 function Menu() {
 
 	$(document).ready(function () {

@@ -25,7 +25,7 @@ var FreeKiss = {
 			chapterManager: true,
 			enhancedDisplay: true,
 			bookmarksSorting: true,
-			showComments: false,
+			showComments: true,
 			maxPageWidth: 800,
 			maxDoublePageWidth: 1800,
 			minPageWidth: 600,
@@ -41,7 +41,7 @@ var FreeKiss = {
 		init: function(fk) {
 			chrome.storage.local.get("fk-options", (opt) => {
 				if (opt['fk-options'] != null && Object.keys(opt['fk-options']).length > 0) {
-					this.options = opt['fk-options'];
+					this.options = Object.assign(this.options, opt['fk-options']);
 				}
 				fk.optionsLoaded = true;
 				fk.loaded();

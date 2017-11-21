@@ -1,5 +1,6 @@
 "use strict";
 
+/** Main function of the frontpage. Needs to be called after FreeKiss has been loaded */
 function FrontPage() {
 	// If the frontpage managers are disabled, we do nothing
 	if (FreeKiss.Options.get("frontpageManager") == false) return;
@@ -7,7 +8,7 @@ function FrontPage() {
 	Management.Synchronize();
 
 	// Using mutations allow the data to change at page load AND to update new datas when kissmanga adds mangas in the scrollbar
-	var observer = new MutationObserver(function(mutations) {
+	new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
 
 			// We add the fk-scrollable class on the scrollbar (not the prettiest way of doing it)
@@ -52,20 +53,13 @@ function FrontPage() {
 			}
 
 		});
-	});
-
-	observer.observe(document,
-		{
-			attributes: false,
-			attributeOldValue: false,
-			childList: true,
-			characterData: false,
-			subtree: true
-		}
-	);
+	}).observe(document, {childList: true, subtree: true});
 }
 
-// Wrap the manager around a manga node
+/**
+ * Wrap the manager around a manga node
+ * @param {jQuery Node} node - DOM element containing the tageted manga
+ */
 function WrapManager(node) {
 	$(node).find("img:first-child").width(130); // Scrollable added by ajax request have a 120px width instead of 130px...
 	$(node).wrap('<div class="fk-scrollingWrapper"></div>');

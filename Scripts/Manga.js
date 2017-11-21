@@ -1,5 +1,6 @@
 "use strict";
 
+/** Main function of the manga page. Needs to be called after FreeKiss has been loaded */
 function Manga() {
 	// If the manga manager is disabled, we do nothing
 	if (FreeKiss.Options.get("mangaManager") == false) return;
@@ -7,7 +8,7 @@ function Manga() {
 	Management.Synchronize();
 	
 	// Using mutations allow the data to change at page load for a smooth display
-	var observer = new MutationObserver(function(mutations) {
+	new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
 
 			// We check all the <p> mutation to find the addition of #spanBookmarkManager
@@ -44,17 +45,7 @@ function Manga() {
 				}
 			}
 		});
-	});
-
-	observer.observe(document,
-		{
-			attributes: false,
-			attributeOldValue: false,
-			childList: true,
-			characterData: false,
-			subtree: true
-		}
-	);
+	}).observe(document, {childList: true, subtree: true});
 }
 
 FreeKiss.init(Manga);

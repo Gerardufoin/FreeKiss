@@ -8,9 +8,9 @@ String.prototype.capitalize = function() {
 /*
 * Create a new sorting table named "name" with "idName" as id and insert it into "table"
 * @param {jQuery Node} table - The table which will contain the new sorting table
-* @param {String} name - Name displayed on the tab of the new sorting table
-* @param {String} idName - The id used to identify the table. Should start with a lowercase and without "fk-"
-* @param {Boolean} selected - If set to true, the sorting table tab will be displayed as selected at page load. False by default.
+* @param {string} name - Name displayed on the tab of the new sorting table
+* @param {string} idName - The id used to identify the table. Should start with a lowercase and without "fk-"
+* @param {boolean} selected - If set to true, the sorting table tab will be displayed as selected at page load. False by default.
 */
 function AddSortingTable(table, name, idName, selected = false) {
 	let navigation = $('<a href="#' + idName.capitalize() + '" id="fk-menu' + idName.capitalize() + '">' + name + '</a>');
@@ -149,7 +149,7 @@ function BookmarksPage() {
 
 			// I... I honestly don't know. Sometimes, the cells will not have the correct display and will break a line for no reason.
 			// I have to trick the CSS into thinking it has to redisplay itself to correct the issue.
-			// (To do that I change the display to "inline-table" which is the same as with "inline-block" so it's unnoticeable, and then I switch back)
+			// (To do that I change the display to "inline-table" which is visually the same as with "inline-block" so it's unnoticeable, and then I switch back)
 			// The mutations must be at fault somehow, but I have no clue why.
 			// If someone stumbles upon this comment and has an idea, I'm curious to know.
 			$(".fk-bookmarkRow").css("display", "inline-table");
