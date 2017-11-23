@@ -1,4 +1,0 @@
-1.0
-Bug fixes
-Check Frontpage.js and Manga.js mutations for improvement
-Test + Clean
