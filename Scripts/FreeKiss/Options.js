@@ -1,7 +1,9 @@
 "use strict";
 
-function Init() {
+/** Main function, called after FreeKiss is loaded */
+function Options() {
 	$(document).ready(function() {
+		// All the boolean options are formatted the same way for genericityù
 		$("input[type='checkbox']").each(function() {
 			$(this).prop("checked", FreeKiss.Options.get($(this).attr("name")));
 		});
@@ -13,4 +15,4 @@ function Init() {
 	});
 }
 
-FreeKiss.init(Init, false);
+FreeKiss.init(Options, false);

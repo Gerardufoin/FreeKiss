@@ -10,6 +10,7 @@ html, body {
 	top: 0;
 	left: 0;
 	width: 100%;
+	min-width: max-content;
 	height: 55px;
 	z-index: 10;
 	background-color: #353535;
@@ -129,6 +130,16 @@ html, body {
 .disabled {
 	font-style: italic;
 	color: #696969;
+}
+
+#showPreRelease {
+	display: block;
+	margin-bottom: 15px;
+	border-bottom: 1px dashed #999;
+	width: fit-content;
+	cursor: pointer;
+	font-size: 10px;
+	color: #9a9a9a;
 }
 
 .fk-hide {

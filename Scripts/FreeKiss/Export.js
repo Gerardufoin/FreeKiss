@@ -1,37 +1,55 @@
 "use strict";
 
+/** Export format enum */
 var Format = {
 	TEXT: 0,
 	XML: 1,
 	JSON: 2
 };
 
+/**
+ * Download the text as "filename" on the user's computer
+ * @param {string} filename - Name of the created file (needs to contain the extension)
+ * @param {string} text - Content of the created file
+ */
 function DownloadFile(filename, text) {
 	let link = '<a href="data:text/plain;charset=utf-8,' + encodeURIComponent(text) + '" download="' + filename + '" style="display:none;"></a>';
 	$(link)[0].click();
 }
 
+/** Show the formats choice buttons */
 function ShowFormats() {
 	$("#formats button").removeClass("fk-hide");
 	$(".fk-imgLoader").addClass("fk-hide");
 }
 
+/** Hide the formats choice buttons */
 function HideFormats() {
 	$("#formats button").addClass("fk-hide");
 	$(".fk-imgLoader").removeClass("fk-hide");
 }
 
+/**
+ * Set the preview div content and display it to the user
+ * @param {string} content - Text to display in the #preview div
+ * @param {string} ext - Extension of the text format when downloaded ("txt" for text, "xml" for xml, etc...)
+ */
 function ShowPreview(content, ext) {
 	$("#preview").removeClass("fk-hide");
 	$("#previewContent").text(content);
 	$("#previewExt").text(ext);
 }
 
+/** Hide the #preview div */
 function HidePreview() {
 	$("#preview").addClass("fk-hide");
 	$("#previewContent").text("");
 }
 
+/**
+ * Set the content of the preview depending on the chosen format
+ * @param {Format ENUM} format - Format to use for the display
+ */
 function ChooseFormat(format) {
 	HideFormats();
 	HidePreview();
@@ -52,7 +70,8 @@ function ChooseFormat(format) {
 	}, true);
 }
 
-function Init() {
+/** Main function, called after FreeKiss is loaded */
+function Export() {
 	Bookmarks.extended = true;
 	$(document).ready(function() {
 		$("#txtFormat").click(() => {
@@ -71,8 +90,13 @@ function Init() {
 	});
 }
 
-FreeKiss.init(Init, false);
+FreeKiss.init(Export, false);
 
+/**
+ * Sort the bookmarks by category (reading, on hold, etc...) and return the result
+ * @param {object} bkmarks - Object return by the Bookmarks class
+ * @return {json} Object containing arrays (one per category) filled with the title of the bookmarks
+ */
 function SortBookmarks(bkmarks) {
 	let sorted = {
 		mangas: Object.keys(bkmarks).length,
@@ -103,6 +127,11 @@ function SortBookmarks(bkmarks) {
 	return sorted;
 }
 
+/**
+ * Format the sorted bookmarks data as text
+ * @param {json} datas - Sorted bookmarks returned by the SortBookmarks function
+ * @return {string} The data formated as text
+ */
 function FormatText(datas) {
 	let text = "##### BOOKMARKS #####";
 	text += "\nTotal: " + datas.mangas + " mangas";
@@ -115,6 +144,12 @@ function FormatText(datas) {
 	return text;
 }
 
+/**
+ * Format one category as text
+ * @param {array} array - Array containing the bookmarks title for the selected category
+ * @param {string} title - Name of the category as it should appeared for the user
+ * @return {string} Formated category as text
+ */
 function TextCategory(array, title) {
 	let text = "";
 
@@ -126,6 +161,11 @@ function TextCategory(array, title) {
 	return text;
 }
 
+/**
+ * Format the sorted bookmarks data as XML
+ * @param {json} datas - Sorted bookmarks returned by the SortBookmarks function
+ * @return {string} The data formated as XML
+ */
 function FormatXML(datas) {
 	let text = '<?xml version="1.0" encoding="UTF-8"?>\n';
 
@@ -139,6 +179,12 @@ function FormatXML(datas) {
 	return text;
 }
 
+/**
+ * Format one category as XML
+ * @param {array} array - Array containing the bookmarks title for the selected category
+ * @param {string} title - Name of the category as it should appeared for the user
+ * @return {string} Formated category as XML
+ */
 function XMLCategory(array, title) {
 	let text = "";
 
@@ -153,6 +199,11 @@ function XMLCategory(array, title) {
 	return text;
 }
 
+/**
+ * Format the sorted bookmarks data as JSON
+ * @param {json} datas - Sorted bookmarks returned by the SortBookmarks function
+ * @return {string} The data formated as JSON
+ */
 function FormatJSON(datas) {
 	return JSON.stringify(datas, null, 4);
 }
