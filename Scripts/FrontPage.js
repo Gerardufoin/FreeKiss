@@ -7,8 +7,17 @@ function FrontPage() {
 
 	Management.Synchronize();
 
+	var changeNumItem = false;
 	// Using mutations allow the data to change at page load AND to update new datas when kissmanga adds mangas in the scrollbar
 	new MutationObserver(function(mutations) {
+		// We change the variable numItems from KissManga script as the addition of the managers breaks it
+		if (!changeNumItem) {
+			let result = $("script").text().match(/numItems/);
+			if (result != null) {
+				changeNumItem = true;
+				$("script").text($("script").text().replace(/var numItems = .*;/i, "var numItems = $('.items > div > div').length;"));
+			}
+		}
 		mutations.forEach(function(mutation) {
 
 			// We add the fk-scrollable class on the scrollbar (not the prettiest way of doing it)
