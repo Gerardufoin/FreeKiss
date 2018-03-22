@@ -58,6 +58,11 @@
     }
   ],
 
+  "background": {
+    "scripts": ["Scripts/FreeKiss/Events.js"],
+    "persistent": false
+  },
+
   "web_accessible_resources": [
     "Images/Status/Default.png",
     "Images/Status/OnHold.png",
@@ -68,6 +73,7 @@
     "*://kissmanga.com/*",
     "tabs",
     "activeTab",
-    "storage"
+    "storage",
+    "alarms"
   ]
 }

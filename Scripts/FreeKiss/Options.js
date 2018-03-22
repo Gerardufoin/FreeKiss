@@ -12,6 +12,12 @@ function Options() {
 			FreeKiss.Options.set($(this).attr("name"), $(this).prop("checked"));
 			FreeKiss.Options.save();
 		});
+
+		$("#CallBackground").click(function() {
+			chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+				console.log(response.farewell);
+			});
+		});
 	});
 }
 
