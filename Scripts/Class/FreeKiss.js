@@ -26,6 +26,8 @@ var FreeKiss = {
 			enhancedDisplay: true,
 			bookmarksSorting: true,
 			showComments: true,
+			showUnreadOnIcon: false,
+			showUnreadRefreshRate: 30,
 			maxPageWidth: 800,
 			maxDoublePageWidth: 1800,
 			minPageWidth: 600,
