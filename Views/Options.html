@@ -40,6 +40,18 @@
                     <td><input type="checkbox" name="showUnreadOnIcon"></td>
                     <td>Display the amount of unread chapters on FreeKiss' icon (even when not on KissManga).</td>
                 </tr>
+                <tr class="showUnreadDependent fk-hide">
+                    <td></td>
+                    <td>Refresh every 
+                        <select name="showUnreadRefreshRate" id="refreshRate">
+                            <option value=5>5 minutes</option>
+                            <option value=10>10 minutes</option>
+                            <option value=30 selected="selected">30 minutes</option>
+                            <option value=60>1 hour</option>
+                            <option value=120>2 hours</option>
+                        </select>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <table id="managerOptions">

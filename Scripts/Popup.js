@@ -3,6 +3,14 @@
 /** Main function of FreeKiss popup. Needs to be called after FreeKiss has been loaded as non blocking */
 function Popup() {
 	$(document).ready(function() {
+		chrome.browserAction.getBadgeText({}, function(text) {
+			let nb = parseInt(text);
+			if (nb > 0) {
+				$("#new-chapters").show();
+			} else {
+				$("#new-chapters").hide();				
+			}
+		});
 
 		if (FreeKiss.Options.get("disable") === true)
 		{

@@ -3,13 +3,13 @@
 // Minimum refresh rate of the alarm to avoid users forcing a lower value and flood KissManga of requests
 var MIN_TIMER_VALUE = 1;
 
-// Legacy support for pre-event-pages (Chrome version < 22)
-var oldChromeVersion = !chrome.runtime;
-// Timer id of older Chrome version
-var alarmTimeoutId;
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	ShowUnreadBookmarks();
+	if (!request.message) return;
+
+	if (request.message == "ApplyOptions") {
+		ApplyOptions((typeof(request.updateIcon) === "boolean" ? request.updateIcon : false));
+	}
+	console.log(request.message);
 });
 
 /**
@@ -64,6 +64,10 @@ function ShowUnreadBookmarks() {
  */
 function GetRefreshRate() {
 	let rate = FreeKiss.Options.get("showUnreadRefreshRate");
+
+	if (typeof rate === "string") {
+		rate = parseInt(rate);
+	}
 	if (!Number.isInteger(rate) || rate < MIN_TIMER_VALUE) {
 		rate = MIN_TIMER_VALUE;
 	}
@@ -76,30 +80,15 @@ function GetRefreshRate() {
  */
 function RefreshAlarm() {
 	let rate = GetRefreshRate();
-	if (oldChromeVersion) {
-		console.log("Old alarm started.");
-		if (alarmTimeoutId) {
-			window.clearTimeout(alarmTimeoutId);
-		}
-		alarmTimeoutId = window.setTimeout(onAlarm, rate * 60 * 1000);
-	} else {
-		console.log("New alarm started.");
-		chrome.alarms.create('UpdateIcon', {periodInMinutes: rate});		
-	}
+	console.log("New alarm started.");
+	chrome.alarms.create('UpdateIcon', {periodInMinutes: rate});
 }
 
 /**
  * Remove the ongoing alarm
  */
 function RemoveAlarm() {
-	if (oldChromeVersion) {
-		if (alarmTimeoutId) {
-			window.clearTimeout(alarmTimeoutId);
-		}
-	} else {
-		chrome.alarms.clear('UpdateIcon');		
-	}
-
+	chrome.alarms.clear('UpdateIcon');		
 }
 
 /**
@@ -120,26 +109,6 @@ function onAlarm(alarm) {
 	}, true);
 }
 
-if (oldChromeVersion) {
-	ApplyOptions();
-} else {
-	chrome.runtime.onInstalled.addListener(ApplyOptions);
-	chrome.alarms.onAlarm.addListener(onAlarm);
-}
-
-/**
- * On startup, we check the options to update the icon and set the alarm if necessary
- */
-if (chrome.runtime && chrome.runtime.onStartup) {
-	chrome.runtime.onStartup.addListener(() => {
-		ApplyOptions();
-	});
-} else {
-	// This hack is needed because Chrome 22 does not persist browserAction icon
-	// state, and also doesn't expose onStartup. So the icon always starts out in
-	// wrong state. We don't actually use onStartup except as a clue that we're
-	// in a version of Chrome that has this problem.
-	chrome.windows.onCreated.addListener(() => {
-		ApplyOptions();
-	});
-}
+chrome.runtime.onInstalled.addListener(ApplyOptions);
+chrome.runtime.onStartup.addListener(ApplyOptions);
+chrome.alarms.onAlarm.addListener(onAlarm);
