@@ -1,3 +1,9 @@
+@keyframes new-chapters-animation {
+	0% {color:rgba(255,0,0,1);}
+	80% {color:rgba(255,0,0,0.55);}
+	100% {color:rgba(255,0,0,1);}
+}
+
 body {
   font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
   font-size: 100%;
@@ -30,6 +36,9 @@ body {
 	font-size: 14px;
 	text-decoration: none;
 	font-weight: bold;
+	animation-name: new-chapters-animation;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
 }
 
 #options {

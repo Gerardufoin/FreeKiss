@@ -1,7 +1,14 @@
 "use strict";
 
-// Minimum refresh rate of the alarm to avoid users forcing a lower value and flood KissManga of requests
+// Minimum refresh rate of the alarm to avoid users forcing a lower value and flooding KissManga of requests
 var MIN_TIMER_VALUE = 1;
+// Refresh rate of the loading animation on FreeKiss' icon
+var LOADING_DISPLAY_INTERVAL = 200;
+
+// ID of the interval used for the loading animation
+var loadingID = null;
+// Current progression of the loading animation
+var loadingProgress = 1;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (!request.message) return;
@@ -9,7 +16,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.message == "ApplyOptions") {
 		ApplyOptions((typeof(request.updateIcon) === "boolean" ? request.updateIcon : false));
 	}
-	console.log(request.message);
 });
 
 /**
@@ -21,6 +27,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
  */
 function UpdateIcon(FreeKiss, Bookmarks)
 {
+	ClearLoading();
 	let unread = 0;
 	for (var key in Bookmarks.mangas) {
 		if (Bookmarks.mangas.hasOwnProperty(key) && !Bookmarks.mangas[key].read && FreeKiss.Status.get(key) == Mangas.Status.NONE) {
@@ -29,7 +36,7 @@ function UpdateIcon(FreeKiss, Bookmarks)
 	}
 	chrome.browserAction.setBadgeBackgroundColor({color: [61, 160, 67, 255]});
 	chrome.browserAction.setBadgeText({text: (unread > 0 ? "" + unread : "")});
-	console.log("Icon updated: " + unread + " unread chapters.");
+	LogDebug("Icon updated: " + unread + " unread chapters.");
 }
 
 /**
@@ -39,29 +46,48 @@ function UpdateIcon(FreeKiss, Bookmarks)
 function ApplyOptions(showUnread = true) {
 	FreeKiss.init(() => {
 		if (FreeKiss.Options.get("showUnreadOnIcon") === true) {
-			console.log("Option enabled and started.");
 			if (showUnread) ShowUnreadBookmarks();
 			RefreshAlarm();
 		} else {
-			console.log("Option disabled and stopped.");
 			RemoveAlarm();
 			ResetIcon();
 		}
 	}, true);
 }
 
-/**
- * Check the bookmarks page to get the unread bookmarks and then call UpdateIcon
- */
+/** Check the bookmarks page to get the unread bookmarks and then call UpdateIcon */
 function ShowUnreadBookmarks() {
+	DisplayLoading();
 	Bookmarks.sync(() => {
 		UpdateIcon(FreeKiss, Bookmarks);
 	});
 }
 
-/**
- * Get the timer value from FreeKiss' options (clamped between min )
- */
+/** Make the text on FreeKiss' icon change to an animation of three dots on an orange background */
+function DisplayLoading() {
+	ClearLoading();
+	chrome.browserAction.setBadgeBackgroundColor({color: [255, 140, 0, 255]});
+	chrome.browserAction.setBadgeText({text: "."});
+	loadingProgress = 1;
+	loadingID = setInterval(LoadingLoop, LOADING_DISPLAY_INTERVAL);
+}
+
+/** Clear the loading animation' interval */
+function ClearLoading() {
+	if (loadingID) {
+		clearInterval(loadingID);
+	}
+}
+
+/** Called by the animation' interval */
+function LoadingLoop() {
+	if (++loadingProgress > 3) {
+		loadingProgress = 1;
+	}
+	chrome.browserAction.setBadgeText({text: ".".repeat(loadingProgress)});
+}
+
+/** Get the timer value from FreeKiss' options (The value cannot be below MIN_TIMER_VALUE to prevent spamming KissManga) */
 function GetRefreshRate() {
 	let rate = FreeKiss.Options.get("showUnreadRefreshRate");
 
@@ -71,42 +97,43 @@ function GetRefreshRate() {
 	if (!Number.isInteger(rate) || rate < MIN_TIMER_VALUE) {
 		rate = MIN_TIMER_VALUE;
 	}
-	console.log("Refresh rate: " + rate);
+	LogDebug("Refresh rate: " + rate);
 	return rate;
 }
 
-/**
- * Refresh the alarm
- */
+/** Refresh the alarm */
 function RefreshAlarm() {
 	let rate = GetRefreshRate();
-	console.log("New alarm started.");
+	LogDebug("New alarm started.");
 	chrome.alarms.create('UpdateIcon', {periodInMinutes: rate});
 }
 
-/**
- * Remove the ongoing alarm
- */
+/** Remove the ongoing alarm */
 function RemoveAlarm() {
-	chrome.alarms.clear('UpdateIcon');		
+	chrome.alarms.clear('UpdateIcon');
 }
 
-/**
- * Reset FreeKiss' icon
- */
+/** Reset FreeKiss' icon */
 function ResetIcon() {
+	ClearLoading();
 	chrome.browserAction.setBadgeText({text: ""});
 }
 
-/**
- * Callback when an alarm is triggered
- */
+/** Callback when an alarm is triggered */
 function onAlarm(alarm) {
-	console.log("OnAlarm called.");
+	LogDebug("Alarm triggered.");
 	FreeKiss.init(() => {
 		ShowUnreadBookmarks();
 		RefreshAlarm();
 	}, true);
+}
+
+/**
+ * Log a debug message in the console with the current time.
+ * @param {String} message - The message to display.
+ */
+function LogDebug(message) {
+	console.log("[FreeKiss - " + new Date().toISOString().substr(11, 8) + "]: " + message);
 }
 
 chrome.runtime.onInstalled.addListener(ApplyOptions);
