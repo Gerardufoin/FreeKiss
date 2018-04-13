@@ -43,8 +43,9 @@ var Bookmarks = {
 	 * Synchronize the bookmarks. The bookmarks are fetched from kissmanga BookmarkList page via an ajax request.
 	 * @param {function} callback - The function to call when the bookmarks are loaded. Multiple call to sync queue the callbacks
 	 * @param {boolean} syncOnce - If set to true, do not sync the bookmarks if they have already been sync one time. False by default
+	 * @param {function(int)} errorCB - This callback can be called if there is a problem with the ajax request. The error code is passed to the callback as parameter.
 	 */
-	sync: function(callback = null, syncOnce = false) {
+	sync: function(callback = null, syncOnce = false, errorCB = null) {
 		if (syncOnce && !this.isEmpty()) {
 			callback();
 			return;
@@ -58,10 +59,18 @@ var Bookmarks = {
 			$.ajax({
 				type: "GET",
 				url: "http://kissmanga.com/BookmarkList",
-				success: function (html) {
+				success: (html) => {
 					html = html.replace(/<img[^>]*>/g, "");
 					obj.setBookmarks($(html).find(".listing tr:not(:first-child)"));
 					obj.executeCallbacks();
+				},
+				error: (req, status, err) => {
+					console.log("Error " + req.status + " while connecting to bookmarks list: " + err);
+					if (errorCB) {
+						errorCB(req.status);
+					}
+				},
+				complete: () => {
 					obj.syncing = false;
 				}
 			});

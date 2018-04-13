@@ -59,8 +59,7 @@
   ],
 
   "background": {
-    "scripts": ["Tools/jquery-3.1.1.min.js", "Tools/lz-string.min.js", "Scripts/Class/FreeKiss.js", "Scripts/Class/Bookmarks.js", "Scripts/FreeKiss/Events.js"],
-    "persistent": false
+    "page": "Views/Background.html"
   },
 
   "web_accessible_resources": [
@@ -74,6 +73,8 @@
     "tabs",
     "activeTab",
     "storage",
-    "alarms"
+    "alarms",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }

@@ -29,10 +29,16 @@ function UpdateIcon(FreeKiss, Bookmarks)
 {
 	ClearLoading();
 	let unread = 0;
+	let statusOn = FreeKiss.Options.get("bookmarksSorting");
 	for (var key in Bookmarks.mangas) {
-		if (Bookmarks.mangas.hasOwnProperty(key) && !Bookmarks.mangas[key].read && FreeKiss.Status.get(key) == Mangas.Status.NONE) {
+		if (Bookmarks.mangas.hasOwnProperty(key) && !Bookmarks.mangas[key].read &&
+			(!statusOn || FreeKiss.Status.get(key) == Mangas.Status.NONE)) {
 			++unread;
 		}
+	}
+	// Cannot display more than 3 characters on a badge
+	if (unread > 999) {
+		unread = 999;
 	}
 	chrome.browserAction.setBadgeBackgroundColor({color: [61, 160, 67, 255]});
 	chrome.browserAction.setBadgeText({text: (unread > 0 ? "" + unread : "")});
@@ -60,6 +66,14 @@ function ShowUnreadBookmarks() {
 	DisplayLoading();
 	Bookmarks.sync(() => {
 		UpdateIcon(FreeKiss, Bookmarks);
+	}, false, (code) => {
+		// If the request fail with a 503, it's probably because of Cloudflare, so we kindly ask him for some good cookies
+		if (code == 503) {
+			RefreshCfCookies();
+		} else {
+			ResetIcon();
+			LogDebug("Unable to access the bookmarks for unknown reason. If it seems anormal, you can report this issue on the extension page in the chrome store.");
+		}
 	});
 }
 
@@ -128,6 +142,24 @@ function onAlarm(alarm) {
 	}, true);
 }
 
+/** Refresh the cloudflare's cookies and retry to access the bookmarks list. If it does not work, you can start cursing. */
+function RefreshCfCookies() {
+	LogDebug("Refreshing Cloudflare cookies.");
+	$("body").append("<iframe id='frame' width='0' height='0' src='http://kissmanga.com'></iframe>");
+	// we wait for 6 seconds for cloudflare to do his things before removing the iframe
+	setTimeout(() => {
+		$("#frame").remove();
+		// It's possible that the showUnreadOnIcon was disabled during those 6 seconds (awkward), so we check again
+		if (FreeKiss.Options.get("showUnreadOnIcon")) {
+			Bookmarks.sync(null, false, (code) => {
+				// If the contact fail again, we bail
+				ResetIcon();
+				LogDebug("Unable to access bookmarks for the second time. Retrying later.");
+			});
+		}
+	}, 6000);
+}
+
 /**
  * Log a debug message in the console with the current time.
  * @param {String} message - The message to display.
@@ -139,3 +171,21 @@ function LogDebug(message) {
 chrome.runtime.onInstalled.addListener(ApplyOptions);
 chrome.runtime.onStartup.addListener(ApplyOptions);
 chrome.alarms.onAlarm.addListener(onAlarm);
+
+
+/** Used to remove X-Frame-Options header. Cloudflare doesn't want to cooperate otherwise. */
+chrome.webRequest.onHeadersReceived.addListener(
+	function(info) {
+		let headers = info.responseHeaders;
+		let index = headers.findIndex(x => x.name.toLowerCase() == "x-frame-options");
+		if (index != -1) {
+			headers.splice(index, 1);
+		}
+		return {responseHeaders: headers};
+	},
+	{
+		urls: ['*://kissmanga.com/*'],
+		types: ['sub_frame']
+	},
+	['blocking', 'responseHeaders']
+);
