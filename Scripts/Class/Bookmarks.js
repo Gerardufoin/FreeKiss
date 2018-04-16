@@ -131,5 +131,27 @@ var Bookmarks = {
 	 */
 	count: function() {
 		return Object.keys(this.mangas).length;
+	},
+	/**
+	 * Change the read status of a registered bookmark
+	 * @param {int} bid - The bookmark's ID of the bookmark to update
+	 * @param {Boolean} isRead - New read status
+	 */
+	setRead: function(bid, isRead) {
+		for (var key in this.mangas) {
+			if (this.mangas.hasOwnProperty(key) && this.mangas[key].bid == bid) {
+				this.mangas[key].read = isRead;
+				return ;
+			}
+		}
+	},
+	/**
+	 * Remove the selected bookmark from the array
+	 * @param {int} mid - The manga's id of the bookmark to remove
+	 */
+	remove: function(mid) {
+		if (this.mangas.hasOwnProperty(mid)) {
+			delete this.mangas[mid];
+		}
 	}
 };

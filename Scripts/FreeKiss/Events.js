@@ -16,6 +16,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.message == "ApplyOptions") {
 		ApplyOptions((typeof(request.updateIcon) === "boolean" ? request.updateIcon : false));
 	}
+	if (request.message == "UpdateIcon" && request.hasOwnProperty('freekiss') && request.hasOwnProperty('bookmarks')) {
+		// Function cannot be passed through json so the prototype for the get functions are readded here
+		request.freekiss.Options.get = function(property) {
+			return (this.options != null && this.options.hasOwnProperty(property) ? this.options[property] : null);
+		};
+		request.freekiss.Status.get = function(mid) {
+			return (this.mangas != null && this.mangas.hasOwnProperty(mid) ? this.mangas[mid] : 0);
+		};
+		UpdateIcon(request.freekiss, request.bookmarks);
+		if (request.hasOwnProperty("refreshAlarm") && request.refreshAlarm === true) {
+			RefreshAlarm();
+		}
+	}
 });
 
 /**

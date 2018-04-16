@@ -133,6 +133,8 @@ function BookmarksPage() {
 	}).observe(document, {childList: true, subtree: true});
 
 	$(document).ready(function () {
+		// Once the page is loaded and the bookmarks updated, we try updating FreeKiss' icon
+		FreeKiss.updateIcon(Bookmarks, true);
 		if (FreeKiss.Options.get("enhancedDisplay") == true) {
 			if (FreeKiss.Options.get("bookmarksSorting") == false) {
 				// "Read" header is added here, in order to be certain that all the cells are fully loaded.
