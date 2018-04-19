@@ -1,9 +1,13 @@
 "use strict";
 
+// Enable the debug logs
+var DEBUG = true;
 // Minimum refresh rate of the alarm to avoid users forcing a lower value and flooding KissManga of requests
 var MIN_TIMER_VALUE = 1;
 // Refresh rate of the loading animation on FreeKiss' icon
 var LOADING_DISPLAY_INTERVAL = 200;
+// Waiting time in seconds for Cloudflare
+var CLOUDFLARE_TIMEOUT = 10;
 
 // ID of the interval used for the loading animation
 var loadingID = null;
@@ -170,7 +174,7 @@ function RefreshCfCookies() {
 				LogDebug("Unable to access bookmarks for the second time. Retrying later.");
 			});
 		}
-	}, 6000);
+	}, CLOUDFLARE_TIMEOUT * 1000);
 }
 
 /**
@@ -178,7 +182,9 @@ function RefreshCfCookies() {
  * @param {String} message - The message to display.
  */
 function LogDebug(message) {
-	console.log("[FreeKiss - " + new Date().toISOString().substr(11, 8) + "]: " + message);
+	if (DEBUG) {
+		console.log("[FreeKiss - " + new Date().toISOString().substr(11, 8) + "]: " + message);		
+	}
 }
 
 chrome.runtime.onInstalled.addListener(ApplyOptions);
