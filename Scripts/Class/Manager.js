@@ -132,6 +132,8 @@ var Management = {
 	_ChangeStatus: function(elem, status, image, manager, options = {}) {
 		FreeKiss.Status.set($(elem).parent().attr("mid"), status);
 		FreeKiss.Status.save();
+		// Update FreeKiss' icon as status change the unread counter when in enhancedDisplay mode
+		FreeKiss.updateIcon(Bookmarks, false);
 		$(elem).parents(".fk-statusManagement").find(".fk-statusDisplay img").attr("src", image);
 		$(elem).parent().addClass("fk-hide");
 
@@ -324,6 +326,8 @@ var Management = {
 	 */
 	Synchronize: function() {
 		Bookmarks.sync(() => {
+			// Updates FreeKiss' icon unread counter and reset the alarm any time the bookmarks are sync (prevents useless call to bookmarklist)
+			FreeKiss.updateIcon(Bookmarks, true);
 			$(".fk-management").each((i, manager) => {
 				this.UpdateManager(manager);
 			});
@@ -380,13 +384,16 @@ function RemoveManga(node) {
 	if (isSure) {
 		ShowLoading(manager);
 
+		let mid = node.attr("mid");
 		// Call the the KissManga's page
 		$.ajax(
 			{
 				type: "POST",
-				url: "/Bookmark/" + node.attr("mid") + "/remove",
+				url: "/Bookmark/" + mid + "/remove",
 				success: function (message) {
 					if (message != "") {
+						Bookmarks.remove(mid);
+						FreeKiss.updateIcon(Bookmarks, false);
 						HideLoading(manager);
 					} else {
 						// TODO ERROR ?
@@ -444,6 +451,7 @@ function AddMangaQuery(node, manager) {
 			success: function (message) {
 				if (message != "") {
 					Bookmarks.sync(function() {
+						FreeKiss.updateIcon(Bookmarks, true);
 						Management.UpdateManager(manager);
 						HideLoading(manager, true);
 					});
@@ -464,17 +472,20 @@ function MarkAsRead(node) {
 	let manager = $(node).parents(".fk-management");
 	ShowLoading(manager);
 
+	let bid = node.attr('bid');
 	// Call the the KissManga's page
 	$.ajax(
 		{
 			type: "POST",
 			url: "/Bookmark/MarkBookmarkDetail",
 			data: {
-				"bdid": node.attr('bid'),
+				"bdid": bid,
 				"strAlreadyRead": 1
 			},
 			success: function (message) {
 				if (message != "") {
+					Bookmarks.setRead(bid, true);
+					FreeKiss.updateIcon(Bookmarks, false);
 					node.addClass("fk-hide");
 					node.siblings(".fk-bRead").removeClass("fk-hide");
 				} else {
@@ -494,17 +505,20 @@ function MarkAsUnread(node) {
 	let manager = $(node).parents(".fk-management");
 	ShowLoading(manager);
 
+	let bid = node.attr('bid');
 	// Call the the KissManga's page
 	$.ajax(
 		{
 			type: "POST",
 			url: "/Bookmark/MarkBookmarkDetail",
 			data: {
-				"bdid": node.attr('bid'),
+				"bdid": bid,
 				"strAlreadyRead": 0
 			},
 			success: function (message) {
 				if (message != "") {
+					Bookmarks.setRead(bid, false);
+					FreeKiss.updateIcon(Bookmarks, false);
 					node.addClass("fk-hide");
 					node.siblings(".fk-bUnRead").removeClass("fk-hide");
 				} else {

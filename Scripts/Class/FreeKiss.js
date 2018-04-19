@@ -26,6 +26,8 @@ var FreeKiss = {
 			enhancedDisplay: true,
 			bookmarksSorting: true,
 			showComments: true,
+			showUnreadOnIcon: false,
+			showUnreadRefreshRate: 30,
 			maxPageWidth: 800,
 			maxDoublePageWidth: 1800,
 			minPageWidth: 600,
@@ -219,6 +221,16 @@ var FreeKiss = {
 				}
 			}
 			this.blockCallbacks = [];
+		}
+	},
+	/**
+	 * Contact the background page to update FreeKiss' icon unread counter
+	 * @param {Bookmarks} bookmarks - Reference to a synchronized Bookmarks class
+	 * @param {Boolean} refreshAlarm - If true, the background page's alarm is refreshed. (Should be set as false if the bookmarks are not freshly updated)
+	 */
+	updateIcon: function(bookmarks, refreshAlarm) {
+		if (this.Options.get("showUnreadOnIcon") === true) {
+			chrome.runtime.sendMessage({message: "UpdateIcon", freekiss: this, bookmarks: bookmarks, refreshAlarm: refreshAlarm});
 		}
 	}
 };
