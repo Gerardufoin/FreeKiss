@@ -194,7 +194,7 @@ chrome.alarms.onAlarm.addListener(onAlarm);
 
 /** Used to remove X-Frame-Options header. Cloudflare doesn't want to cooperate otherwise. */
 chrome.webRequest.onHeadersReceived.addListener(
-	function(info) {
+	(info) => {
 		let headers = info.responseHeaders;
 		let index = headers.findIndex(x => x.name.toLowerCase() == "x-frame-options");
 		if (index != -1) {
@@ -207,4 +207,15 @@ chrome.webRequest.onHeadersReceived.addListener(
 		types: ['sub_frame']
 	},
 	['blocking', 'responseHeaders']
+);
+
+/** Block the access to deloton, which creates unwanted popup on kissmanga */
+chrome.webRequest.onBeforeRequest.addListener(
+    () => {
+        return {cancel: true};
+    },
+    {
+        urls: ["*://deloton.com/*"]
+    },
+    ["blocking"]
 );
