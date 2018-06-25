@@ -209,13 +209,13 @@ chrome.webRequest.onHeadersReceived.addListener(
 	['blocking', 'responseHeaders']
 );
 
-/** Block the access to deloton, which creates unwanted popup on kissmanga */
+/** Block the access to harmful providers of onclick ads popups. */
 chrome.webRequest.onBeforeRequest.addListener(
     () => {
         return {cancel: true};
     },
     {
-        urls: ["*://deloton.com/*"]
+        urls: ["*://deloton.com/*", "*://cobalten.com/*"]
     },
     ["blocking"]
 );
