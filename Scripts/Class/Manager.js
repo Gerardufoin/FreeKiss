@@ -23,7 +23,7 @@ var Management = {
 
 		// Add the name and url to the manager for genericity
 		$(manager).attr("data-name", name);
-		$(manager).attr("data-url", url);
+		$(manager).attr("data-url", decodeURIComponent(url));
 
 		// Add bookmark management
 		this._Bookmark(manager);
