@@ -4,7 +4,7 @@
   "name": "FreeKiss",
   "short_name": "FreeKiss",
   "description": "Enhance your KissManga experience.",
-  "version": "1.2.4",
+  "version": "1.2.5",
 
   "icons": {
     "16": "Images/Icons/icon16.png",
@@ -69,7 +69,7 @@
   ],
 
   "permissions": [
-    "*://*/*",
+    "*://kissmanga.com/*",
     "tabs",
     "activeTab",
     "storage",
