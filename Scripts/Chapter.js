@@ -27,6 +27,15 @@ function Chapter() {
 					}
 				});
 			}
+
+			// We remove the apu.php script as it prevents user to access the chat if the onclick ad has not been clicked.
+			if (mutation.target.tagName == "BODY") {
+				mutation.addedNodes.forEach(function(node) {
+					if (node.tagName === "SCRIPT" && node.getAttribute('src') != undefined && node.getAttribute('src').includes("apu.php")) {
+						mutation.target.removeChild(node);
+					}
+				});
+			}
 		});
 	}).observe(document, {childList: true, subtree: true});
 
