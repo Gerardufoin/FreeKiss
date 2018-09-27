@@ -77,7 +77,7 @@ var Management = {
 	 * @param {jQuery Node} statusDisplay - Node that will contain the status displayers. If null, they are not added to the page
 	 */
 	_Status: function(manager, statusDisplay = null) {
-		$(manager).append('\
+		let display_node = '\
 			<span class="fk-statusManagement fk-hide">\
 				<div class="fk-statusSubMenu fk-hide">\
 					<a class="fk-defaultStatus" title="Reading">\
@@ -94,7 +94,8 @@ var Management = {
 					<span class="fk-imgHelper"></span><img style="width:16px" src="' + this.Images.Default + '">\
 				</a>\
 			</span>\
-		');
+		';
+		$(manager).append(display_node.replace(/\t/g, ""));
 		// Display the submenu when the status button is clicked
 		$(manager).find(".fk-statusDisplay").click((e) => {
 			// Close all currently opened submenu

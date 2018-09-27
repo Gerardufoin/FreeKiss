@@ -90,7 +90,7 @@ var FreeKiss = {
 		 * @param {FreeKiss} fk - The FreeKiss instance calling init
 		 */
 		init: function(fk) {
-			chrome.storage.sync.get("fk-status", (opt) => {
+			this.saveMethod().get("fk-status", (opt) => {
 				if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
 					let st = this.decompress(opt['fk-status']);
 					if (st != null) this.mangas = st;
@@ -166,12 +166,16 @@ var FreeKiss = {
 		save: function() {
 			let cmprs = this.compress(this.mangas);
 			if (cmprs != null) {
-				chrome.storage.sync.set({"fk-status": cmprs});
+				this.saveMethod().set({"fk-status": cmprs});
 			}
 		},
 		/** Clear the status in localstorage */
 		clear: function() {
-			chrome.storage.sync.remove("fk-status");
+			this.saveMethod().remove("fk-status");
+		},
+		/** Determine the save method depending on the browser */
+		saveMethod: function() {
+			return (navigator.userAgent.indexOf("Firefox") ? chrome.storage.local : chrome.storage.sync);
 		}
 	},
 	/**
