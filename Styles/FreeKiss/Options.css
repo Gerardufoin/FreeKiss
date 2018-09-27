@@ -3,6 +3,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	background-color: #E8E8E8;
+	font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
 }
 
 #navigation {

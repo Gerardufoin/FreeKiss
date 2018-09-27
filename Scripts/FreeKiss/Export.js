@@ -7,16 +7,6 @@ var Format = {
 	JSON: 2
 };
 
-/**
- * Download the text as "filename" on the user's computer
- * @param {string} filename - Name of the created file (needs to contain the extension)
- * @param {string} text - Content of the created file
- */
-function DownloadFile(filename, text) {
-	let link = '<a href="data:text/plain;charset=utf-8,' + encodeURIComponent(text) + '" download="' + filename + '" style="display:none;"></a>';
-	$(link)[0].click();
-}
-
 /** Show the formats choice buttons */
 function ShowFormats() {
 	$("#formats button").removeClass("fk-hide");
@@ -37,7 +27,8 @@ function HideFormats() {
 function ShowPreview(content, ext) {
 	$("#preview").removeClass("fk-hide");
 	$("#previewContent").text(content);
-	$("#previewExt").text(ext);
+	$("#previewDownload").attr("href", "data:application/octet-stream;charset=utf-8," + encodeURIComponent(content));
+	$("#previewDownload").attr("download", "Kissmanga-Bookmarks." + ext);
 }
 
 /** Hide the #preview div */
@@ -82,10 +73,6 @@ function Export() {
 		});
 		$("#jsonFormat").click(() => {
 			ChooseFormat(Format.JSON);
-		});
-
-		$("#previewDownload").click(() => {
-			DownloadFile("Kissmanga-Bookmarks." + $("#previewExt").text(), $("#previewContent").text());
 		});
 	});
 }
