@@ -240,7 +240,9 @@ var FreeKiss = {
 };
 
 /** Prevent onclick ads on KissManga from firing. */
-var script = document.createElement('script');
-script.textContent = "var f=EventTarget.prototype.addEventListener;EventTarget.prototype.addEventListener=function(type,fn,capture){this.f=f;if(type!='mousedown'){this.f(type,fn,capture);}}";
-(document.head || document.documentElement).appendChild(script);
-script.remove();
+if (window.location.hostname == "kissmanga.com") {
+	var script = document.createElement('script');
+	script.textContent = "var f=EventTarget.prototype.addEventListener;EventTarget.prototype.addEventListener=function(type,fn,capture){this.f=f;if(!/b\\(['\"]\\w+['\"]\\)/g.test(fn.toString())){this.f(type,fn,capture);}};";
+	(document.head || document.documentElement).appendChild(script);
+	script.remove();
+}

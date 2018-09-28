@@ -61,6 +61,16 @@ var Bookmarks = {
 				url: "http://kissmanga.com/BookmarkList",
 				success: (html) => {
 					html = html.replace(/<img[^>]*>/g, "");
+					// |\r?\n|\r
+					// <table.+?<\/tr>(.*)<\/table> gi
+					// <tr[^>]*>(.+?)<\/tr> gi
+					// mid=['"](\w+)['"]   i
+					// href=['"]\/?(.+?)['"]   i
+					// bdid=['"](\w+)['"]   i
+					// <a(?:(?!<a).)*aRead.+?<\/a>  !
+					// <a.+?>(.+?)<\/a> i
+					// <td>Completed<\/td>  i
+					console.log(html);
 					obj.setBookmarks($(html).find(".listing tr:not(:first-child)"));
 					obj.executeCallbacks();
 				},
