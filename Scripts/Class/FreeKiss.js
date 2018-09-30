@@ -175,7 +175,7 @@ var FreeKiss = {
 		},
 		/** Determine the save method depending on the browser */
 		saveMethod: function() {
-			return (navigator.userAgent.indexOf("Firefox") ? chrome.storage.local : chrome.storage.sync);
+			return (navigator.userAgent.indexOf("Firefox") != -1 ? chrome.storage.local : chrome.storage.sync);
 		}
 	},
 	/**

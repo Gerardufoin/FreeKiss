@@ -70,7 +70,7 @@ var Bookmarks = {
 					// <a(?:(?!<a).)*aRead.+?<\/a>  !
 					// <a.+?>(.+?)<\/a> i
 					// <td>Completed<\/td>  i
-					console.log(html);
+					//console.log(html);
 					obj.setBookmarks($(html).find(".listing tr:not(:first-child)"));
 					obj.executeCallbacks();
 				},
