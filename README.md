@@ -1,7 +1,9 @@
 # FreeKiss
-FreeKiss is a simple Chrome extension aiming to improve the navigation and usage of [KissManga](http://kissmanga.com/).
+FreeKiss is a simple extension aiming to improve the navigation and usage of [KissManga](http://kissmanga.com/).
 
-If you are using Chrome, the extension can be downloaded on the [chrome store](https://chrome.google.com/webstore/detail/freekiss/jpndbkdfegaeebeehdmngbedkkchhflh).
+If you are using Chrome, the extension can be installed from the [chrome store](https://chrome.google.com/webstore/detail/freekiss/jpndbkdfegaeebeehdmngbedkkchhflh).
+
+If you are using Firefox, the extension can be installed from [here](https://addons.mozilla.org/en-US/firefox/addon/freekiss).
 
 > I mainly created this extension to fix some issues I had with KissManga. Now that it's done, I figured it could help others that were facing the same issues, so why not share it.
 
