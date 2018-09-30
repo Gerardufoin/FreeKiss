@@ -90,7 +90,7 @@ var FreeKiss = {
 		 * @param {FreeKiss} fk - The FreeKiss instance calling init
 		 */
 		init: function(fk) {
-			chrome.storage.sync.get("fk-status", (opt) => {
+			this.saveMethod().get("fk-status", (opt) => {
 				if (opt['fk-status'] != null && Object.keys(opt['fk-status']).length > 0) {
 					let st = this.decompress(opt['fk-status']);
 					if (st != null) this.mangas = st;
@@ -166,12 +166,16 @@ var FreeKiss = {
 		save: function() {
 			let cmprs = this.compress(this.mangas);
 			if (cmprs != null) {
-				chrome.storage.sync.set({"fk-status": cmprs});
+				this.saveMethod().set({"fk-status": cmprs});
 			}
 		},
 		/** Clear the status in localstorage */
 		clear: function() {
-			chrome.storage.sync.remove("fk-status");
+			this.saveMethod().remove("fk-status");
+		},
+		/** Determine the save method depending on the browser */
+		saveMethod: function() {
+			return (navigator.userAgent.indexOf("Firefox") != -1 ? chrome.storage.local : chrome.storage.sync);
 		}
 	},
 	/**
@@ -230,13 +234,16 @@ var FreeKiss = {
 	 */
 	updateIcon: function(bookmarks, refreshAlarm) {
 		if (this.Options.get("showUnreadOnIcon") === true) {
-			chrome.runtime.sendMessage({message: "UpdateIcon", freekiss: this, bookmarks: bookmarks, refreshAlarm: refreshAlarm});
+			// NOTE: Objects have to be stripped of their methods or Firefox will refuse to send them... (Instead of, you know, sending them without their methods...)
+			chrome.runtime.sendMessage({message: "UpdateIcon", freekiss: JSON.parse(JSON.stringify(this)), bookmarks: JSON.parse(JSON.stringify(bookmarks)), refreshAlarm: refreshAlarm});
 		}
 	}
 };
 
 /** Prevent onclick ads on KissManga from firing. */
-var script = document.createElement('script');
-script.textContent = "var f=EventTarget.prototype.addEventListener;EventTarget.prototype.addEventListener=function(type,fn,capture){this.f=f;if(type!='mousedown'){this.f(type,fn,capture);}}";
-(document.head || document.documentElement).appendChild(script);
-script.remove();
+if (window.location.hostname == "kissmanga.com") {
+	var script = document.createElement('script');
+	script.textContent = "var f=EventTarget.prototype.addEventListener;EventTarget.prototype.addEventListener=function(type,fn,capture){this.f=f;if(!/b\\(['\"]\\w+['\"]\\)/g.test(fn.toString())){this.f(type,fn,capture);}};";
+	(document.head || document.documentElement).appendChild(script);
+	script.remove();
+}

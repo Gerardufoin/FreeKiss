@@ -60,12 +60,14 @@ var Bookmarks = {
 				type: "GET",
 				url: "http://kissmanga.com/BookmarkList",
 				success: (html) => {
-					html = html.replace(/<img[^>]*>/g, "");
-					obj.setBookmarks($(html).find(".listing tr:not(:first-child)"));
+					// We remove elements making FireFox cry about CSP (onClick, Images and everything beside the .listing table)
+					html = html.replace(/onClick=['"].+?['"]|<img[^>]*>|\r?\n|\r/gi, "");
+					let table = html.match(/<table[^>]+class=['"]listing['"].*<\/table>/gi)[0];
+					obj.setBookmarks($(table).find("tr:not(:first-child)"));
 					obj.executeCallbacks();
 				},
 				error: (req, status, err) => {
-					console.log("Error " + req.status + " while connecting to bookmarks list: " + err);
+					console.error("Error " + req.status + " while connecting to bookmarks list: " + err);
 					if (errorCB) {
 						errorCB(req.status);
 					}

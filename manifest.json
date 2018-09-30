@@ -4,7 +4,7 @@
   "name": "FreeKiss",
   "short_name": "FreeKiss",
   "description": "Enhance your KissManga experience.",
-  "version": "1.2.6",
+  "version": "1.3.0",
 
   "icons": {
     "16": "Images/Icons/icon16.png",
