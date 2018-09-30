@@ -234,7 +234,8 @@ var FreeKiss = {
 	 */
 	updateIcon: function(bookmarks, refreshAlarm) {
 		if (this.Options.get("showUnreadOnIcon") === true) {
-			chrome.runtime.sendMessage({message: "UpdateIcon", freekiss: this, bookmarks: bookmarks, refreshAlarm: refreshAlarm});
+			// NOTE: Objects have to be stripped of their methods or Firefox will refuse to send them... (Instead of, you know, sending them without their methods...)
+			chrome.runtime.sendMessage({message: "UpdateIcon", freekiss: JSON.parse(JSON.stringify(this)), bookmarks: JSON.parse(JSON.stringify(bookmarks)), refreshAlarm: refreshAlarm});
 		}
 	}
 };
