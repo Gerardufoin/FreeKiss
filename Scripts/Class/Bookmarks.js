@@ -62,8 +62,10 @@ var Bookmarks = {
 				success: (html) => {
 					// We remove elements making FireFox cry about CSP (onClick, Images and everything beside the .listing table)
 					html = html.replace(/onClick=['"].+?['"]|<img[^>]*>|\r?\n|\r/gi, "");
-					let table = html.match(/<table[^>]+class=['"]listing['"].*<\/table>/gi)[0];
-					obj.setBookmarks($(table).find("tr:not(:first-child)"));
+					let table = html.match(/<table[^>]+class=['"]listing['"].*<\/table>/gi);
+					if (table != null) {
+						obj.setBookmarks($(table[0]).find("tr:not(:first-child)"));
+					}
 					obj.executeCallbacks();
 				},
 				error: (req, status, err) => {
