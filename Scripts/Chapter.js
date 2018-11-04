@@ -14,7 +14,7 @@ function Chapter() {
 		if (!injectManager && document.getElementById("navsubbar") != undefined) {
 			injectManager = true;
 			let info = $('div#navsubbar p a');
-			let manager = $('<div class="fk-managerWrapper"></div>').prepend(Management.CreateManager($(info).parent().text().split('\n')[3], $(info).attr("href").replace("http://kissmanga.com/", "")));
+			let manager = $('<div class="fk-managerWrapper"></div>').prepend(Management.CreateManager($(info).parent().text().split('\n')[3], $(info).attr("href").replace("https://kissmanga.com/", "")));
 			$("#headnav").after(manager);
 		}
 

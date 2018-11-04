@@ -390,7 +390,7 @@ function RemoveManga(node) {
 		$.ajax(
 			{
 				type: "POST",
-				url: "http://kissmanga.com/Bookmark/" + mid + "/remove",
+				url: "https://kissmanga.com/Bookmark/" + mid + "/remove",
 				success: function (message) {
 					if (message != "") {
 						Bookmarks.remove(mid);
@@ -424,7 +424,7 @@ function AddManga(node) {
 		$.ajax(
 			{
 				type: "GET",
-				url: "http://kissmanga.com/" + $(manager).attr("data-url"),
+				url: "https://kissmanga.com/" + $(manager).attr("data-url"),
 				success: function (html) {
 					let reg = html.match(/mangaID=(\d+)/);
 					if (reg != null) {
@@ -454,7 +454,7 @@ function AddMangaQuery(node, manager) {
 	$.ajax(
 		{
 			type: "POST",
-			url: "http://kissmanga.com/Bookmark/" + node.attr("mid") + "/add",
+			url: "https://kissmanga.com/Bookmark/" + node.attr("mid") + "/add",
 			success: function (message) {
 				if (message != "") {
 					Bookmarks.sync(function() {
@@ -487,7 +487,7 @@ function MarkAsRead(node) {
 	$.ajax(
 		{
 			type: "POST",
-			url: "http://kissmanga.com/Bookmark/MarkBookmarkDetail",
+			url: "https://kissmanga.com/Bookmark/MarkBookmarkDetail",
 			data: {
 				"bdid": bid,
 				"strAlreadyRead": 1
@@ -523,7 +523,7 @@ function MarkAsUnread(node) {
 	$.ajax(
 		{
 			type: "POST",
-			url: "http://kissmanga.com/Bookmark/MarkBookmarkDetail",
+			url: "https://kissmanga.com/Bookmark/MarkBookmarkDetail",
 			data: {
 				"bdid": bid,
 				"strAlreadyRead": 0

@@ -58,7 +58,7 @@ var Bookmarks = {
 			var obj = this;
 			$.ajax({
 				type: "GET",
-				url: "http://kissmanga.com/BookmarkList",
+				url: "https://kissmanga.com/BookmarkList",
 				success: (html) => {
 					// We remove elements making FireFox cry about CSP (onClick, Images and everything beside the .listing table)
 					html = html.replace(/onClick=['"].+?['"]|<img[^>]*>|\r?\n|\r/gi, "");
