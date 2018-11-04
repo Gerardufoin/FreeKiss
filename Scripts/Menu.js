@@ -6,7 +6,7 @@ function Menu() {
 	$(document).ready(function () {
 
 		// Make username directly lead to bookmarks
-		$("#aDropDown").attr("href", "http://kissmanga.com/BookmarkList");
+		$("#aDropDown").attr("href", "https://kissmanga.com/BookmarkList");
 
 	});	
 

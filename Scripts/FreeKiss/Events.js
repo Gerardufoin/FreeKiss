@@ -162,7 +162,7 @@ function onAlarm(alarm) {
 /** Refresh the cloudflare's cookies and retry to access the bookmarks list. If it does not work, you can start cursing. */
 function RefreshCfCookies() {
 	LogDebug("Refreshing Cloudflare cookies.");
-	$("body").append("<iframe id='frame' width='0' height='0' src='http://kissmanga.com'></iframe>");
+	$("body").append("<iframe id='frame' width='0' height='0' src='https://kissmanga.com'></iframe>");
 	// we wait for 6 seconds for cloudflare to do his things before removing the iframe
 	setTimeout(() => {
 		$("#frame").remove();
