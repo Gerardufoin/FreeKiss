@@ -174,11 +174,16 @@ function BookmarksPage() {
 * @param {boolean} delayed - If true, the node needed to use an observer before being inserted into the table and needs to be sorted
 */
 function UpgradeBookmarkNode(node, delayed = false) {
+	// If the node has already been upgraded, we don't modify it again
+	if ($(node).hasClass("fk-up")) {
+		return;
+	}
+
 	// If the node does not contain all the td, we place an observer on it and return
-	if ($(node).children().length < 4) {
+	if ($(node).children().length < 5) {
 		new MutationObserver(function(mutations, observer) {
-			// We don't care about the mutation content, we just want to know when all 4 of the nodes are here
-			if ($(node).children().length >= 4) {
+			// We don't care about the mutation content, we just want to know when all 5 of the nodes are here
+			if ($(node).children().length >= 5) {
 				observer.disconnect();
 				UpgradeBookmarkNode(node, true);
 			}
@@ -186,8 +191,12 @@ function UpgradeBookmarkNode(node, delayed = false) {
 		return;
 	}
 
+	// We mark the node as upgraded
+	$(node).addClass("fk-up");
+
 	if ($(node).find("th").length > 0) {
 		if (FreeKiss.Options.get("bookmarksSorting") == true) return;
+		$(node).find("th:last-child").remove();
 		$(node).find("th:last-child").remove();
 		$(node).find("th:last-child").attr("width", "26%");
 
@@ -199,6 +208,7 @@ function UpgradeBookmarkNode(node, delayed = false) {
 		$(document.getElementById("fk-bookmarksDefaultTable")).append(node);
 	} else {
 		let mid = Bookmarks.updateBookmark(node);
+		$(node).find("td:last-child").remove();
 		$(node).find("td:last-child").remove();
 		$(node).find("td:last-child").empty();
 		let link = $(node).find("td:first-child a");

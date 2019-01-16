@@ -487,7 +487,7 @@ function MarkAsRead(node) {
 	$.ajax(
 		{
 			type: "POST",
-			url: "https://kissmanga.com/Bookmark/MarkBookmarkDetail",
+			url: "https://kissmanga.com/MarkBookmarkDetail",
 			data: {
 				"bdid": bid,
 				"strAlreadyRead": 1
@@ -523,7 +523,7 @@ function MarkAsUnread(node) {
 	$.ajax(
 		{
 			type: "POST",
-			url: "https://kissmanga.com/Bookmark/MarkBookmarkDetail",
+			url: "https://kissmanga.com/MarkBookmarkDetail",
 			data: {
 				"bdid": bid,
 				"strAlreadyRead": 0
