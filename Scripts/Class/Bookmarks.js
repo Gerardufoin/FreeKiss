@@ -15,7 +15,9 @@ var Bookmarks = {
 	setBookmarks: function(bookmarks) {
 		this.mangas = {};
 		bookmarks.each((i, node) => {
-			this.updateBookmark(node);
+			if ($(node).find('td').length > 3) {
+				this.updateBookmark(node);
+			}
 		});
 	},
 	/**
