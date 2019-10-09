@@ -34,18 +34,18 @@ FreeKiss changes the layout of the bookmarks page to include the mangas' image c
 ### Bookmarks manager
 > Context: Didn't like being forced to go to the bookmarks page to manage my bookmarks. So now it's available at other places on the website.
 
-The bookmarks managers allow you to manage your bookmarks (add/remove, change status *(see next section for status)*, mark as read/unread) on other pages than the bookmarks page.
+The bookmarks manager allows you to manage your bookmarks (add/remove, change status *(see next section for status)*, mark as read/unread) on other pages than the bookmarks page.
 
-The managers can be enabled on the frontpage, the mangas pages and the chapters pages.
+The manager can be enabled on the frontpage, the mangas pages and the chapters pages.
 
-![Example of the managers on the frontpage](/../Screenshots/Images/Screenshots/Manager_Example.png)
+![Example of the manager on the frontpage](/../Screenshots/Images/Screenshots/Manager_Example.png)
 
 *Here is an example of the manager for some of the mangas on the frontpage.*
 
 ### Bookmarks status
 > Context: As an ex-user of MangaFox, the feature that I missed the most on KissManga was the possibility to sort bookmarks with a status, such as "On Hold" or "Plan to read". So here you go.
 
-FreeKiss adds a status option to your bookmarks. If you enable the option, a new status button will appear on the bookmark managers. Using this button, it is possible to assign a status to any bookmarks.
+FreeKiss adds a status option to your bookmarks. If you enable the option, a new status button will appear on the bookmark manager. Using this button, it is possible to assign a status to any bookmarks.
 
 Once the option is enabled, the bookmarks will also be sorted on your bookmarks page.
 
@@ -74,4 +74,4 @@ The current output is not really nice, so if you use this feature and have a sug
 
 ## Coding style
 
-Before you grab some torches to come burn my house, I want to say that I am no javascript expert as it is not the language I am the most fluent with (don't really use it aside from writing this extension), so it is possible that part of the code is ugly. However, I am a pretty chill and open minded guy, so if you find something that you consider as an abomination that should normally be avoided at all cost, just send me a message and I'll look into it.
+Before you grab some torches to come burn my house, I want to say that I am no JavaScript expert as it is not the language I am the most fluent with (don't really use it aside from writing this extension), so it is possible that part of the code is ugly. However, I am a pretty chill and open minded guy, so if you find something that you consider as an abomination that should normally be avoided at all cost, just send me a message and I'll look into it.
