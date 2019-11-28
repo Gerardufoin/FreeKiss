@@ -6,6 +6,7 @@ function Chapter() {
 	if (FreeKiss.Options.get("chapterManager")) {
 		Management.Synchronize();
 	}
+	let chapWidth = 0;
 
 	let injectManager = !FreeKiss.Options.get("chapterManager");
 	// Mutation are used to get the images as they are added to the page to resize them and add the manager during the page load (because I'm picky)
@@ -153,5 +154,11 @@ function FK_ToggleMinWidth(disable) {
  * @return {boolean} True if image is doubled (width >= height) false otherwise
  */
 function FK_IsDoublePage(img) {
+	if (chapWidth == 0) {
+		chapWidth = img.naturalWidth;
+	}
+	if (chapWidth == img.naturalWidth){
+		return false;
+	}
 	return (img.naturalWidth >= img.naturalHeight);
 }
