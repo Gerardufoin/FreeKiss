@@ -1,4 +1,5 @@
 "use strict";
+var chapWidth = 0;
 
 /** Main function of the chapter page. Needs to be called after FreeKiss has been loaded */
 function Chapter() {
@@ -6,7 +7,7 @@ function Chapter() {
 	if (FreeKiss.Options.get("chapterManager")) {
 		Management.Synchronize();
 	}
-	let chapWidth = 0;
+
 
 	let injectManager = !FreeKiss.Options.get("chapterManager");
 	// Mutation are used to get the images as they are added to the page to resize them and add the manager during the page load (because I'm picky)
@@ -154,11 +155,25 @@ function FK_ToggleMinWidth(disable) {
  * @return {boolean} True if image is doubled (width >= height) false otherwise
  */
 function FK_IsDoublePage(img) {
-	if (chapWidth == 0) {
-		chapWidth = img.naturalWidth;
-	}
-	if (chapWidth == img.naturalWidth){
+	if (FK_IsRightWidth(img)){
 		return false;
 	}
 	return (img.naturalWidth >= img.naturalHeight);
+}
+
+/**
+ * Check if the image has same width as the rest of the chapter
+ * @param {javascript node} img - The image to test
+ * @return {boolean} True if image is same size false otherwise
+ */
+function FK_IsRightWidth(img) {
+	/*if (typeof variable === 'undefined' || variable === null) {
+		var chapWidth = 0;
+	}*/
+	if (chapWidth == 0) {
+		chapWidth = img.naturalWidth;
+	} else if (chapWidth == img.naturalWidth){
+		return true;
+	}
+	return false;
 }
