@@ -26,8 +26,6 @@ function Chapter() {
 				mutation.addedNodes.forEach(function(node) {
 					if (node.tagName == "P") {
                         $.map($(node).find("img"), (img, i) => { FK_ApplyResizeOptions($(img)); });
-                    } else if (node.tagName == "DIV") { //Add support of other image style
-                        $.map($(node).find("img"), (img, i) => { FK_ApplyResizeOptions($(img)); });
                     }
 				});
 			}
