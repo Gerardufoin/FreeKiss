@@ -24,9 +24,9 @@ function Chapter() {
 			// All images are in the #divImage element
 			if (mutation.target.id == "divImage") {
 				mutation.addedNodes.forEach(function(node) {
-					if (node.tagName == "P") {
-                        $.map($(node).find("img"), (img, i) => { FK_ApplyResizeOptions($(img)); });
-                    }
+					if (node.tagName == "P" || node.tagName == "DIV") {
+						$.map($(node).find("img"), (img, i) => { FK_ApplyResizeOptions($(img)); });
+					}
 				});
 			}
 
@@ -93,7 +93,7 @@ function FK_ApplyResizeOptions(img) {
  * @param {boolean} minDisable - True if the min resize option is enabled, false otherwise
  */
 function FK_PageResize(attribute, value, maxDisable, minDisable) {
-	$("#divImage p > img").each(function() {
+	$("#divImage img").each(function() {
 		let isDouble = FK_IsDoublePage($(this)[0]);
 
 		switch(attribute) {
@@ -118,7 +118,7 @@ function FK_PageResize(attribute, value, maxDisable, minDisable) {
  * @param {boolean} disable - Set to true to enable the image max resize and fasle to disable it
  */
 function FK_ToggleMaxWidth(disable) {
-	$("#divImage p > img").each(function() {
+	$("#divImage img").each(function() {
 		if (disable) {
 			$(this).css("max-width", "");
 		} else {
@@ -135,7 +135,7 @@ function FK_ToggleMaxWidth(disable) {
  * @param {boolean} disable - Set to true to enable the image min resize and fasle to disable it
  */
 function FK_ToggleMinWidth(disable) {
-	$("#divImage p > img").each(function() {
+	$("#divImage img").each(function() {
 		if (disable) {
 			$(this).css("min-width", "");
 		} else {
