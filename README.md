@@ -74,4 +74,4 @@ The current output is not really nice, so if you use this feature and have a sug
 
 ## Coding style
 
-Before you grab some torches to come burn my house, I want to say that I am no javascript expert as it is not the language I am the most fluent with (don't really use it aside from writing this extension), so it is possible that part of the code is ugly. However, I am a pretty chill and open minded guy, so if you find something that you consider as an abomination that should normally be avoided at all cost, just send me a message and I'll look into it.
+Before you grab some torches to come burn my house, I want to say that I am no JavaScript expert as it is not the language I am the most fluent with (don't really use it aside from writing this extension), so it is possible that part of the code is ugly. However, I am a pretty chill and open minded guy, so if you find something that you consider as an abomination that should normally be avoided at all cost, just send me a message and I'll look into it.
