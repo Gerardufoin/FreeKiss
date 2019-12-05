@@ -34,18 +34,18 @@ FreeKiss changes the layout of the bookmarks page to include the mangas' image c
 ### Bookmarks manager
 > Context: Didn't like being forced to go to the bookmarks page to manage my bookmarks. So now it's available at other places on the website.
 
-The bookmarks manager allows you to manage your bookmarks (add/remove, change status *(see next section for status)*, mark as read/unread) on other pages than the bookmarks page.
+The bookmarks managers allow you to manage your bookmarks (add/remove, change status *(see next section for status)*, mark as read/unread) on other pages than the bookmarks page.
 
-The manager can be enabled on the frontpage, the mangas pages and the chapters pages.
+The managers can be enabled on the frontpage, the mangas pages and the chapters pages.
 
-![Example of the manager on the frontpage](/../Screenshots/Images/Screenshots/Manager_Example.png)
+![Example of the managers on the frontpage](/../Screenshots/Images/Screenshots/Manager_Example.png)
 
 *Here is an example of the manager for some of the mangas on the frontpage.*
 
 ### Bookmarks status
 > Context: As an ex-user of MangaFox, the feature that I missed the most on KissManga was the possibility to sort bookmarks with a status, such as "On Hold" or "Plan to read". So here you go.
 
-FreeKiss adds a status option to your bookmarks. If you enable the option, a new status button will appear on the bookmark manager. Using this button, it is possible to assign a status to any bookmarks.
+FreeKiss adds a status option to your bookmarks. If you enable the option, a new status button will appear on the bookmark managers. Using this button, it is possible to assign a status to any bookmarks.
 
 Once the option is enabled, the bookmarks will also be sorted on your bookmarks page.
 
