@@ -1,4 +1,7 @@
 "use strict";
+
+/** Init. variable to check standard width of a chapter for use with making sure that pages that are wider
+ * than they are tall are not seen as double-pages when they are not (i.e. webcomics)*/
 var chapWidth = 0;
 
 /** Main function of the chapter page. Needs to be called after FreeKiss has been loaded */
@@ -160,14 +163,11 @@ function FK_IsDoublePage(img) {
 }
 
 /**
- * Check if the image has same width as the rest of the chapter
+ * Check if the image has same width as the rest of the chapter.
  * @param {javascript node} img - The image to test
  * @return {boolean} True if image is same size false otherwise
  */
 function FK_IsRightWidth(img) {
-	/*if (typeof variable === 'undefined' || variable === null) {
-		var chapWidth = 0;
-	}*/
 	if (chapWidth == 0) {
 		chapWidth = img.naturalWidth;
 	} else if (chapWidth == img.naturalWidth){
